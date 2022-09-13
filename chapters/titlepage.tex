@@ -1,8 +1,48 @@
-\titlehead{\centering University of Jon Doe}
-\subject{Thesis}
-\title{Title of the thesis}
-\subtitle{If you want you can have a subtitle}
-\author{Jon Doe}
-\date{\today}
-\publishers{Prof. Dr. rer. LaTeX}
-\maketitle
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                      %
+%     File: Thesis_FrontCover.tex                                      %
+%     Tex Master: Thesis.tex                                           %
+%                                                                      %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\thispagestyle {empty}
+
+% IST Logo - Signature A
+% parameters: bb=llx lly urx ury (bounding box), width=h_length, height=v_length, angle=angle, scale=factor, clip=true/false, draft=true/false.
+\includegraphics[bb=9.5cm 11cm 0cm 0cm,scale=0.29]{IST}
+
+\begin{center}
+%
+% Figure (Image or plot)
+\vspace{2.5cm}
+% height = 50 mm
+
+% Title, author and degree
+\vspace{1.0cm}
+{\FontLb Linux capable RISC-V CPU for IOb-SoC} \\ % <<<<< EDIT TITLE
+%\vspace{0.2cm}
+%{\FontMn Subtitle (optional)} \\
+%\vspace{1.9cm}
+\vspace{2.6cm}
+{\FontMb Pedro Nuno de Melo Antunes} \\ % <<<<< EDIT NAME
+\vspace{2.0cm}
+{\FontSn \coverThesis} \\
+\vspace{0.3cm}
+{\FontLb Electrical and Computer Engineering} \\ % <<<<< EDIT COURSE
+\vspace{1.0cm}
+{\FontSn %
+\begin{tabular}{ll}
+ \coverSupervisors: & Prof. José João Henriques Teixeira de Sousa
+\end{tabular} } \\
+\vspace{1.0cm}
+{\FontMb \coverExaminationCommittee} \\
+\vspace{0.3cm}
+{\FontSn %
+\begin{tabular}{c}
+\coverSupervisor:      Prof. José João Henriques Teixeira de Sousa \\
+\coverMemberCommittee: Prof. Horácio Cláudio De Campos Neto
+\end{tabular} } \\
+\vspace{1.5cm}
+{\FontMb \today} \\ % <<<<< EDIT DATE (corresponds to date of oral examination)
+%
+\end{center}
