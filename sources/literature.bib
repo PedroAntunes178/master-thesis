@@ -1,21 +1,184 @@
 % Encoding: UTF-8
 
-@Book{Doe2015,
-  author  = {Jon Doe},
-  title   = {What do you think about Jon Doe},
-  date    = {2015-01-02},
-  editor  = {Musterverlag},
-  url     = {http://localhost:8080},
-  urldate = {2017-02-16},
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% References
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+@misc{iob_soc_repo,
+	author       = {{IObundle Lda}},
+	title        = {{IOb-SoC}},
+	year         = 2022,
+	publisher    = {GitHub},
+	howpublished = {\url{https://github.com/IObundle/iob-soc}},
+	edition		 = {V0.6}
 }
 
-@Online{Bloggs2013,
-  author  = {Joe Bloggs},
-  editor  = {Blog},
-  title   = {Lorem ipsum dolor sit amet.},
-  date    = {2013-08-01},
-  url     = {http://www.loremipsum.de/},
-  urldate = {2017-02-16},
+@misc{buildroot,
+	author       = {Peter Korsgaard and others},
+	title        = {{BuildRoot}},
+	publisher    = {GitHub},
+	howpublished = {\url{https://github.com/buildroot/buildroot}}
+}
+
+@misc{busybox,
+	author       = {{Denys Vlasenko}},
+	title        = {{BusyBox}},
+	howpublished = {\url{https://git.busybox.net/busybox}}
+}
+
+@misc{verilator,
+	author       = {{CHIPS Alliance and Linux Foundation}},
+	title        = {{Verilator}},
+	howpublished = {\url{https://github.com/verilator/verilator}}
+}
+
+@misc{zephyr,
+	author       = {{Linux Foundation}},
+	title        = {{Zephyr Project}},
+	howpublished = {\url{https://www.zephyrproject.org/}}
+}
+
+@misc{dropbear,
+	author       = {{Matt Johnston}},
+	title        = {{Dropbear}},
+	publisher    = {GitHub},
+	howpublished = {\url{https://github.com/mkj/dropbear}}
+}
+
+@misc{riscv:toolchain,
+	author       = {K. Cheng and et. al.},
+	title        = {{RISC-V GNU Compiler Toolchain}},
+	year         = 2022,
+	publisher    = {GitHub},
+	howpublished = {\url{https://github.com/riscv/riscv-gnu-toolchain}},
+	edition		 = {2022.01.17}
+}
+
+@misc{vexriscv_cpu,
+	author       = {SpinalHDL},
+	title        = {{VexRiscv}},
+	year         = 2022,
+	publisher    = {GitHub},
+	howpublished = {\url{https://github.com/SpinalHDL/VexRiscv}},
+	edition		 = {1.0.1}
+}
+
+@article{zhaosonicboom,
+  title={SonicBOOM: The 3rd Generation Berkeley Out-of-Order Machine},
+  author={Zhao, Jerry and Korpan, Ben and Gonzalez, Abraham and Asanovic, Krste},
+  booktitle={Fourth Workshop on Computer Architecture Research with RISC-V},
+  year={2020},
+  month={May}
+}
+
+@article{zaruba2019cost,
+   author={F. {Zaruba} and L. {Benini}},
+   journal={IEEE Transactions on Very Large Scale Integration (VLSI) Systems},
+   title={The Cost of Application-Class Processing: Energy and Performance Analysis of a Linux-Ready 1.7-GHz 64-Bit RISC-V Core in 22-nm FDSOI Technology},
+   year={2019},
+   volume={27},
+   number={11},
+   pages={2629-2640},
+   doi={10.1109/TVLSI.2019.2926114},
+   ISSN={1557-9999},
+   month={Nov},
+}
+
+@unpublished{ACharana:IOb_SoC,
+	author = {A. Charana},
+	title  = {{Development Environment for a RISC-V Processor}},
+	note   = {Master's Thesis},
+	month  = {July},
+	year   = {2020}
+}
+
+@unpublished{JRoque:IOb_Cache,
+	author = {J. Roque},
+	title  = {{Development Environment for a RISC-V Processor: Cache}},
+	note   = {Master's Thesis},
+	month  = {Jan},
+	year   = {2021}
+}
+
+@techreport{riscv_compressed,
+    Author = {Waterman, Andrew and Lee, Yunsup and Patterson, David A. and Asanović, Krste},
+    Title = {The RISC-V Compressed Instruction Set Manual, Version 1.9},
+    Institution = {EECS Department, University of California, Berkeley},
+    Year = {2015},
+    Month = {Nov},
+    URL = {http://www2.eecs.berkeley.edu/Pubs/TechRpts/2015/EECS-2015-209.html},
+    Number = {UCB/EECS-2015-209},
+    Abstract = {This is a draft specification version 1.9 of the RISC-V Compressed ISA extension. This draft specification may change before being accepted as standard, so implementations made to this draft specification might not conform to the future standard.}
+}
+
+@booklet{riscv_unpriviledge,
+  title        = {The RISC-V Instruction Set Manual Volume I: Unprivileged ISA},
+  author       = {Andrew Waterman and Krste Asanović},
+  howpublished = {\url{https://github.com/riscv/riscv-isa-manual/releases/download/Ratified-IMAFDQC/riscv-spec-20191213.pdf}},
+  month        = {December},
+  year         = {2019}
+}
+
+@booklet{riscv_priviledge,
+  title        = {The RISC-V Instruction Set Manual Volume II: Privileged Architecture},
+  author       = {Andrew Waterman and Krste Asanović and John Hauserc},
+  howpublished = {\url{https://github.com/riscv/riscv-isa-manual/releases/download/Priv-v1.12/riscv-privileged-20211203.pdf}},
+  month        = {December},
+  year         = {2021}
+}
+
+@mastersthesis{Waterman:EECS-2011-63,
+    Author = {Waterman, Andrew},
+    Title = {Improving Energy Efficiency and Reducing Code Size with RISC-V Compressed},
+    School = {EECS Department, University of California, Berkeley},
+    Year = {2011},
+    Month = {May},
+    URL = {http://www2.eecs.berkeley.edu/Pubs/TechRpts/2011/EECS-2011-63.html},
+    Number = {UCB/EECS-2011-63},
+    Abstract = {Delivering the instruction stream can be the largest source of energy consumption in a processor, yet loosely-encoded RISC instruction sets are wasteful of instruction bandwidth. Aiming to improve the performance and energy efficiency of the RISC-V ISA, this thesis proposes RISC-V Compressed (RVC), a variable-length instruction set extension. RVC is a superset of the RISC-V ISA, encoding the most frequent instructions in half the size of a RISC- V instruction; the remaining functionality is still accessible with full-length instructions. RVC programs are 25% smaller than RISC-V programs, fetch 25% fewer instruction bits than RISC- V programs, and incur fewer instruction cache misses. Its code size is competitive with other compressed RISCs. RVC is expected to improve the performance and energy per operation of RISC-V.}
+}
+
+@book{barry2009freertos,
+  added-at = {2013-01-18T09:49:50.000+0100},
+  author = {Barry, R.},
+  biburl = {https://www.bibsonomy.org/bibtex/2a08191f28a822561ac796d84dfd82598/bovansnow},
+  interhash = {15ec29d0ffb55584c43c7e8c47263215},
+  intrahash = {a08191f28a822561ac796d84dfd82598},
+  keywords = {OS embedded real-time},
+  publisher = {Real Time Engineers Limited},
+  timestamp = {2013-01-18T09:49:50.000+0100},
+  title = {FreeRTOS reference manual: API functions and configuration options},
+  year = 2009
+}
+
+@techreport{fette2011websocket,
+  added-at = {2016-04-12T13:27:50.000+0200},
+  author = {Fette, I. and Melnikov, A.},
+  biburl = {https://www.bibsonomy.org/bibtex/20ca2a43d416f2e0b90052720400f92ac/ripe},
+  howpublished = {Internet Requests for Comments},
+  institution = {RFC Editor},
+  interhash = {a9ed69aa19a7951d4aa83ad9191088be},
+  intrahash = {0ca2a43d416f2e0b90052720400f92ac},
+  issn = {2070-1721},
+  keywords = {socket.io websockets},
+  month = {December},
+  note = {\url{http://www.rfc-editor.org/rfc/rfc6455.txt}},
+  number = 6455,
+  publisher = {RFC Editor},
+  timestamp = {2016-04-12T13:27:50.000+0200},
+  title = {The WebSocket Protocol},
+  type = {RFC},
+  url = {http://www.rfc-editor.org/rfc/rfc6455.txt},
+  year = 2011
+}
+
+@misc{picorv32,
+  author = {{Clifford Wolf et al.}},
+  title = {PicoRV32 - A Size-Optimized RISC-V CPU},
+  year = {2015},
+  publisher = {GitHub},
+  journal = {GitHub repository},
+  howpublished = {\url{https://github.com/cliffordwolf/picorv32}}
 }
 
 @Comment{jabref-meta: databaseType:biblatex;}
