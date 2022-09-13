@@ -7,3 +7,58 @@
 
 % The "\todo{this still has to be done}" is a command that highlights todos in the text.
 \newcommand{\todo}[1]{\textcolor{vscodered}{TODO: \texttt{#1}}}
+
+% ----------------------------------------------------------------------
+% Define cover fields in both english and portuguese.
+% ----------------------------------------------------------------------
+%
+\newcommand{\coverThesis}{@undefined} % new LaTeX variable name
+\newcommand{\coverSupervisors}{@undefined} % new LaTeX variable name
+\newcommand{\coverExaminationCommittee}{@undefined} % new LaTeX variable name
+\newcommand{\coverChairperson}{@undefined} % new LaTeX variable name
+\newcommand{\coverSupervisor}{@undefined} % new LaTeX variable name
+\newcommand{\coverMemberCommittee}{@undefined} % new LaTeX variable name
+% > English
+\addto\captionsenglish{\renewcommand{\coverThesis}{Thesis to obtain the Master of Science Degree in}}
+\addto\captionsenglish{\renewcommand{\coverSupervisors}{Supervisors}}
+\addto\captionsenglish{\renewcommand{\coverExaminationCommittee}{Examination Committee}}
+\addto\captionsenglish{\renewcommand{\coverChairperson}{Chairperson}}
+\addto\captionsenglish{\renewcommand{\coverSupervisor}{Supervisor}}
+\addto\captionsenglish{\renewcommand{\coverMemberCommittee}{Member of the Committee}}
+% > Portuguese
+\addto\captionsportuguese{\renewcommand{\coverThesis}{Disserta\c{c}\~{a}o para obten\c{c}\~{a}o do Grau de Mestre em}}
+\addto\captionsportuguese{\renewcommand{\coverSupervisors}{Orientador(es)}}
+\addto\captionsportuguese{\renewcommand{\coverExaminationCommittee}{J\'{u}ri}}
+\addto\captionsportuguese{\renewcommand{\coverChairperson}{Presidente}}
+\addto\captionsportuguese{\renewcommand{\coverSupervisor}{Orientador}}
+\addto\captionsportuguese{\renewcommand{\coverMemberCommittee}{Vogal}}
+
+
+% ----------------------------------------------------------------------
+% Define default and cover page fonts.
+% ----------------------------------------------------------------------
+
+% Use Arial font as default
+%
+\renewcommand{\rmdefault}{phv}
+\renewcommand{\sfdefault}{phv}
+
+% Define cover page fonts
+%
+%         encoding     family       series      shape
+%  \usefont{T1}     {phv}=helvetica  {b}=bold    {n}=normal
+%                   {ptm}=times      {m}=normal  {sl}=slanted
+%                                                {it}=italic
+% see more examples at
+% http://julien.coron.free.fr/languages/latex/fonts/
+%
+\def\FontLn{% 16 pt normal
+  \usefont{T1}{phv}{m}{n}\fontsize{16pt}{16pt}\selectfont}
+\def\FontLb{% 16 pt bold
+  \usefont{T1}{phv}{b}{n}\fontsize{16pt}{16pt}\selectfont}
+\def\FontMn{% 14 pt normal
+  \usefont{T1}{phv}{m}{n}\fontsize{14pt}{14pt}\selectfont}
+\def\FontMb{% 14 pt bold
+  \usefont{T1}{phv}{b}{n}\fontsize{14pt}{14pt}\selectfont}
+\def\FontSn{% 12 pt normal
+  \usefont{T1}{phv}{m}{n}\fontsize{12pt}{12pt}\selectfont}
