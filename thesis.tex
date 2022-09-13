@@ -26,14 +26,14 @@
 % ---------------------------
 \usepackage[
   pdftex,
-  pdfauthor={Jon Doe},
-  pdftitle={Thesis Template},
-  pdfsubject={Bachelorthesis},
-  pdfkeywords={Thesis;Template;LaTeX},
+  pdfauthor={Pedro Antunes},
+  pdftitle={Linux capable RISC-V CPU for IOb-SoC},
+  pdfsubject={Master Thesis},
+  pdfkeywords={Thesis;IOb-SoC;Linux;VexRiscv},
   pdfproducer={LaTeX},
   pdfcreator={pdfLaTeX},
   pdfduplex={DuplexFlipLongEdge}, %Alt.: Simplex or DuplexFlipShortEdge 
-  pdflang={de}, % en
+  pdflang={en}, % en
   bookmarksopen,
   bookmarksnumbered,
 ]{hyperref}
@@ -56,17 +56,15 @@
 % -------------------
 % |    Titlepage    |
 % -------------------
-% \includepdf[pages=-,templatesize={145mm}{210mm},noautoscale=true,offset=-65 50]{myfile.pdf}
-\includepdf[pages={1},offset=25 -40]{chapters/deckblatt.pdf}
-% \input{chapters/titlepage} % Use latex title page
+\input{chapters/titlepage} % Use latex title page
 
 % ------------------
 % |    Abstract    |
 % ------------------
 \cleardoubleoddpage	
-\pdfbookmark[section]{Kurzfassung}{abstract} % Abstract as bookmark
+\pdfbookmark[section]{abstrato}{abstract} % Abstract as bookmark
 \input{chapters/abstract}
-\input{chapters/eid}
+\input{chapters/declaration}
 
 % ---------------------------
 % |    Table of contents    |
@@ -95,11 +93,14 @@
 % ------------------
 \mainmatter
 \setcounter{page}{1}
-\input{chapters/chapter1}
-\input{chapters/chapter2}
-\input{chapters/chapter3}
-\input{chapters/chapter4}
-\input{chapters/chapter5}
+\input{chapters/CH0_Introduction.tex}
+\input{chapters/CH1_Must_Have_Concepts.tex}
+\input{chapters/CH2_Existing_Technologies.tex}
+\input{chapters/CH3_Hardware_Developed.tex}
+\input{chapters/CH4_Software_Developed.tex}
+\input{chapters/CH5_Project_Results.tex}
+\input{chapters/CH6_Contributed_Repositories.tex}
+\input{chapters/CH7_Conclusion.tex}
 
 % ------------------
 % |    Appendix    |
