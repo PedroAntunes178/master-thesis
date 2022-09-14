@@ -81,5 +81,9 @@
         "xelatex"
         ]
     }
-    ]      
+    ],
+    "cSpell.words": [
+        "microcontroller",
+        "microcontrollers"
+    ]
 }
