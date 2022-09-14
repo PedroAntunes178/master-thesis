@@ -16,7 +16,7 @@ all:
 	pdflatex  ${FILE}
 
 clean:
-	-(rm -rf *.aux *.bbl *.blg *.glg *.glo *.gls *.ilg *.ist *.lof *.log *.lot *.nlo *.nls *.out *.toc)
+	(rm -rf *.aux *.bbl *.blg *.glg *.glo *.gls *.ilg *.ist *.lof *.log *.lot *.nlo *.nls *.out *.toc)
 
 veryclean: clean
 	rm -f *~ *.*%
