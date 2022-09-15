@@ -3,17 +3,32 @@ There already exists embedded microcontrollers capable of running Linux. Big com
 
 As an example, the \textit{Raspberry Pi 4} is a very capable and cheap board where a developer can test and implement new software running in Linux. The Raspberry CPU is an \textit{Cortex-A72}~\cite{cortex_a72} witch is a System on Chip (SoC) developed by ARM on their ARMv8 64-bit CPU architecture. But if someone wanted to use the Raspberry as a base for his costume hardware design, that would be impossible. And thus appears the need for open-source hardware that allows creating something new without having to start from scratch every time. This led to the appearance of RISC-V the open-source CPU architecture.
 
-\section{Close source RISC-V Microcontrollers}
-Since then, a few companies using RISC-V have appeared. For example, \textit{Western Digital} now uses RISC-V in its external storage disks. \textit{Microchip} as launched the first RISC-V-Based System-on-Chip (SoC) FPGA, \textit{PolarFire}. 
 
-These companies have helped pave the way for the Linux kernel to be compatible with the RISC-V architecture. But there are two companies that have contributed and boosted the RISC-V technology above all those are Andes Technology and Sifive .
+\section{Close source RISC-V Embedded Systems}
+Since then, a few companies using RISC-V have appeared. RISC-V CPUs are already present in the automotive and IoT markets, besides AI chips in data centers. Due to the RISC-V ISA royalty free license new StartUps tend to look at RISC-V CPUs as a solution for their cores. Even if the CPU Core isn't free to use it ends up being a cheaper solution.
+
+While creating new products companies proved how advantageous the RISC-V architecture was. Furthermore, they have contributed to open-source software, hardware and documentation. Some companies with a big recognitions involved with RISC-V technology are:
+
+\begin{itemize}
+    \item \textit{Western Digital} who now uses RISC-V in its external storage disks. 
+    \item \textit{Microchip} as launched the first RISC-V-Based System-on-Chip (SoC) FPGA, \textit{PolarFire}. 
+    \item \textit{Antmicro/Microsemi}~\footnote{Microchip has acquired Microsemi Corporation in May 2018.} have built a software called Renode that is used to develop, debug and test multi-node RISC-V device systems.
+    \item more???
+\end{itemize}
+
+These companies have all helped pave the way for a full-feature Operating System based on the Linux kernel to be compatible with the RISC-V architecture. However, there are two companies that have a bigger impact on RISC-V CPU design, those are Andes Technology and Sifive.
 
 \subsection{Andes Technology}
-Andes Technology is one of the founder members of the RISC-V International S. Due to its involvement with RISC-V it is one of the major contributors to the RISC-V toolchain that all RISC-V developers use.  Andes Technologies have shipped billions of embedded SoC with RISC-V processors based on AndeStar™ V5 architecture.
+Andes Technology is one of the founder members of the RISC-V International. Due to its involvement with RISC-V it is one of the major contributor (and maintainer) to the RISC-V tool-chain. The RISC-V ISA is merely an instruction set architecture, there needs to be development in complementing tools, such as compiler and development tools, that all RISC-V developers use.
 
-Nowadays Andes CPU's are applied nearly everywhere, for example in telecommunications, storage controllers, data centers, touch screen sensors, etc. Some of their products that where captivating are 
+Nowadays Andes CPU's are applied nearly everywhere, for example in telecommunications, storage controllers, data centers, touch screen sensors, etc. Andes Technologies has shipped billions of embedded SoC with RISC-V processors based on AndeStar™ V5 architecture. 
+
+Besides contributing to the tool-chain, since Andes also developed CPUs capable of running Linux they have presented numerous talks about
 
 \subsection{Sifive}
+Sifive Founder, ..., was one of the bercley students who worked on RISC-V.
+In 2017 Sifive launched \textit{'U54-MC'} witch was the first RISC-V CPU capable of running a full fledge Operating System like Linux. The SoC had a 64-bit architecture and was quad-core.
+PLIC, CLINT, MMU
 
 
 \section{Open Source Solutions}
