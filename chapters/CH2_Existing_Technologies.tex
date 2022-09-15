@@ -19,11 +19,11 @@ While creating new products companies proved how advantageous the RISC-V archite
 These companies have all helped pave the way for a full-feature Operating System based on the Linux kernel to be compatible with the RISC-V architecture. However, there are two companies that have a bigger impact on RISC-V CPU design, those are Andes Technology and Sifive.
 
 \subsection{Andes Technology}
-Andes Technology is one of the founder members of the RISC-V International. Due to its involvement with RISC-V it is one of the major contributor (and maintainer) to the RISC-V tool-chain. The RISC-V ISA is merely an instruction set architecture, there needs to be development in complementing tools, such as compiler and development tools, that all RISC-V developers use.
+Andes Technology is one of the founder members of the RISC-V International. Since it is highly involved with RISC-V it ended up being one of the major contributor (and maintainer) of the RISC-V tool-chain. This is important because the RISC-V ISA is merely an instruction set architecture, there needs to exist complementing software, such as compiler and development tools.
 
-Nowadays Andes CPU's are applied nearly everywhere, for example in telecommunications, storage controllers, data centers, touch screen sensors, etc. Andes Technologies has shipped billions of embedded SoC with RISC-V processors based on AndeStar™ V5 architecture. 
+Nowadays Andes CPU's are applied nearly everywhere, from telecommunications, storage controllers, touch screen sensors to data centers, etc. Andes Technologies has had incredible success using RISC-V technology, as prove they have shipped billions of embedded SoC with RISC-V processors based on their RISC-V ISA variant, AndeStar™ V5. 
 
-Besides contributing to the tool-chain, since Andes also developed CPUs capable of running Linux they have presented numerous talks about
+Andes CPUs witch are capable of running Linux are the \textit{A25}~\cite{a25} and \textit{AX25}~\cite{ax25}. Both support single and double precision floating point, the RISC-V P-extension (draft) DSP/SIMD ISA and an MMU (Memory Management Unit) for Linux applications. Besides that both enable the use of Machine (M), User (U) and Supervisor (S) Privilege levels that allow running Linux and other advanced operating systems with protection between kernel and user programs. Furthermore, both have L1 instruction and data cache. The difference between them is that \textit{A25} is based on 32-bit architecture and the \textit{AX25} is 64-bit. This leads to the \textit{AX25} being ideal for embedded applications that need to access address space over 4GB, and the \textit{A25} being smaller in gate count. Both CPUs can be implemented on the AE350~\cite{ae350} SoC allowing to use these CPUs on developer boards, for example in the \textit{ADP-XC7K160/410}~\cite{adp-xc7k160}.
 
 \subsection{Sifive}
 Sifive Founder, ..., was one of the bercley students who worked on RISC-V.
