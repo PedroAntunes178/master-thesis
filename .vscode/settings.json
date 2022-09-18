@@ -85,5 +85,6 @@
     "cSpell.words": [
         "microcontroller",
         "microcontrollers"
-    ]
+    ],
+    "latex-workshop.latex.autoBuild.run": "never"
 }
