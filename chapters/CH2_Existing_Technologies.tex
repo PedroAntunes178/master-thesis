@@ -29,13 +29,17 @@ SiFive is a company that was born from the RISC-V ISA. SiFive was founded by thr
 
 In 2017 SiFive launched \textit{U54}~\cite{u54} witch was the first RISC-V CPU capable of running a full fledge Operating System like Linux. With it they launched the \textit{U54-MC}~\cite{u54-mc} SoC that had four \textit{U54} 64-bit cores. Furthermore, the \textit{U54-MC} implemented the initial CLINT and PLIC unit. The development of the \acrshort{clint} and the \acrshort{plic} made by SiFive would eventually lead to the documentation and specification of the respective hardware components with witch RISC-V systems must be compliant if they proclaim to use either one. One year after, in 2018, they launched \textit{HiFive Unleashed}~\cite{hifive_unleashed} witch was the first board that implemented the \textit{U54} CPU and run a Linux OS with a desktop environment (DE). The \textit{HiFive Unleashed} has been discontinued and better hardware has been made available.
 
-SiFive has since then extended their \textit{U Cores} product lineup. All \textit{U} cores are 64-bit application processors capable of running Linux. The highest performance core is the \textit{U74}~\cite{u74}. The core architecture is RV64GBC witch means it supports the RISC-V I, M, A, F, D, B and C ISA extensions (explained in \textbf{*ref section in previous chapter*}). This CPU has already been aplied to multiple boards, for example, the \textit{BeagleV} has a \acrshort{soc} with dual core SiFive \textit{U74} CPU. SiFive as also launched its own development board, \textit{HiFive Unmatched}~\cite{hifive_unmatched}, with four \textit{U74} cores on the \textit{U74-MC}~\cite{u74-mc} SoC. Furthermore, in 2021, Canonical the developers behind Ubuntu have announced the OS support for both the HiFive Unmatched and HiFive Unleashed.
+SiFive has since then extended their \textit{U Cores} product lineup. All \textit{U} cores are 64-bit application processors capable of running Linux. The highest performance core is the \textit{U74}~\cite{u74}. The core architecture is RV64GBC witch means it supports the RISC-V I, M, A, F, D, B and C ISA extensions (explained in \textbf{*ref section in previous chapter*}). This CPU has already been applied to multiple boards, for example, the \textit{BeagleV} has a \acrshort{soc} with dual core SiFive \textit{U74} CPU. SiFive as also launched its own development board, \textit{HiFive Unmatched}~\cite{hifive_unmatched}, with four \textit{U74} cores on the \textit{U74-MC}~\cite{u74-mc} SoC. Furthermore, in 2021, Canonical the developers behind Ubuntu have announced the OS support for both the HiFive Unmatched and HiFive Unleashed.
 
 \section{Open-Source Solutions}
-Built upon the RISC-V open-source CPU architecture, various CPU designs have emerged. RISC-V CPUs are most popular in ... . Some well known CPU are ... . Those will not be discussed here sice they do not meet the requirements to run the Linux Kernel. To run a Linux based Operating System, for example, the ... would have to ... .
+Built upon the RISC-V open-source \acrlong{isa}, various CPU designs have emerged. Some of them are fully open-source and might be implemented in other projects. Those CPUs were mostly developed by Universities research groups or by individuals with a grant. 
 
-\subsection{PULP Platform}
-\textit{CVA6}~\cite{zaruba2019cost} \textit{OpenPiton}~\cite{Balkind:2016:OOS:2872362.2872414}
+RISC-V CPUs are most popular in simple systems. Consequently there exists a widely variety of open-source CPUs witch are implemented on multiple embedded microcontrollers. A few examples of those \acrshort{cpu}s would be the PicoRV32~\cite{picorv32}, NEORV32~\cite{neorv32}, DarkRISCV~\cite{darkriscv} and Ibex~\cite{ibex} from lowRISC. Those will not be discussed in detail on this paper since they do not meet the requirements to run the Linux Kernel. Those \acrshort{cpu}s generali support \acrfull{machine} level privilege mode and some also support \acrfull{supervisor} mode. Moreover, none of the given examples support the Atomic RISC-V \acrshort{isa} extension. This extension is essential to run Linux.
+
+To run a Linux based Operating System it an application processor is needed. This means that the processor should have the required \acrfull{csr}, support \acrshort{machine}+\acrshort{supervisor}+\acrshort{user} privilege modes and support atomic instructions. An open-source solution would be either the \textit{CVA6}~\cite{zaruba2019cost} (previously known as Ariane), (\textit{BOOM}~\cite{zhaosonicboom}) or VexRiscv~\cite{vexriscv} from SpinalHDL.
+
+\subsection{\textit{CVA6}}
+ \textit{OpenPiton}~\cite{Balkind:2016:OOS:2872362.2872414}
 
 \subsection{The Berkeley Out-of-Order RISC-V Processor}
 The Berkeley Out-of-Order RISC-V Processor (\textit{BOOM}~\cite{zhaosonicboom}) ... 
@@ -50,7 +54,7 @@ Talk about litex-vexriscv!
     \centering
     \resizebox{\textwidth}{!}{%
     \begin{tabular}{cccccccccc}
-        & ARM                             & \multicolumn{2}{c}{Andes Technology}                      & \multicolumn{2}{c}{SiFive}                                & PULP plataform                 & UC Berkeley                 & \multicolumn{2}{c}{SpinalHDL}                                 \\ \cline{2-10} 
+        & ARM                             & \multicolumn{2}{c}{Andes Technology}                      & \multicolumn{2}{c}{SiFive}                                & PULP platform                 & UC Berkeley                 & \multicolumn{2}{c}{SpinalHDL}                                 \\ \cline{2-10} 
 \multicolumn{1}{c|}{}                                                                   & \multicolumn{1}{c|}{Cortex-A72} & \multicolumn{1}{c|}{A25}    & \multicolumn{1}{c|}{AX25}   & \multicolumn{1}{c|}{U54}    & \multicolumn{1}{c|}{U74}    & \multicolumn{1}{c|}{CVA6}      & \multicolumn{1}{c|}{BOOM}   & \multicolumn{1}{c|}{VexRiscv} & \multicolumn{1}{c|}{NaxRiscv} \\ \hline
 \multicolumn{1}{|c|}{\begin{tabular}[c]{@{}c@{}}Architecture\\ bit widths\end{tabular}} & \multicolumn{1}{c|}{64-bit}     & \multicolumn{1}{c|}{32-bit} & \multicolumn{1}{c|}{64-bit} & \multicolumn{1}{c|}{64-bit} & \multicolumn{1}{c|}{64-bit} & \multicolumn{1}{c|}{32/64-bit} & \multicolumn{1}{c|}{64-bit} & \multicolumn{1}{c|}{32-bit}   & \multicolumn{1}{c|}{64-bit}   \\ \hline
 \multicolumn{1}{|c|}{MMU}                                                               & \multicolumn{1}{c|}{Y}          & \multicolumn{1}{c|}{Y}      & \multicolumn{1}{c|}{Y}      & \multicolumn{1}{c|}{Y}      & \multicolumn{1}{c|}{Y}      & \multicolumn{1}{c|}{Y}         & \multicolumn{1}{c|}{Y}      & \multicolumn{1}{c|}{Y}        & \multicolumn{1}{c|}{Y}        \\ \hline
@@ -63,6 +67,6 @@ Talk about litex-vexriscv!
 \multicolumn{1}{|c|}{Open-Source}                                                       & \multicolumn{1}{c|}{X}          & \multicolumn{1}{c|}{X}      & \multicolumn{1}{c|}{X}      & \multicolumn{1}{c|}{X}      & \multicolumn{1}{c|}{X}      & \multicolumn{1}{c|}{Y}         & \multicolumn{1}{c|}{Y}      & \multicolumn{1}{c|}{Y}        & \multicolumn{1}{c|}{Y}        \\ \hline
 \end{tabular}%
     }
-    \caption{CPU comparation table}
-    \label{tab:cpu_comparation}
+    \caption{CPU comparison table}
+    \label{tab:cpu_comparison}
 \end{table}
