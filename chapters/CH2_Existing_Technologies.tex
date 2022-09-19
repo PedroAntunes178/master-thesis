@@ -34,21 +34,37 @@ SiFive has since then extended their \textit{U Cores} product lineup. All \texti
 \section{Open-Source Solutions}
 Built upon the RISC-V open-source \acrlong{isa}, various CPU designs have emerged. Some of them are fully open-source and might be implemented in other projects. Those CPUs were mostly developed by Universities research groups or by individuals with a grant. 
 
-RISC-V CPUs are most popular in simple systems. Consequently there exists a widely variety of open-source CPUs witch are implemented on multiple embedded microcontrollers. A few examples of those \acrshort{cpu}s would be the PicoRV32~\cite{picorv32}, NEORV32~\cite{neorv32}, DarkRISCV~\cite{darkriscv} and Ibex~\cite{ibex} from lowRISC. Those will not be discussed in detail on this paper since they do not meet the requirements to run the Linux Kernel. Those \acrshort{cpu}s generali support \acrfull{machine} level privilege mode and some also support \acrfull{supervisor} mode. Moreover, none of the given examples support the Atomic RISC-V \acrshort{isa} extension. This extension is essential to run Linux.
+RISC-V CPUs are most popular in simple systems. Consequently there exists a widely variety of open-source CPUs witch are implemented on multiple embedded microcontrollers. A few examples of those \acrshort{cpu}s would be the \textit{PicoRV32}~\cite{picorv32}, \textit{NEORV32}~\cite{neorv32}, \textit{DarkRISCV}~\cite{darkriscv} and \textit{Ibex}~\cite{ibex} from lowRISC. Those will not be discussed in detail on this paper since they do not meet the requirements to run the Linux Kernel. Those \acrshort{cpu}s generali support \acrfull{machine} level privilege mode and some also support \acrfull{supervisor} mode. Moreover, none of the given examples support the Atomic RISC-V \acrshort{isa} extension. This extension is essential to run Linux.
 
-To run a Linux based Operating System it an application processor is needed. This means that the processor should have the required \acrfull{csr}, support \acrshort{machine}+\acrshort{supervisor}+\acrshort{user} privilege modes and support atomic instructions. An open-source solution would be either the \textit{CVA6}~\cite{zaruba2019cost} (previously known as Ariane), (\textit{BOOM}~\cite{zhaosonicboom}) or VexRiscv~\cite{vexriscv} from SpinalHDL.
+To run a Linux based Operating System it an application processor is needed. This means that the processor should have the required \acrfull{csr}, support \acrshort{machine}+\acrshort{supervisor}+\acrshort{user} privilege modes and support atomic instructions. An open-source solution would be either the \textit{CVA6}~\cite{zaruba2019cost} (previously known as Ariane), (\textit{BOOM}~\cite{zhaosonicboom}) or \textit{VexRiscv}~\cite{vexriscv} from SpinalHDL.
 
 \subsection{\textit{CVA6}}
- \textit{OpenPiton}~\cite{Balkind:2016:OOS:2872362.2872414}
+The CVA6 (previously named Ariane~\cite{zaruba2019cost} is a 6-stage, single issue, in-order CPU which can execute the 64-bit RISC-V instruction set, with support for the I, M, A and C extensions. It is illustrated in figure \ref{fig:cva6_design} that was obtained from: \url{https://github.com/openhwgroup/cva6/}. Recent development work has been made for the CVA6 to support RV32IMAC. It supports any operating system based on Unix since it also implements the three needed privilege levels M, S and U. The core is written in SystemVerilog, and its micro-architecture is designed to reduce the critical path length. The CVA6, just like the BOOM processor, makes it difficult to separate the cache from the processing unit. However, since it is written in SystemVerilog, it is easier for someone knowledgeable in the classic Verilog and VHDL languages to understand and create a customized CPU based on the CVA6 if needed.
+
+\begin{figure}[!h]
+    \centering
+    \includegraphics[width=0.7\linewidth]{cva6_design.png}
+    \caption{CVA6 core design architecture}
+    \label{fig:cva6_design}
+\end{figure}
+
+\textit{OpenPiton}~\cite{Balkind:2016:OOS:2872362.2872414}
 
 \subsection{The Berkeley Out-of-Order RISC-V Processor}
-The Berkeley Out-of-Order RISC-V Processor (\textit{BOOM}~\cite{zhaosonicboom}) ... 
+The Berkeley Out-of-Order RISC-V Processor (\textit{BOOM}~\cite{zhaosonicboom}) is a superscalar \acrfull{ooo} processor executing the RV64GC variant of the RISC-V ISA. It is written on an unconventional Chisel Hardware Description Language (HDL). BOOM is optimized to run on ASICs, although it is also usable on FPGAs. Its priority is to be a high performance, synthesizable, and parametrizable core for architecture research. The current release, named "SonicBOOM", is the fastest core in Instructions per Cycle (IPC) from the publicly available open-source RISC-V cores.
+
+BOOM is a 10-stage CPU with the following stages: Fetch, Decode, Register Rename, Dispatch, Issue, Register Read, Execute, Memory, Writeback, and Commit. However, in most practical implementations, many of those stages are merged, generating seven stages altogether: Fetch, Decode/Rename, Rename/Dispatch, Issue/Register Read, Execute, Memory and Writeback. Since committing happens asynchronously, it is not counted as part of the “pipeline”. Although this CPU has good performance, it has a limited customization options. The load-store unit is optimized for the superscalar out-of-order architecture, and the data cache is organized into two dual-ported banks. At the front end, it is possible to customize the banked L1I cache, the TLB, and the decode stage. It is difficult or impossible to remove the cache from the core design and use the IOb-Cache instead.
+
 rocket-chip from CHIPS Alliance 
 
 \subsection{SpinalHDL}
+The \textit{VexRiscv}~\cite{vexriscv} CPU is a 32-bit Linux Capable RISC-V CPU written in the Spinal HDL. The hardware description of this CPU is accomplished by utilizing a software-oriented approach. VexRiscv is an in-order CPU with five pipeline stages. Many CPU plugins are optional, which add many functionalities to build a custom RISC-V CPU. The architecture design approach in this processor is entirely unconventional, but it has its benefits: there are remarkably few fixed hardware components; Parts of the CPU can be swapped, turned on and turned off via the plugin system; without modifying any of the CPU sources, it is possible to add new functionalities/instructions easily; It permits the CPU arrangement to cover a significantly large spectrum of implementations, allowing the construction of an entirely parametrized CPU design. When the CPU is configured without plugins, it only includes the description of the five pipeline stages and their basic functionalities and nothing else. Everything else needs to be added to the CPU via plugins, including the program counter.
+
 VexRiscv and NaxRiscv
 Talk about litex-vexriscv!
 
+
+\section{Overall CPU comparison}
 
 \begin{table}[!ht]
     \centering
