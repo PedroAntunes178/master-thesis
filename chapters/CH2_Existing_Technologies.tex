@@ -1,4 +1,4 @@
-\chapter{Existing Technologies}
+\chapter{Existing Embedded Technologies}
 There already exists embedded microcontrollers capable of running Linux. Big companies as for example ARM, Qualcomm, MediaTek, Intel and AMD have created microcontroller capable of running Linux. But the processor architecture of those microcontrollers is not open-source, much less the microcontroller itself. 
 
 As an example, the \textit{Raspberry Pi 4} is a very capable and cheap board where a developer can test and implement new software running in Linux. The Raspberry \acrshort{cpu} is an \textit{Cortex-A72}~\cite{cortex_a72} witch is a System on Chip (SoC) developed by ARM on their ARMv8 64-bit CPU architecture. But if someone wanted to use the Raspberry as a base for his costume hardware design, that would be impossible. And thus appears the need for open-source hardware that allows creating something new without having to start from scratch every time. This led to the appearance of RISC-V the open-source CPU architecture.
@@ -36,7 +36,7 @@ Built upon the RISC-V open-source \acrlong{isa}, various CPU designs have emerge
 
 RISC-V CPUs are most popular in embedded systems and IoT devices. Consequently there exists a widely variety of open-source CPUs witch are implemented on multiple embedded microcontrollers. A few examples of those \acrshort{cpu}s would be the \textit{PicoRV32}~\cite{picorv32}, \textit{NEORV32}~\cite{neorv32}, \textit{DarkRISCV}~\cite{darkriscv} and \textit{Ibex}~\cite{ibex} from lowRISC. But those will not be discussed in detail on this paper since they do not meet the requirements to run the Linux Kernel. This \acrshort{cpu}s either only support \acrfull{machine} level privilege mode or support \acrfull{machine}+\acrfull{supervisor} mode. Moreover, none of the given examples support the Atomic RISC-V \acrshort{isa} extension. This extension is essential to run Linux. Since the kernel explicitly executes instructions from the Atomic extension. 
 
-To run a Linux based Operating System an application processor is needed. This means that the processor should have the required \acrfull{csr}, support \acrshort{machine}+\acrshort{supervisor}+\acrshort{user} privilege modes and support atomic instructions. An open-source solution would be either the \textit{CVA6}~\cite{zaruba2019cost} (previously known as Ariane), \textit{BOOM}~\cite{zhaosonicboom} or \textit{VexRiscv}~\cite{vexriscv} from SpinalHDL.
+To run a Linux based Operating System an application processor is needed. A \acrshort{cpu} is considered an application processor if it has the hardware required to run a full-feature \acrfull{os} and user applications. This means that the processor should have the required \acrfull{csr}, support \acrshort{machine}+\acrshort{supervisor}+\acrshort{user} privilege modes and support atomic instructions. An open-source solution would be either the \textit{CVA6}~\cite{zaruba2019cost} (previously known as Ariane), \textit{BOOM}~\cite{zhaosonicboom} or \textit{VexRiscv}~\cite{vexriscv} from SpinalHDL.
 
 \subsection{\textit{CVA6}}
 The CVA6 is a 6-stage, single issue, in-order CPU which can execute either the 32-bit or 64-bit RISC-V instruction set. CVA6 has support for the I, M, A and C RISC-V \acrshort{isa} extensions. The original design was initiated in a research group by a Phd student at ETH Zurich (where they called the core Ariane). Since then the development and maintenance of CVA6 was incorporated in the \textit{OpenHW Group} as part of their CORE-V processor lineup. The support for RV32IMAC was developed more recently by Thales, and was also made open-source. The \acrshort{cpu} design is illustrated in figure \ref{fig:cva6_design} that was obtained from: \url{https://github.com/openhwgroup/cva6/}.
@@ -69,8 +69,11 @@ Talk about litex-vexriscv!
 
 
 \section{Overall CPU comparison}
+In table \ref*{tab:cpu_comparison} we can see a comparison of the \acrshort{cpu}s that were presented in the previous sections, capable of running a full-feature \acrfull{os}. All of the CPUs on the table are considered an application processor. It can be observed that every CPU has a \acrfull{mmu} and they all support \acrshort{user}+\acrshort{supervisor}+\acrshort{machine} privilege mode. Furthermore, all of the \acrshort{cpu}s hardware design have L1 Instruction Cache and L1 Data cache system integrated. This happens because to support atomic instructions it is easier to have direct access to the L1 Cache.
 
-\begin{table}[!ht]
+GNU/Linux is the combinations of GNU with the Linux kernel. The GNU Project developed a large parte of the software that forms a complete \acrfull{os}. Many “Linux” distributions make use of that software, a few examples would be \textit{Debian}, \textit{Ubuntu}, \textit{openSUSE}, \textit{Fedora}, and the list could go on. So a processor that supports the GNU/Linux feature is a CPU that is capable of running a distribution like \textit{Ubuntu} or \textit{Debian}. From the table we can see that 32-bit RISC-V \acrshort{cpu}s are the only ones not capable of running either \textit{Ubuntu} or \textit{Debian}.
+
+\begin{table}[!h]
     \centering
     \resizebox{\textwidth}{!}{%
     \begin{tabular}{cccccccccc}
@@ -82,11 +85,11 @@ Talk about litex-vexriscv!
 \multicolumn{1}{|c|}{\begin{tabular}[c]{@{}c@{}}16-bit \\ instructions\end{tabular}}    & \multicolumn{1}{c|}{X}          & \multicolumn{1}{c|}{Y}      & \multicolumn{1}{c|}{Y}      & \multicolumn{1}{c|}{Y}      & \multicolumn{1}{c|}{Y}      & \multicolumn{1}{c|}{Y}         & \multicolumn{1}{c|}{Y}      & \multicolumn{1}{c|}{Y}        & \multicolumn{1}{c|}{X}        \\ \hline
 \multicolumn{1}{|c|}{Cache L1(I+D)}                                                     & \multicolumn{1}{c|}{Y}          & \multicolumn{1}{c|}{Y}      & \multicolumn{1}{c|}{Y}      & \multicolumn{1}{c|}{Y}      & \multicolumn{1}{c|}{Y}      & \multicolumn{1}{c|}{Y}         & \multicolumn{1}{c|}{Y}      & \multicolumn{1}{c|}{Y}        & \multicolumn{1}{c|}{Y}        \\ \hline
 \multicolumn{1}{|c|}{\begin{tabular}[c]{@{}c@{}}Interrupt \\ Controller\end{tabular}}   & \multicolumn{1}{c|}{X}          & \multicolumn{1}{c|}{Y}      & \multicolumn{1}{c|}{Y}      & \multicolumn{1}{c|}{Y}      & \multicolumn{1}{c|}{Y}      & \multicolumn{1}{c|}{X}         & \multicolumn{1}{c|}{X}      & \multicolumn{1}{c|}{X}        & \multicolumn{1}{c|}{X}        \\ \hline
-\multicolumn{1}{|c|}{S+U+M Mode}                                                        & \multicolumn{1}{c|}{N/A}        & \multicolumn{1}{c|}{Y}      & \multicolumn{1}{c|}{Y}      & \multicolumn{1}{c|}{Y}      & \multicolumn{1}{c|}{Y}      & \multicolumn{1}{c|}{Y}         & \multicolumn{1}{c|}{Y}      & \multicolumn{1}{c|}{Y}        & \multicolumn{1}{c|}{Y}        \\ \hline
+\multicolumn{1}{|c|}{\acrshort{user}+\acrshort{supervisor}+\acrshort{machine} Mode}                                                        & \multicolumn{1}{c|}{N/A}        & \multicolumn{1}{c|}{Y}      & \multicolumn{1}{c|}{Y}      & \multicolumn{1}{c|}{Y}      & \multicolumn{1}{c|}{Y}      & \multicolumn{1}{c|}{Y}         & \multicolumn{1}{c|}{Y}      & \multicolumn{1}{c|}{Y}        & \multicolumn{1}{c|}{Y}        \\ \hline
 \multicolumn{1}{|c|}{GNU/Linux}                                                         & \multicolumn{1}{c|}{Y}          & \multicolumn{1}{c|}{X}      & \multicolumn{1}{c|}{Y}      & \multicolumn{1}{c|}{Y}      & \multicolumn{1}{c|}{Y}      & \multicolumn{1}{c|}{Y}         & \multicolumn{1}{c|}{Y}      & \multicolumn{1}{c|}{X}        & \multicolumn{1}{c|}{Y}        \\ \hline
 \multicolumn{1}{|c|}{Open-Source}                                                       & \multicolumn{1}{c|}{X}          & \multicolumn{1}{c|}{X}      & \multicolumn{1}{c|}{X}      & \multicolumn{1}{c|}{X}      & \multicolumn{1}{c|}{X}      & \multicolumn{1}{c|}{Y}         & \multicolumn{1}{c|}{Y}      & \multicolumn{1}{c|}{Y}        & \multicolumn{1}{c|}{Y}        \\ \hline
 \end{tabular}%
     }
-    \caption{CPU comparison table}
+    \caption{CPU comparison table: Y means the CPU supports the feature; X means the CPU does not supports the feature; N/A means the feature is no applicable to the respective CPU.}
     \label{tab:cpu_comparison}
 \end{table}
