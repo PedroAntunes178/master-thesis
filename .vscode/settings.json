@@ -84,7 +84,8 @@
     ],
     "cSpell.words": [
         "microcontroller",
-        "microcontrollers"
+        "microcontrollers",
+        "verilog"
     ],
     "latex-workshop.latex.autoBuild.run": "never"
 }
