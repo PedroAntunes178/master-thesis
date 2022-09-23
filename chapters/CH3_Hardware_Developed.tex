@@ -17,7 +17,15 @@ Comparing figure \ref{fig:bd_linux} with the original design of \textit{IOb-SoC}
 During this project there was also an improvement on the \textit{IOb-SoC} verification. This lead to the creation of a top hardware module for the developed \acrlong{soc}.
 
 \section{Central Processing Unit}
-The \acrshort{cpu} chosen to use in this project was \textit{VexRiscv}. \textit{VexRiscv} could be configured in various ways
+The \acrshort{cpu} chosen to use in this project was \textit{VexRiscv}. The performance of the CPU is not a significant issue for this project. However, how the core was designed and developed highly influenced the CPU decision. The flexibility of the CPU design, meaning how easily the CPU can be adapted to take advantage of the other components in \textit{IOb-SoC}, is an essential factor. Since the hardware and software developed in this project are open-source, the CPU implemented had to be open-source hardware. Finally, knowing that the \textit{IOb-SoC} signals are 32-bit wide, ideally, the selected CPU should support RV32IMAC to facilitate its integration with IOb-SoC. From the \acrshort{cpu}s studied in chapter \ref{chapter:existing_embedded_technologies} \textit{VexRiscv} looked like the more indicated.
+
+Generating the \acrshort{rtl} \textit{verilog} file from the \textit{SpinalHDL} hardware description is very simple. After cloning the \textit{VexRiscv} github repository the developer only has to run a simple command. Has it can be seen bellow in listing \ref{lst:rtl_vexriscv}. On the \textit{VexRiscv} repository there exist a couple of demo \acrshort{cpu} configurations. The configurations can be directly used or configured to generate a custom \textit{VexRiscv} core. There even already exists a demo configuration to generate a Linux compatible core. Although, in the developed hardware a custom core was implemented, the linux demo configuration was used as a starting point. Unfortunately, the Linux Demo design is outdated and the instructions, commented on the hardware configuration file, to run a Linux simulation and test the core do not work.
+
+\begin{lstlisting}[language=make, caption={Generate \textit{verilog} from \textit{SpinalHDL}}, label=lst:rtl_vexriscv] 
+git clone git@github.com:SpinalHDL/VexRiscv.git && \
+  cd VexRiscv && sbt "runMain vexriscv.demo.LinuxGen"
+\end{lstlisting}
+
 \subsection{VexRiscv Wrapper}
 
 \section{UART16550 Wrapper}
@@ -30,7 +38,7 @@ The approach taken in this project was to adapt an existing open-source UART cor
 \acrshort{plic} 
 
 \section{UUT Top Hardware}
-This top module creates a verilog wrapper of the \acrfull{uut} that allows it to interact with the different hardware logic simulators. The top module file is an adaptation of the previous verilog file used on icarus simulation.
+This top module creates a \textit{verilog} wrapper of the \acrfull{uut} that allows it to interact with the different hardware logic simulators. The top module file is an adaptation of the previous \textit{verilog} file used on icarus simulation.
 
 \begin{figure}[!ht]
     \centering
