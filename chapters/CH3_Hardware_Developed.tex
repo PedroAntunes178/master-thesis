@@ -54,9 +54,13 @@ The final \textit{VexRiscv} core configuration file contained the needed plugins
 After generating the verilog file that describes a \textit{VexRiscv} core I had to create a wrapper hardware module that adapted the \textit{VexRiscv} core interface to the \textit{IOb-SoC} internal bus.
 
 \subsection{VexRiscv Wrapper}
-cena de ter de usar registos 
+The verilog wrapper, witch is called the \textit{iob_vexriscv}, instantiates the \textit{VexRiscv} core verilog module and is instantiated by the \textit{IOb-SoC} top \acrshort{soc} hardware module as the \acrshort{cpu} component. The \textit{iob_vexriscv} hardware module is coupled with the \textit{IOb-SoC} through the signals ... receives ... and outputs. To the \textit{VexRiscv} core the \textit{iob_vexriscv} is linked through separated instruction bus, data bus signals ... The interface between the rest of the \textit{IOb-SoC} hardware and the \textit{VexRiscv} core is created by establishing a connection linking the signals from both sides.
+
+cena de ter de usar registos para nao mudar os enderecos enviados para o iob-soc
 
 In order to successfully make the handshake with the \textit{VexRiscv} core an instruction and data request ready signal had to be generated.
+
+To finalize, when defined that the firmware has to run from the external memory (RUN_EXTMEM=1) the first instruction fetch should always be at address $0x80000000$. To achieve this the \acrfull{msb} has to be forced to '1'. In the verilog wra
 
 \section{UART16550 Wrapper}
 The approach taken in this project was to adapt an existing open-source UART core that is supported by the Linux kernel. The other option was to create a Linux driver compatible with \textit{iob-UART} and compile the kernel with it. The chosen approach seamed more adequate and simpler solution.
