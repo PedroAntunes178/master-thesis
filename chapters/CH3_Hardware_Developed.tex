@@ -54,6 +54,9 @@ The final \textit{VexRiscv} core configuration file contained the needed plugins
 After generating the verilog file that describes a \textit{VexRiscv} core I had to create a wrapper hardware module that adapted the \textit{VexRiscv} core interface to the \textit{IOb-SoC} internal bus.
 
 \subsection{VexRiscv Wrapper}
+cena de ter de usar registos 
+
+In order to successfully make the handshake with the \textit{VexRiscv} core an instruction and data request ready signal had to be generated.
 
 \section{UART16550 Wrapper}
 The approach taken in this project was to adapt an existing open-source UART core that is supported by the Linux kernel. The other option was to create a Linux driver compatible with \textit{iob-UART} and compile the kernel with it. The chosen approach seamed more adequate and simpler solution.
