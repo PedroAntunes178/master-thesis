@@ -14,7 +14,12 @@ During this chapter, we're going to discuss topics that help understand the tech
 \subsection{Adding peripherals}
 \subsection{Internal Buses}
 \subsection{\textit{iob-split} and \textit{iob-merge}}
-The \textbf{\textit{iob-split}} is simply a configurable \acrfull{demux}. Meaning that when the \textit{iob-split} hardware module is instantiated the developer can configure it. The developer is able to change the size of the \acrlong{demux} and the selection bits, through N\_SLAVES and P\_SLAVES respectively. N\_SLAVES corresponds to the number of slaves, witch can also be seen as the number of the \acrshort{demux} outputs. P\_SLAVES indicates the slave select word \acrfull{msb} position, in other words it is the position of the \acrshort{msb} of the \acrlong{demux} selection bits. The number of the selection bits is given by $log_2(N\_SLAVES)+(log_2(N\_SLAVES)==0)$.
+The \textbf{\textit{iob-split}} is simply a configurable \acrfull{demux}. Meaning that when the \textit{iob-split} hardware module is instantiated the developer can configure it. The developer is able to change the size of the \acrlong{demux} and the selection bits, through N\_SLAVES and P\_SLAVES respectively. N\_SLAVES corresponds to the number of slaves, witch can also be seen as the number of the \acrshort{demux} outputs. P\_SLAVES indicates the slave select word \acrfull{msb} position, in other words it is the position of the \acrshort{msb} of the \acrlong{demux} selection bits. The number of the selection bits is given by equation \ref{eq:number_bits}.
+
+\begin{equation}
+    \label{eq:number_bits}
+    Nb = log_2(N\_SLAVES)+(log_2(N\_SLAVES)==0)
+\end{equation}
 
 The \textbf{\textit{iob-merge}} works similar to the \textit{iob-split} but instead of being a \acrshort{demux} it is a configurable \acrfull{mux}. Meaning that instead of having multiple outputs and one input it has multiple inputs and one output. The number of inputs is indicated by N\_SLAVES and the selection bits are chosen by P\_SLAVES.
 
@@ -36,7 +41,14 @@ As such, it is easier to use \textit{'IVerilog'} to detect errors on the design,
 https://www.sifive.com/blog/risc-v-qemu-part-1-privileged-isa-hifive1-virtio
 
 \section{RISC-V architecture}
+Talk about the 32 registers in the register file
+
+The instruction each ISA extension contains...
+
+\acrfull{csr} needed to run a full feature OS...
+
 The RISC-V \textbf{CLINT} is described
+
 The RISC-V \textbf{PLIC} was first described in the privilege instructions documentation, but since version 1.10 it was moved to its own document.
 
 \section{The Linux Boot Flow}
