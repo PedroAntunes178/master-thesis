@@ -106,8 +106,13 @@ The second problem was that after accepting an instruction or data request the v
 
 To finalize, when the stage 0 bootloader was running the \acrfull{msb} of the instruction fetched address had to be forced to '0'. When defined that the firmware had to run from the external memory (RUN\_EXTMEM=1) the first instruction fetch should be at address $0x80000000$. To achieve this requirements the \acrfull{msb}, when RUN\_EXTMEM=1 was defined has the negated value of the boot signal, when RUN\_EXTMEM=0 it was forced to always be '0' since there is no need to access the external memory. On the data request bus it should also be taken into account that the \acrshort{msb} had to be '0' when the \acrshort{cpu} wanted to access the peripherals.
 
-\section{UART16550 Wrapper}
-The approach taken in this project was to adapt an existing open-source UART core that is supported by the Linux kernel. The other option was to create a Linux driver compatible with \textit{iob-UART} and compile the kernel with it. The chosen approach seamed more adequate and simpler solution.
+\section{\textit{UART 16550}}
+The approach taken in this project was to adapt an existing open-source \acrfull{uart} core that is supported by the Linux kernel. The other option was to create a Linux driver compatible with \textit{iob-UART} and compile the kernel with it. The chosen approach seamed more adequate and simpler solution.
+
+In the RISC-V Platform Specification \cite{riscv_platform_specification} it is defined that every embedded \acrfull{os} should have the UART port implementation is required to be register-compatible with the industry standard \textit{UART 16550}.
+
+\subsection{\textit{UART 16550} Wrapper}
+
 
 \section{CLINT Unit}
 \acrshort{clint}
