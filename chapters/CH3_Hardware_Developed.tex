@@ -48,19 +48,63 @@ The final \textit{VexRiscv} core configuration file contained the needed plugins
   \item The \enquote{BranchPlugin} allows the core to execute and make decisions on the jump instructions. This is part of the base \acrfull{isa}
   \item The \enquote{MmuPlugin} added support for the \acrfull{mmu}. Which is required to run a full feature \acrshort{os}.
   \item The \enquote{FpuPlugin} can add support for both the floats and doubles instruction extensions. In the core used this plugin was deactivated, since to run a minimal \acrshort{os} there is little to no advantage of using this extension. Causing the FPU to only be additional unnecessary hardware logic.
-  \item The \enquote{YamlPlugin} offers a service to other plugins to generate a useful Yaml file describing the CPU configuration. % It needs to be there for some reason. I donno.
+  %\item The \enquote{YamlPlugin} offers a service to other plugins to generate a useful Yaml file describing the CPU configuration. % It needs to be there for some reason. I donno.
 \end{itemize}
 
 After generating the verilog file that describes a \textit{VexRiscv} core I had to create a wrapper hardware module that adapted the \textit{VexRiscv} core interface to the \textit{IOb-SoC} internal bus.
 
 \subsection{VexRiscv Wrapper}
-The verilog wrapper, witch is called the \textit{iob_vexriscv}, instantiates the \textit{VexRiscv} core verilog module and is instantiated by the \textit{IOb-SoC} top \acrshort{soc} hardware module as the \acrshort{cpu} component. The \textit{iob_vexriscv} hardware module is coupled with the \textit{IOb-SoC} through the signals ... receives ... and outputs. To the \textit{VexRiscv} core the \textit{iob_vexriscv} is linked through separated instruction bus, data bus signals ... The interface between the rest of the \textit{IOb-SoC} hardware and the \textit{VexRiscv} core is created by establishing a connection linking the signals from both sides.
+The verilog wrapper, witch is called \textit{iob\_VexRiscv}, is instantiated by the \textit{IOb-SoC} top \acrshort{soc} hardware module as the \acrshort{cpu} component and instantiates the \textit{VexRiscv} core verilog module. The interface between the \textit{IOb-SoC} hardware and the \textit{VexRiscv} core is created by establishing a connection between the inputs and outputs from both sides.
 
-cena de ter de usar registos para nao mudar os enderecos enviados para o iob-soc
+The input signals of \textit{iob\_vexriscv} are: the clock signal which is the system clock derivative from the development board where the \acrshort{soc} is implemented; the reset signal which is set to high ('1') when the system reboots and when the stage 0 bootloader finishes; the boot signal that has the value '1' while the stage 0 bootloader is executing, after it finishes the boot signal value drops to '0' at the same time the reset signal is set to high; the instruction bus response signal that is connected to \enquote{cpu\_i\_resp}; the data bus response signal that is connected to \enquote{cpu\_d\_resp}; the timer interrupt and software interrupt signals which are set to '1' or '0' by the \acrshort{clint} unit; the external interrupt signal which is controlled by the \acrshort{plic} unit. The output signals are the instruction bus request signal and the data bus request signal, which connect to the \enquote{cpu\_i\_req} and \enquote{cpu\_d\_req} respectably. The \enquote{cpu\_i\_resp}, \enquote{cpu\_d\_resp}, \enquote{cpu\_i\_req} and \enquote{cpu\_d\_req} signals were reviewed in section \ref{section:the_iob_soc_template}. 
 
-In order to successfully make the handshake with the \textit{VexRiscv} core an instruction and data request ready signal had to be generated.
+The input signals of the \textit{VexRiscv} core are: .... The output signals of the \textit{VexRiscv} core are: ....
 
-To finalize, when defined that the firmware has to run from the external memory (RUN_EXTMEM=1) the first instruction fetch should always be at address $0x80000000$. To achieve this the \acrfull{msb} has to be forced to '1'. In the verilog wra
+After understanding the inputs and outputs of each module it is easy to see which wire should be connected to each other. But after connecting all the wires there were two problems. The fist being that the \textit{IOb-SoC} internal bus did not   contain all the signals that were needed by the \textit{VexRiscv} core. In order to successfully make the handshake with the \textit{VexRiscv} core an instruction and data request ready signal had to be generated. .... \textbf{How was it generated?}
+
+\begin{table}[!h]
+  \centering
+  \begin{tabular}{ccc|c}
+  valid\_reg & valid & resp\_ready & req\_ready \\ \hline
+  0          & 0     & 0           & 0          \\
+  0          & 0     & 1           & N/A        \\
+  0          & 1     & 0           & 1          \\
+  0          & 1     & 1           & N/A        \\
+  1          & 0     & 0           & 0          \\
+  1          & 0     & 1           & 1          \\
+  1          & 1     & 0           & 0          \\
+  1          & 1     & 1           & 1         
+  \end{tabular}
+  \caption{First try at identifying the rules the req\_ready should follow.}
+  \label{tab:first_truth_table}
+\end{table}
+
+\begin{equation}
+  (valid\_reg \cdot resp\_ready) + (valid \cdot \overline{valid\_reg} \cdot \overline{resp\_ready})
+  \label{eq:first_logic_eq}
+\end{equation}
+
+\begin{table}[!ht]
+  \centering
+  \begin{tabular}{cc|c}
+  valid\_reg & resp\_ready & req\_ready \\ \hline
+  0          & 0           & 1          \\
+  0          & 1           & N/A        \\
+  1          & 0           & 0          \\
+  1          & 1           & 1         
+  \end{tabular}
+  \caption{Simplified truth table.}
+  \label{tab:simple_truth_table}
+\end{table}
+
+\begin{equation}
+  (valid_reg \cdot resp_ready) + (\overline{valid_reg} \cdot \overline{resp_ready}) = valid_reg \odot resp_ready
+  \label{eq:simple_logic_eq}
+\end{equation}
+
+The second problem was that after accepting an instruction or data request the values of the address, data and strb signals could change inside the \textit{VexRiscv} core. This changes would pass through \textit{iob\_VexRiscv} and reflect in the rest of \textit{IOb-SoC} hardware. Which caused the \textit{iob-cache} and peripherals to not function currently. This problem was solved by creating registers that saved the value of the address, data and strb signals when the request was accepted. The register values would then only change when the response was already received. 
+
+To finalize, when the stage 0 bootloader was running the \acrfull{msb} of the instruction fetched address had to be forced to '0'. When defined that the firmware had to run from the external memory (RUN\_EXTMEM=1) the first instruction fetch should be at address $0x80000000$. To achieve this requirements the \acrfull{msb}, when RUN\_EXTMEM=1 was defined has the negated value of the boot signal, when RUN\_EXTMEM=0 it was forced to always be '0' since there is no need to access the external memory. On the data request bus it should also be taken into account that the \acrshort{msb} had to be '0' when the \acrshort{cpu} wanted to access the peripherals.
 
 \section{UART16550 Wrapper}
 The approach taken in this project was to adapt an existing open-source UART core that is supported by the Linux kernel. The other option was to create a Linux driver compatible with \textit{iob-UART} and compile the kernel with it. The chosen approach seamed more adequate and simpler solution.

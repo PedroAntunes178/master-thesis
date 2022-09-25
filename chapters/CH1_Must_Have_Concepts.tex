@@ -13,6 +13,8 @@ During this chapter, we're going to discuss topics that help understand the tech
 
 \subsection{Adding peripherals}
 \subsection{Internal Buses}
+Review the \enquote{cpu\_i\_resp}, \enquote{cpu\_d\_resp}, \enquote{cpu\_i\_req} and \enquote{cpu\_d\_req} signals.
+
 \subsection{\textit{iob-split} and \textit{iob-merge}}
 The \textbf{\textit{iob-split}} is simply a configurable \acrfull{demux}. Meaning that when the \textit{iob-split} hardware module is instantiated the developer can configure it. The developer is able to change the size of the \acrlong{demux} and the selection bits, through N\_SLAVES and P\_SLAVES respectively. N\_SLAVES corresponds to the number of slaves, witch can also be seen as the number of the \acrshort{demux} outputs. P\_SLAVES indicates the slave select word \acrfull{msb} position, in other words it is the position of the \acrshort{msb} of the \acrlong{demux} selection bits. The number of the selection bits is given by equation \ref{eq:number_bits}.
 
@@ -22,6 +24,8 @@ The \textbf{\textit{iob-split}} is simply a configurable \acrfull{demux}. Meanin
 \end{equation}
 
 The \textbf{\textit{iob-merge}} works similar to the \textit{iob-split} but instead of being a \acrshort{demux} it is a configurable \acrfull{mux}. Meaning that instead of having multiple outputs and one input it has multiple inputs and one output. The number of inputs is indicated by N\_SLAVES and the selection bits are chosen by P\_SLAVES.
+
+\subsection{Bootloader and bare-metal firmware}
 
 \section{Open Source Verification tools}
 For testing purposes, it is important to have a good hardware simulation environment. For that, we take advantage of already existing and well-developed tools. There exist a number of simulation tools, most of them are proprietary, as for example \textit{'xcelium'} from \textit{'Candence'}. Its utilization can increase the cost of a project significantly. In this Thesis we will make an effort of using open-source, free to use, verification tools. In specific, we will take advantage of \textit{'Icarus Verilog'} and \textit{'Verilator'}. Although both tools are for verification, they serve different purposes, due to their characteristics.
