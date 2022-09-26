@@ -109,10 +109,12 @@ To finalize, when the stage 0 bootloader was running the \acrfull{msb} of the in
 \section{\textit{UART 16550}}
 The approach taken in this project was to adapt an existing open-source \acrfull{uart} core that is supported by the Linux kernel. The other option was to create a Linux driver compatible with \textit{iob-UART} and compile the kernel with it. The chosen approach seamed more adequate and simpler solution.
 
-In the RISC-V Platform Specification \cite{riscv_platform_specification} it is defined that every embedded \acrfull{os} should have the UART port implementation is required to be register-compatible with the industry standard \textit{UART 16550}.
+In the RISC-V Platform Specification \cite{riscv_platform_specification} it is defined that every embedded \acrfull{os} is required to have a \acrshort{uart} port implementation that is register-compatible with the industry standard \textit{UART 16550}, which was studied in chapter \ref{section:uart16550}. The \textit{UART 16550} already exists for a long time, it was released by \textit{National Semiconductor} in 1987, and is present and supported by a large number of software and hardware. The \textit{UART 16550} is often used connected to an RS-232 interface and in this project the development boards used are connected through RS-232 to the computer.
+
+Since the developed chip is supposed to be open-source the \acrshort{uart} core should also be open-source hardware. The core used was a \textit{\acrshort{uart}16550}\cite{gorban2002uart} that has been made available by \textit{freecores} on \textit{github}. This \acrshort{uart} was written in verilog, although it was a older version of verilog it is still synthesizable by modern tools and easy to understand. The \textit{UART16550} core used implements a wishbone interface to interact with the \acrfull{soc}. Similarly to what was done with the CPU I had to create a wrapper to adapt the core to the \textit{IOb-SoC}.
 
 \subsection{\textit{UART 16550} Wrapper}
-
+The whishbones
 
 \section{CLINT Unit}
 \acrshort{clint}
