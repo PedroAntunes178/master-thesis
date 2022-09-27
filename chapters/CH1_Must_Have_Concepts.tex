@@ -44,16 +44,22 @@ As such, it is easier to use \textit{'IVerilog'} to detect errors on the design,
 \subsection{Qemu Simulation}
 https://www.sifive.com/blog/risc-v-qemu-part-1-privileged-isa-hifive1-virtio
 
-\section{RISC-V architecture}
+\section{RISC-V}
 Talk about the 32 registers in the register file
 
 The instruction each ISA extension contains...
 
 \acrfull{csr} needed to run a full feature OS...
 
-The RISC-V \textbf{CLINT} is described
+The RISC-V \textbf{CLINT} is described ...
+Platform must support an ACLINT MTIME counter resolution of 100ns or less (corresponding to a clock tick frequency of at least 10 MHz).
 
 The RISC-V \textbf{PLIC} was first described in the privilege instructions documentation, but since version 1.10 it was moved to its own document.
+
+\section{RISC-V UART/Serial Console}
+In the RISC-V Platform Specification~\cite{riscv_platform_specification} it is defined that every embedded \acrfull{os} is required to have a \acrshort{uart} port implementation that is register-compatible with the industry standard \textit{UART 16550}, which was studied in chapter~\ref{section:uart16550}. The \textit{UART 16550} already exists for a long time, it was released by \textit{National Semiconductor} in 1987, and is present and supported by a large number of software and hardware. The \textit{UART 16550} is often used connected to an RS-232 interface and in this project the development boards used are connected through RS-232 to the computer.
+
+The \textit{UART 16550} registers are...
 
 \section{The Linux Boot Flow}
 \subsection{Bootloader firmware}
