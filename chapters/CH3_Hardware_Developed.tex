@@ -109,10 +109,55 @@ To finalize, when the stage 0 bootloader was running the \acrfull{msb} of the in
 \section{\textit{UART 16550}}
 The approach taken in this project was to adapt an existing open-source \acrfull{uart} core that is supported by the Linux kernel. The other option was to create a Linux driver compatible with \textit{iob-UART} and compile the kernel with it. The chosen approach seamed more adequate and a simpler solution.
 
-Since the developed chip is supposed to be open-source the \acrshort{uart} core should also be open-source hardware. The core used was a \textit{\acrshort{uart}16550}\cite{gorban2002uart} that has been made available by \textit{freecores} on \textit{github}. This \acrshort{uart} was written in verilog, although it was a older version of verilog it is still synthesizable by modern tools and easy to understand. The \textit{UART16550} core used implements a wishbone interface to interact with the \acrfull{soc}. Similarly to what was done with the CPU I had to create a wrapper to adapt the core to the \textit{IOb-SoC}.
+Since the developed chip is supposed to be open-source the \acrshort{uart} core should also be open-source hardware. The core used was a \textit{\acrshort{uart}16550}~\cite{gorban2002uart} that has been made available by \textit{freecores} on \textit{github}. This \acrshort{uart} was written in verilog, although it was a older version of verilog it is still synthesizable by modern tools and easy to understand. The \textit{UART16550} core used implements a wishbone interface to interact with the \acrfull{soc}. Similarly to what was done with the CPU I had to create a wrapper to adapt the core to the \textit{IOb-SoC}.
 
 \subsection{\textit{UART 16550} Wrapper}
-The whishbones
+The whishbone interface is established in the top hardware module from the used \textit{UART16550} core. In the .....
+
+\begin{table}[!ht]
+  \centering
+  \begin{tabular}{|l|l|l|l|}
+  \hline
+  \textbf{Port} & \textbf{Width} & \textbf{Direction} & \textbf{Description}          \\ \hline
+  CLK           & 1              & Input              & Block’s clock input           \\ \hline
+  WB\_RST\_I    & 1              & Input              & Asynchronous Reset            \\ \hline
+  WB\_ADDR\_I   & 5 or 3         & Input              & Used for register selection   \\ \hline
+  WB\_SEL\_I    & 4              & Input              & Select signal                 \\ \hline
+  WB\_DAT\_I    & 32 or 8        & Input              & Data input                    \\ \hline
+  WB\_DAT\_O    & 32 or 8        & Output             & Data output                   \\ \hline
+  WB\_WE\_I     & 1              & Input              & Write or read cycle selection \\ \hline
+  WB\_STB\_I    & 1              & Input              & Specifies transfer cycle      \\ \hline
+  WB\_CYC\_I    & 1              & Input              & A bus cycle is in progress    \\ \hline
+  WB\_ACK\_O    & 1              & Output             & Acknowledge of a transfer     \\ \hline
+  \end{tabular}
+  \caption{WISHBONE interface signals.}
+  \label{tab:uart16550_wishbone}
+\end{table}
+
+The interface between the IOb-SoC and the \textit{UART16550} top module is established by the verilog module that acts as a \textit{UART16550} wrapper. The wrapper module is called \enquote{iob\_uart16550}. .... Furthermore, the \textit{UART16550} interrupt output pin is connected to the \acrshort{soc} \enquote{uartInterrupt} that will be passed to the PLIC unit.
+
+\begin{table}[!ht]
+  \centering
+  \begin{tabular}{|l|l|l|}
+  \hline
+  \textbf{Wishbone} & \textbf{IOb-UART16550}                  & \textbf{IOb-SoC}                         \\ \hline
+  CLK               & clk                                     & clk                                      \\ \hline
+  WB\_RST\_I        & rst                                     & reset                                    \\ \hline
+  WB\_ADDR\_I       & address{[}`UART\_ADDR\_WIDTH-1:0{]}     & slaves\_req{[}`address(`UART16550,32){]} \\ \hline
+  WB\_SEL\_I        & 1\textless{}\textless{}address{[}1:0{]} & N/A                                      \\ \hline
+  WB\_DAT\_I        & wdata                                   & slaves\_req{[}`wdata(`UART16550){]}      \\ \hline
+  WB\_DAT\_O        & rdata                                   & slaves\_resp{[}`rdata(`UART16550){]}     \\ \hline
+  WB\_WE\_I         & | wstrb                                 & N/A                                      \\ \hline
+  WB\_STB\_I        & valid\&($\sim$ready)                    & N/A                                      \\ \hline
+  WB\_CYC\_I        & valid                                   & slaves\_req{[}`valid(`UART16550){]}      \\ \hline
+  WB\_ACK\_O        & ready                                   & slaves\_resp{[}`ready(`UART16550){]}     \\ \hline
+  \end{tabular}
+  \caption{\textit{UART16550} interface with \textit{IOb-SoC}.}
+  \label{tab:wishbone_iob_soc}
+\end{table}
+
+The \enquote{iob\_uart16550} also has to pass the interface between the \textit{UART16550} core and the RS232 connector. THat is why it implements the: txd output to transmit data through serial; the rxd input to receive data thought serial; the cts input which indicates that the destination is ready to receive a transmission sent by the UART;
+the rts output which indicates that the UART is ready to receive a transmission from the sender.
 
 \section{CLINT Unit}
 \acrshort{clint}
