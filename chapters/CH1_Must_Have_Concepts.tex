@@ -14,6 +14,23 @@ During this chapter, we're going to discuss topics that help understand the tech
 \subsection{Adding peripherals}
 \subsection{Internal Buses}
 Review the \enquote{cpu\_i\_resp}, \enquote{cpu\_d\_resp}, \enquote{cpu\_i\_req} and \enquote{cpu\_d\_req} signals.
+%define WSTRB_W `WSTRB_W_(DATA_W)
+%define WRITE_W `WRITE_W_(DATA_W)
+%define READ_W  `READ_W_(DATA_W)
+%define WDATA_P `WDATA_P_(DATA_W)
+%define ADDR_P  `ADDR_P_(DATA_W)
+%define VALID_P `VALID_P_(ADDR_W, DATA_W)
+%define REQ_W  `REQ_W_(ADDR_W, DATA_W)
+%define RESP_W `RESP_W_(DATA_W)
+%define req(I)       `req_(I, ADDR_W, DATA_W)
+%define resp(I)      `resp_(I, DATA_W)
+%define valid(I)     `valid_(I, ADDR_W, DATA_W)
+%define address(I,W) `address_(I, W, ADDR_W, DATA_W)
+%define wdata(I)     `wdata_(I, ADDR_W, DATA_W)
+%define wstrb(I)     `wstrb_(I, ADDR_W, DATA_W)
+%define write(I)     `write_(I, ADDR_W, DATA_W)
+%define rdata(I)     `rdata_(I, DATA_W)
+%define ready(I)     `ready_(I, DATA_W)
 
 \subsection{\textit{iob-split} and \textit{iob-merge}}
 The \textbf{\textit{iob-split}} is simply a configurable \acrfull{demux}. Meaning that when the \textit{iob-split} hardware module is instantiated the developer can configure it. The developer is able to change the size of the \acrlong{demux} and the selection bits, through N\_SLAVES and P\_SLAVES respectively. N\_SLAVES corresponds to the number of slaves, witch can also be seen as the number of the \acrshort{demux} outputs. P\_SLAVES indicates the slave select word \acrfull{msb} position, in other words it is the position of the \acrshort{msb} of the \acrlong{demux} selection bits. The number of the selection bits is given by equation \ref{eq:number_bits}.
