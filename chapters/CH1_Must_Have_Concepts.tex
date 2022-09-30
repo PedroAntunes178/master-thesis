@@ -1,4 +1,5 @@
 \chapter{Must Have Concepts}
+\label{chapter:must_have_concepts}
 During this chapter, we're going to discuss topics that help understand the technology developments made along the thesis project.
 
 \section{The IOb-SoC Template}
@@ -45,6 +46,7 @@ The \textbf{\textit{iob-merge}} works similar to the \textit{iob-split} but inst
 \subsection{Bootloader and bare-metal firmware}
 
 \section{Open Source Verification tools}
+\label{section:verification_tools}
 For testing purposes, it is important to have a good hardware simulation environment. For that, we take advantage of already existing and well-developed tools. There exist a number of simulation tools, most of them are proprietary, as for example \textit{'xcelium'} from \textit{'Candence'}. Its utilization can increase the cost of a project significantly. In this Thesis we will make an effort of using open-source, free to use, verification tools. In specific, we will take advantage of \textit{'Icarus Verilog'} and \textit{'Verilator'}. Although both tools are for verification, they serve different purposes, due to their characteristics.
 
 \begin{itemize}
@@ -62,6 +64,7 @@ As such, it is easier to use \textit{'IVerilog'} to detect errors on the design,
 https://www.sifive.com/blog/risc-v-qemu-part-1-privileged-isa-hifive1-virtio
 
 \section{RISC-V}
+\label{section:riscv}
 Talk about the 32 registers in the register file
 
 The instruction each ISA extension contains...
@@ -74,11 +77,13 @@ Platform must support an ACLINT MTIME counter resolution of 100ns or less (corre
 The RISC-V \textbf{PLIC} was first described in the privilege instructions documentation, but since version 1.10 it was moved to its own document.
 
 \section{RISC-V UART/Serial Console}
+\label{section:serial_console}
 In the RISC-V Platform Specification~\cite{riscv_platform_specification} it is defined that every embedded \acrfull{os} is required to have a \acrshort{uart} port implementation that is register-compatible with the industry standard \textit{UART 16550}, which was studied in chapter~\ref{section:uart16550}. The \textit{UART 16550} already exists for a long time, it was released by \textit{National Semiconductor} in 1987, and is present and supported by a large number of software and hardware. The \textit{UART 16550} is often used connected to an RS-232 interface and in this project the development boards used are connected through RS-232 to the computer.
 
 The \textit{UART 16550} registers are...
 
 \section{The Linux Boot Flow}
+\label{section:linux_boot_flow}
 \subsection{Bootloader firmware}
 \subsection{What is a device tree?}
 

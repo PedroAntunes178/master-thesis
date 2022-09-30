@@ -6,6 +6,7 @@ As an example, the \textit{Raspberry Pi 4} is a very capable and cheap board whe
 
 
 \section{Closed source RISC-V Embedded Systems}
+\label{section:closed_source}
 Since then, a few companies using RISC-V have appeared. RISC-V CPUs are already present in the automotive and IoT markets, besides AI chips in data centers. Due to the RISC-V ISA royalty free license new StartUps tend to look at RISC-V CPUs as a solution for their cores. Even if the CPU Core isn't free to use it ends up being a cheaper solution.
 
 While creating new products companies proved how advantageous the RISC-V architecture was. Furthermore, they have contributed to open-source software, hardware and documentation. Some companies with a big recognitions involved with RISC-V technology are:
@@ -33,6 +34,7 @@ In 2017 SiFive launched \textit{U54}~\cite{u54} witch was the first RISC-V CPU c
 SiFive has since then extended their \textit{U Cores} product lineup. All \textit{U} cores are 64-bit application processors capable of running Linux. The highest performance core is the \textit{U74}~\cite{u74}. The core architecture is RV64GBC witch means it supports the RISC-V I, M, A, F, D, B and C ISA extensions (explained in \textbf{*ref section 2.3.x*}). This CPU has already been applied to multiple boards, for example, the \textit{BeagleV} has a \acrshort{soc} with dual core SiFive \textit{U74} CPU. SiFive as also launched its own development board, \textit{HiFive Unmatched}~\cite{hifive_unmatched}, with four \textit{U74} cores on the \textit{U74-MC}~\cite{u74-mc} SoC. Furthermore, in 2021, Canonical the developers behind Ubuntu have announced the OS support for both the HiFive Unmatched and HiFive Unleashed.
 
 \section{Open-Source Solutions}
+\label{section:open_source_solutions}
 Built upon the RISC-V open-source \acrlong{isa}, various CPU designs have emerged. Some of them are fully open-source and might be implemented in other projects. Those CPUs were mostly developed by Universities research groups or by individuals with a grant. 
 
 RISC-V CPUs are most popular in embedded systems and IoT devices. Consequently there exists a widely variety of open-source CPUs witch are implemented on multiple embedded microcontrollers. A few examples of those \acrshort{cpu}s would be the \textit{PicoRV32}~\cite{picorv32}, \textit{NEORV32}~\cite{neorv32}, \textit{DarkRISCV}~\cite{darkriscv} and \textit{Ibex}~\cite{ibex} from lowRISC. But those will not be discussed in detail on this paper since they do not meet the requirements to run the Linux Kernel. This \acrshort{cpu}s either only support \acrfull{machine} level privilege mode or support \acrfull{machine}+\acrfull{supervisor} mode. Moreover, none of the given examples support the Atomic RISC-V \acrshort{isa} extension. This extension is essential to run Linux. Since the kernel explicitly executes instructions from the Atomic extension. 
@@ -73,6 +75,7 @@ Recently the developer behind \textit{SpinalHDL} has also made public the \texti
 
 
 \section{Overall CPU comparison}
+\label{section:cpu_comparison}
 In table \ref*{tab:cpu_comparison} we can see a comparison of the \acrshort{cpu}s that were presented in the previous sections, capable of running a full-feature \acrfull{os}. All of the CPUs on the table are considered an application processor. It can be observed that every CPU has a \acrfull{mmu} and they all support \acrshort{user}+\acrshort{supervisor}+\acrshort{machine} privilege mode. Furthermore, all of the \acrshort{cpu}s hardware design have L1 Instruction Cache and L1 Data cache system integrated. This happens because to support atomic instructions it is easier to have direct access to the L1 Cache.
 
 \textit{GNU/Linux} is the combinations of \textit{GNU} with the Linux kernel. The GNU Project developed a large parte of the software that forms a complete \acrfull{os}. Many \enquote{Linux} distributions make use of that software, a few examples would be \textit{Debian}, \textit{Ubuntu}, \textit{openSUSE}, \textit{Fedora}, and the list could go on. So a processor that supports the GNU/Linux feature is a CPU that is capable of running a distribution like \textit{Ubuntu} or \textit{Debian}. From the table we can see that 32-bit RISC-V \acrshort{cpu}s are the only ones not capable of running a \textit{GNU/Linux} \acrfull{os}.
