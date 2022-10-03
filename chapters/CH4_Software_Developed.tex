@@ -18,6 +18,12 @@ The way the code is structured is very similar to how it was on the \textit{C} \
 
 The FRX and the FTX bytes are specific to the \textit{IOb-SoC} platform software. This could cause a problem when using external software that does not attribute the same meaning to their respective values. To solve this problem a meaning for the \acrlong{dc1} (\acrshort{dc1} = 11, \acrshort{ascii} value in hexadecimal) byte was created. When receiving a \acrshort{dc1} byte the \textit{Console} deactivates all platform specific meanings for the respective bytes. This means that after receiving a \acrshort{dc1} byte stops associating the value 0x07, 0x08, 0x11 to FTX, FRX and \acrshort{dc1} respectively.
 
+An example of how to call the \textit{Console} to communicate with the simulation and send the firmware to the \textit{IOb-SoC} when it starts would be \ref{lst:call_console}. The \enquote{\&} at the end means that the \textit{Console} program is going to run in the background. Allowing to run other programs while the \textit{Console} executes.
+
+\begin{lstlisting}[language=make, caption={Call \textit{Console} program}, label=lst:call_console]
+    CONSOLE_CMD=$(CONSOLE_DIRECTORY)/console -L -f &
+\end{lstlisting}
+
 \section{\textit{IOb-SoC} Simulation}
 \label{section:simulation}
 In order to support the new \textit{Console} simulation mode a new \textit{IOb-SoC} verification mechanism had to be developed. Verification is one an important topic when developing hardware. A correct and precise verification saves time since the hardware does not have to be synthesized and flashed to an FPGA every time an SoC designer wants to test a new feature.
@@ -43,6 +49,8 @@ The top module file is an adaptation of the previous \textit{verilog} file used 
 
 \section{IOb-SoC Linux OS integration}
 \label{section:linux_os_integration}
+Talk about the noncannonical.py
+
 \subsection{Bootloaders}
 IOb-SoC Linux Stage 0 Bootloader
 
