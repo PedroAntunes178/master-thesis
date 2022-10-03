@@ -1,13 +1,33 @@
 \chapter{Software Developed}
+\label{chapter:software_developed}
+Along the development of the hardware logic components there was software developed. Some of the software developed was not mandatory to get a full-fledged \acrlong{os} to work with the \acrlong{soc} developed. The complementary software was developed because it facilitates the project development. Furthermore, the additional software allows the \textit{IOb-SoC} platform to support more features.
 
-\section{Python Console}
+In this chapter the software developed will be analyzed. Some of the software, for example the new \textit{Python} \textit{Console} and the new simulation system were already implemented on the upstream \textit{IOb-SoC} template. This software is already being used by other developers. Moreover it has been improved by the \textit{IObundle} developers using it.
 
-\section{Verilator Testbench}
+\section{\textit{Python} \textit{Console}}
+\label{section:pyhton_console}
+The \textit{Console} is a program that runs on the user computer and communicates with the board where the \textit{IOb-SoC} is implemented using an \textit{RS-232} connection. Initially the \textit{IOb-SoC} had a \textit{Console} written in \textit{C} programming language. One of the first tasks developed was the translation of the \textit{Console} program to \textit{Python}.
+
+The \textit{C} \textit{Console} makes use of a set of functions on a independent file that were written to read/write to the serial port. The \textit{Python} program uses the \textit{PySerial} library, which provides ready-made communication functions like those in the original \textit{C} code. Using \textit{PySerial} is better because the community regularly maintains and updates \textit{PySerial}. \textit{PySerial} provides additional features, is less prone to have bugs, and the communication is more trustworthy comparing with the \textit{C} functions.
+
+One of the reasons to translate the \textit{Console} program was to integrate an existing Ethernet controller already written in \textit{Python}. \textit{Python} can easily exploit feature like files, sockets and other \acrfull{os} functionalities.
+
+The \textit{Python} \textit{Console} program can be used in two different modes: locally working with simulators, or communicating with a board running \textit{IOb-SoC}. The program mode can be choose when calling the \textit{Console} through adding \enquote{-L} or \enquote{--local} to the invoking arguments. This is an alteration to the original \textit{Console} program. The \textit{C} \textit{Console} could only works with the \acrshort{fpga} board. When the \textit{Console} is run in board mode a physical implementation of \textit{IOb-SoC} runs on the board and communicates with \textit{Console} through a \textit{RS-232} serial connection. If the \textit{Console} is called with the \enquote{-L} or \enquote{--local} augment it will communicate with the simulator. The communication with the hardware simulation is identical to the one with the board. They exchange the same messages. When communicating with the simulator the \textit{Console} uses files to send and receive data from the \textit{IOb-SoC} hardware simulation. The \textit{Console} program when stating creates two empty files in the simulation directory. The \enquote{cnsl2soc} is used to send messages from the \textit{Console} to the \acrshort{soc}. The \enquote{soc2cnsl} is used by the \textit{Console} to receive messages from the \acrshort{soc}. Both files only contain one byte at a time. The fact if the files are empty or not is used to synchronize the simulation with the \textit{Console}. After reading from one of the files the simulation or the \textit{Console} program has to empty the respective file.
+
+The way the code is structured is very similar to how it was on the \textit{C} \textit{Console} program. It starts by defining the parameters that influence messages identifiers and serial communication (for example, the number of bits per byte, the parity and the number of stop bits). When the program enters its primary function, it starts a loop where it waits for an available byte to read, either from the serial port or the file, depending on the mode the \textit{Console} was called. After receiving the byte from the \acrshort{soc}, it computes what type of message it is. The program exits successfully if the byte received is an \acrlong{eot} (\acrshort{eot} = 04, \acrshort{ascii} value in hexadecimal). If the byte received is an \acrlong{enq} (\acrshort{enq} = 05, \acrshort{ascii} value in hexadecimal), the program checks if it was the first time it received an enquiry. If it was, it could have one of either behavior: if the program was called with an argument equivalent to \enquote{-f}, meaning that there is a firmware that should be uploaded to the \textit{IOb-SoC}, the \textit{Console} sends a \textit{Send a file request} message (FRX = 08, value in hexadecimal) to the \textit{IOb-SoC}; if there is not a firmware file to send then the \textit{Console} responds to the \textit{IOb-SoC} with an \acrlong{ack} (\acrshort{ack} = 06, \acrshort{ascii} value in hexadecimal). If the \textit{Console} receives a Receive a file request message (FTX = 07, value in hexadecimal), it will run a function that will receive any file sent from the \textit{IOb-SoC} to the computer and save it under the directory where it is running. If the \textit{Console} receives a \textit{Send a file request} message, it will run a function that will send any file requested from the \textit{IOb-SoC} to it. Any other byte received will be printed onto the stdout.
+
+The FRX and the FTX bytes are specific to the \textit{IOb-SoC} platform software. This could cause a problem when using external software that does not attribute the same meaning to their respective values. To solve this problem a meaning for the \acrlong{dc1} (\acrshort{dc1} = 11, \acrshort{ascii} value in hexadecimal) byte was created. When receiving a \acrshort{dc1} byte the \textit{Console} deactivates all platform specific meanings for the respective bytes. This means that after receiving a \acrshort{dc1} byte stops associating the value 0x07, 0x08, 0x11 to FTX, FRX and \acrshort{dc1} respectively.
+
+\section{\textit{IOb-SoC} Simulation}
+\label{section:simulation}
+In order to support the new \textit{Console} simulation mode a new \textit{IOb-SoC} verification mechanism had to be developed. Verification is one an important topic when developing hardware. A correct and precise verification saves time since the hardware does not have to be synthesized and flashed to an FPGA every time an SoC designer wants to test a new feature.
+
+The original simulation \textbf{How it worked}... One advantage of the new simulation is that it uses mostly the same \textit{Console} program has when the \textit{IOb-SoC} in implemented in a \acrshort{fpga}.
+
 \subsection{UUT Top Hardware module}
-\label{section:uut}
 This top module creates a \textit{verilog} wrapper of the \acrfull{uut} that allows it to interact with the different hardware logic simulators. Even tho this is written harddware logic it is never implemented as real hardware. This module is only used in simulation as software.
 
-The top module file is an adaptation of the previous \textit{verilog} file used on the Icarus simulation. Previously, the verilog top file would interact directly with the console. Similarly to the new hardware top module an \acrshort{uart} module is instantiated and a serial connection with the \textit{IOb-SoC} is simulated. Although in this project the \textit{IOb-UART} in the \acrfull{soc} was swapped for the \textit{UART16550} in the 
+The top module file is an adaptation of the previous \textit{verilog} file used on the Icarus simulation. Previously, the verilog top file would interact directly with the \textit{Console}. Similarly to the new hardware top module an \acrshort{uart} module is instantiated and a serial connection with the \textit{IOb-SoC} is simulated. Although in this project the \textit{IOb-UART} in the \acrfull{soc} was swapped for the \textit{UART16550} in the 
 
 \begin{figure}[!ht]
     \centering
@@ -16,14 +36,22 @@ The top module file is an adaptation of the previous \textit{verilog} file used 
     \label{fig:uut_top_hw}
 \end{figure}
 
+\subsection{Verilator Testbench}
+
 \section{Barebones Interrupt Routine}
+\label{section:barebones_interrupt_routine}
 
-\section{IOb-SoC Linux Stage 0 Bootloader}
+\section{IOb-SoC Linux OS integration}
+\label{section:linux_os_integration}
+\subsection{Bootloaders}
+IOb-SoC Linux Stage 0 Bootloader
 
-\section{IOb-SoC on OpenSBI}
+OpenSBI
 
-\section{IOb-SoC Device Tree}
+\subsection{Device Tree}
 
-\section{IOb-SoC Linux \textit{'rootfs'}}
+\subsection{Linux kernel}
+
+\subsection{Root File system}
 
 \section{Makefiles}
