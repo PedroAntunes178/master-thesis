@@ -2,8 +2,11 @@
 \label{chapter:must_have_concepts}
 During this chapter, we're going to discuss topics that help understand the technology developments made along the thesis project.
 
-\section{The IOb-SoC Template}
+\section{The \textit{IOb-SoC} template}
 \label{section:the_iob_soc_template}
+The \textit{IOb-SoC}~\cite{iob_soc_repo} is a System-on-Chip (SoC) template that eases the creation of a new SoC. The \textit{IOb-SoC} provides a base Verilog hardware design equipped with an open-source RISC-V processor, an internal SRAM memory subsystem, a UART, and an optional interface to external memory. If the external memory interface is selected, an instruction L1 cache, a data L1 cache and a shared L2 cache are added. The L2 cache communicates with a third party memory controller IP (typically a DDR controller) using an AXI4 master bus. Users can add IP cores and software to build their own SoCs quickly. This way, hardware accelerators can be easily created and tested with the developed firmware.
+
+In figure \ref{fig:bd_original} it is represented a sketch of the \acrshort{soc} design. This design is valid at the start of this project. During the hardware developed chapter \ref{chapter:hardware_developed} some alterations were made to the \textit{IOb-SoC} original template.
 
 \begin{figure}[!h]
     \centering
@@ -11,6 +14,8 @@ During this chapter, we're going to discuss topics that help understand the tech
     \caption{\textit{IOb-SoC} sketch.}
     \label{fig:bd_original}
 \end{figure}
+
+Building a new processor-based system from scratch can be difficult. \textit{IOb-SoC} has been created to facilitate this process. In this work, a variant of the existing \textit{IOb-SoC} capable of running a Linux Operating System is developed. \textit{IOb-SoC} currently supports three FPGA board models: the Xilinx Kintex UltraScale KU040 Development Board, the Basys 3 Artix-7 FPGA Trainer Board and the Cyclone V GT FPGA Development Kit.
 
 \subsection{Adding peripherals}
 \subsection{Internal Buses}
