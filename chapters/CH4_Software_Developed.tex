@@ -28,7 +28,7 @@ An example of how to call the \textit{Console} to communicate with the simulatio
 \label{section:simulation}
 In order to support the new \textit{Console} simulation mode a new \textit{IOb-SoC} verification mechanism had to be developed. Verification is one an important topic when developing hardware. A correct and precise verification saves time since the hardware does not have to be synthesized and flashed to an FPGA every time an SoC designer wants to test a new feature.
 
-The original simulation \textbf{How it worked}... One advantage of the new simulation is that it uses mostly the same \textit{Console} program has when the \textit{IOb-SoC} in implemented in a \acrshort{fpga}.
+The original simulation \textbf{How it worked}... The responses given to the \textit{IOb-SoC} were performed with a emulation of the \textit{Console} program written in Verilog. Every time the \textit{Console} was updated, the simulation \textit{Console} also had to be updated. Hence, the idea was to create a testbench that allowed the simulator to interact with the \textit{Console} program. The new simulation now has the advantage of mostly using the same \textit{Console} program as when the \textit{IOb-SoC} is implemented in a \acrshort{fpga}.
 
 \subsection{UUT Top Hardware module}
 This top module creates a \textit{verilog} wrapper of the \acrfull{uut} that allows it to interact with the different hardware logic simulators. Even tho this is written harddware logic it is never implemented as real hardware. This module is only used in simulation as software.
