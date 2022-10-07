@@ -59,7 +59,7 @@ To generate a time related interrupt the software has to write to the \enquote{M
     #define MTIME_BASE 0xbff8
     #define FREQ 100000000
     void set_up_mtip(time_sec){
-        int aux_value = 0;
+        long long aux_value = 0; // 64-bit integer
         int core_id = 0;
         aux_value = *(MTIME_BASE+8*core_id)
         aux_value = aux_value + time_sec*FREQ;
@@ -93,8 +93,22 @@ One of the software interrupt usage is to synchronize various cores in a system.
 After enabling an interrupt the \acrshort{clint} sends a hardware notification. The interrupts notification has to be handled by the rest of the hardware. The \acrshort{clint} testbench and the bare-metal firmware handle the interrupts notification differently.
 
 \subsection{CLINT simulation}
+To test the \acrshort{clint} hardware unit a simulation testbench was built in Verilog and another in C++ programming language. This allows to test the correctness of the hardware component without connecting it to the rest of the \acrshort{soc}.
+
+Both the testbench in Verilog and the testbench in C++ had similar behaviors. First whey would set up a timer interrupt. The timer interrupt was set to trigger in $0.2*10^{-6}$ seconds. Taking into account the simulation is slow this was a reasonable time. After the timer interrupt is triggered the simulation receives its notification and proceeds to handle the interrupt. When receiving a timer interrupt the simulation sets up the software interrupt. In the next clock cycle the testbench is notified of an existing software interrupt. It then proceeds to disable the timer and the software interrupt. To disable the timer interrupt the \enquote{MTIMECMP} register has to be set to its maximum value, which is 0xFFFFFFFFFFFFFFFF (i.e. all 64 bits are '1'). To disable the software interrupt the \enquote{MSIP} register had to be set to 0.
+
+If the interrupts work correctly there will a message in the terminal indicating their correctness. After testing that both interrupts work as expected the testbench can finish successfully. The simulation will always end $1*10^{-6}$ seconds after starting.
 
 \subsection{Bare-metal firmware}
+Once the \acrshort{clint} unit was developed it had to be tested while integrated in the \acrshort{soc}. Even tho it was known that the \acrshort{clint} generated the interrupts through the simulation testbench. To test the \acrshort{clint} in the \acrshort{soc} firmware that took advantage of the timer and/or software interrupts had to be developed. 
+
+Since the \acrshort{clint} hardware developed is compatible with RISC-V, any firmware compatible with RISC-V that took advantage of interrupts should work. With this in mind the open-source bare-metal firmware made available by \textit{Five EmbedDev}~\cite{bare_metal_int}, an embedded RISC-V blog, would be taken advantage of. The firmware could not all be used directly in \textit{IOb-SoC}. Some functions that interact with the timer in the \acrshort{clint} were adapted to the developed hardware and used. Furthermore, a file that implemented functions that read/write to the \acrlong{csr} is used as a library. 
+
+The developed firmware.c, similarly to the original \textit{IOb-SoC} firmware, starts by initializing the \acrshort{uart} and the \acrshort{clint} hardware. Then it will disable all global interrupts. To disable the global interrupts the \enquote{mstatus} \acrshort{csr}, \enquote{mie} \acrshort{csr} and the \enquote{mcause} \acrshort{csr} are cleared. After the timer interrupt is set similarly to the code in \ref{lst:set_up_mtip}. When an interrupt occurs the program counter has to jump to a specific function. The memory address of that function is saved in the \enquote{mtvec} \acrshort{csr}. Succeeding the timer interrupt set up, the respective interrupt bit can be set to '1' (i.e. enable the timer interrupt) in the \enquote{mie} \acrshort{csr}. Following this the global interrupts can be enabled again by setting the needed bits in \enquote{mstatus} \acrshort{csr} to '1'. the bits that need to be set to '1' are the ones corresponding to the machine interrupts (MSTATUS\_MIE\_BIT\_MASK). Finally, the program can wait for an interrupt to happen with the \enquote{wfi} instruction.
+
+When an interrupt occurs the interrupt handler function is called. The interrupt handler will read what was the reason the interrupt was generated from the \enquote{mcause} \acrshort{csr}. After knowing the cause the interrupt handler will act accordingly to how it was programed. In the developed firmware it informs the user that a timer interrupt occurred and it sets the \enquote{MTIMECMP} register to a higher number. The developed firmware finishes after receiving the first interrupt.
+
+It is important to note that besides the firmware.c some alterations had to be made in the \textit{IOb-SoC} firmware.S file. In the firmware.S the global pointer had to be set. The global pointer is similar to the stack pointe. The difference is while the stack pointer point to the memory location where functions variables will be stored, the global pointer points to the memory location where global variables are stored. When setting the global pointer it is critical to pass the 'norelax' option. Without \enquote{.option norelax} the global pointer will be loaded relative to the global pointer.
 
 \section{IOb-SoC Linux OS integration}
 \label{section:linux_os_integration}
