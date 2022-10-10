@@ -51,6 +51,18 @@ The \textbf{\textit{iob-split}} is simply a configurable \acrfull{demux}. Meanin
 The \textbf{\textit{iob-merge}} works similar to the \textit{iob-split} but instead of being a \acrshort{demux} it is a configurable \acrfull{mux}. Meaning that instead of having multiple outputs and one input it has multiple inputs and one output. The number of inputs is indicated by N\_SLAVES and the selection bits are chosen by P\_SLAVES.
 
 \subsection{Bootloader and bare-metal firmware}
+%\subsection{Old simulation testbench}
+
+\subsection{Makefile scripts}
+Makefiles are important because they allow to automatize processes. This way instead of having to execute multiples lines to achieve a goal the user can run a single command. That command will execute a Makefile script that runs the multiple processes needed to achieve a specific goal without specifying them one by one.
+For example to run a simulation a developer using this projects \acrshort{soc} would only have to write in the terminal the line in listing~\ref{lst:run_simulation}.
+
+\begin{lstlisting}[language=make, caption={Run a simulation.}, label=lst:run_simulation]
+    make sim-clean
+    make sim-run
+\end{lstlisting}
+
+the lines in listing~\ref{lst:run_simulation} would first clean all the files related to a previous simulation execution. Then it will run a new simulation. This simulation will use the default configurations in the \enquote{config.mk} file. And will execute the run target on the default simulator directory Makefile. The simulator software will be compiled and then executed.
 
 \section{RISC-V}
 \label{section:riscv}
@@ -75,18 +87,18 @@ The \textit{UART 16550} registers are...
 
 \section{Open Source Verification tools}
 \label{section:verification_tools}
-For testing purposes, it is important to have a good hardware simulation environment. For that, we take advantage of already existing and well-developed tools. There exist a number of simulation tools, most of them are proprietary, as for example \textit{'xcelium'} from \textit{'Candence'}. Its utilization can increase the cost of a project significantly. In this Thesis we will make an effort of using open-source, free to use, verification tools. In specific, we will take advantage of \textit{'Icarus Verilog'} and \textit{'Verilator'}. Although both tools are for verification, they serve different purposes, due to their characteristics.
+For testing purposes, it is important to have a good hardware simulation environment. For that, we take advantage of already existing and well-developed tools. There exist a number of simulation tools, most of them are proprietary, as for example \textit{xcelium} from \textit{Candence}. Its utilization can increase the cost of a project significantly. In this Thesis we will make an effort of using open-source, free to use, verification tools. In specific, we will take advantage of \textit{Icarus Verilog} and \textit{Verilator}. Although both tools are for verification, they serve different purposes, due to their characteristics.
 
 \begin{itemize}
-    \item \textbf{\textit{'Icarus Verilog'}} is a Logic Simulator that uses verilog or system-verilog testbenchs to test the UUT (Unit Under Test). Unfortunately, its support for system-verilog is limited and some designs might not run in this simulator. \textit{'Icarus Verilog'} is also known as \textit{'IVerilog'}.
+    \item \textbf{\textit{Icarus Verilog}} is a Logic Simulator that uses verilog or system-verilog testbenchs to test the UUT (Unit Under Test). Unfortunately, its support for system-verilog is limited and some designs might not run in this simulator. \textit{Icarus Verilog} is also known as \textit{IVerilog}.
     
-    After compiling the hardware design, \textit{'IVerilog'} outputs a file which can be run line by line to simulate designed logic.
+    After compiling the hardware design, \textit{IVerilog} outputs a file which can be run line by line to simulate designed logic.
     
-    \item \textbf{\textit{'Verilator'}}
+    \item \textbf{\textit{Verilator}} transforms the \textit{Verilog} \acrshort{hdl} designs into a \textit{C++} program that can be executed after being compiled. Using \textit{C++} to create a testbench allows to execute the converted hardware program as a normal program. This way simulating the hardware initially described in \textit{Verilog}. While also allowing to easily make use of system calls. The testbench needed to run with Verilator is similar to the testbench in \textit{Verilog} used with \textit{Icarus}.
 \end{itemize}
 
-\textbf{The biggest differences} are: \textit{'Verilator'} only represents logic signal as 1's or 0's, contrary to \textit{'IVerilog'} which also represents unknown values as X's; Since \textit{'Verilator'} ends up being a C++ program it is much faster to run the simulation than with \textit{'IVerilog'}; On another perspective \textit{'Verilator'} is slower than \textit{'IVerilog'} to interpret the hardware logic design.
-As such, it is easier to use \textit{'IVerilog'} to detect errors on the design, but it is better to use \textit{'Verilator'} for more complexed simulations.
+\textbf{The biggest differences} are: \textit{Verilator} only represents logic signal as 1's or 0's, contrary to \textit{IVerilog} which also represents unknown values as X's; Since \textit{Verilator} ends up being a C++ program it is much faster to run the simulation than with \textit{IVerilog}; On another perspective \textit{Verilator} is slower than \textit{IVerilog} to interpret the hardware logic design.
+As such, it is easier to use \textit{IVerilog} to detect errors on the design, but it is better to use \textit{Verilator} for more complexed simulations.
 
 \subsection{Qemu Simulation}
 https://www.sifive.com/blog/risc-v-qemu-part-1-privileged-isa-hifive1-virtio

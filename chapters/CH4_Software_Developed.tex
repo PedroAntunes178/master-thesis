@@ -1,26 +1,28 @@
 \chapter{Software Developed}
 \label{chapter:software_developed}
-Simultaneously with the development of the hardware logic components there was software developed. During this project first it was developed a software for communication with the \textit{IOb-SoC} through serial. Second it was developed a new hardware simulation software. Thirdly, firmware that could test and run interrupt routines was developed. Fourth, the needed software/firmware to execute an \acrlong{os} was adapted and compiled for the \acrshort{soc} developed. Finally, there were multiple Makefiles written that facilitate the user interaction and further development.
+Simultaneously with the development of the hardware logic components, there was software developed. During this project, software was first developed for communication with the \textit{IOb-SoC} through serial. Second, verification software was developed to simulate the hardware logic. Thirdly, firmware that could test and run interrupt routines was developed. Fourth, the needed software/firmware to execute an \acrlong{os} was adapted and compiled for the \acrshort{soc} developed. Finally, multiple Makefiles were written that facilitated user interaction and further development.
 
-Some of the software developed was not mandatory to get a full-fledged \acrlong{os} to work with the \acrlong{soc} designed. The complementary software was matured because it facilitates the project development. Furthermore, the additional software allows the \textit{IOb-SoC} platform to support more features.
+Some software developed was not mandatory to get a full-fledged \acrlong{os} to work with the \acrlong{soc} designed. The complementary software was matured because it facilitates project development. Furthermore, the additional software allows the \textit{IOb-SoC} platform to support more features.
 
-In this chapter the software developed will be analyzed. The new \textit{Python} \textit{Console} and the new simulation system were already implemented on the upstream \textit{IOb-SoC} template. This software is already being used by other developers. Moreover, it has been improved by the \textit{IObundle} developers using it.
+In this chapter, the software developed will be analysed. The new \textit{Python} \textit{Console} and the new simulation system were already implemented on the upstream \textit{IOb-SoC} template. Other developers are already using this software. Moreover, it has been improved by the \textit{IObundle} developers using it.
+
+New Makefiles are written while developing new hardware and software tools. In this project, some of the new Makefiles were based on existing \textit{IOb-SoC} Makefiles. In contrast, others were written from scratch. The Makefiles help to automatise build processes and simplify the \acrshort{soc} usage.
 
 \section{\textit{Python} \textit{Console}}
 \label{section:pyhton_console}
-The \textit{Console} is a program that runs on the user computer and communicates with the board where the \textit{IOb-SoC} is implemented using an \textit{RS-232} connection. Initially the \textit{IOb-SoC} had a \textit{Console} written in \textit{C} programming language. One of the first tasks developed was the translation of the \textit{Console} program to \textit{Python}.
+The \textit{Console} is a program that runs on the user computer and communicates with the board where the \textit{IOb-SoC} is implemented using an \textit{RS-232} connection. Initially the \textit{IOb-SoC} had a \textit{Console} written in \textit{C} programming language. One of the first tasks developed was translating the \textit{Console} program to \textit{Python}.
 
-The \textit{C} \textit{Console} makes use of a set of functions on a independent file that were written to read/write to the serial port. The \textit{Python} program uses the \textit{PySerial} library, which provides ready-made communication functions like those in the original \textit{C} code. Using \textit{PySerial} is better because the community regularly maintains and updates \textit{PySerial}. \textit{PySerial} provides additional features, is less prone to have bugs, and the communication is more trustworthy comparing with the \textit{C} functions.
+The \textit{C} \textit{Console} uses a set of functions present on an external file that was written to read/write to the serial port. The \textit{Python} program uses the \textit{PySerial} library, which provides ready-made communication functions like those in the original \textit{C} code. Using \textit{PySerial} is better because the community regularly maintains and updates \textit{PySerial}. \textit{PySerial} provides additional features, is less prone to have bugs, and communication is more trustworthy compared with the \textit{C} functions.
 
-One of the reasons to translate the \textit{Console} program was to integrate an existing Ethernet controller already written in \textit{Python}. \textit{Python} can easily exploit feature like files, sockets and other \acrfull{os} functionalities.
+One of the reasons for translating the \textit{Console} program was to integrate an existing Ethernet controller already written in \textit{Python}. \textit{Python} can easily exploit feature like files, sockets and other \acrfull{os} functionalities.
 
-The \textit{Python} \textit{Console} program can be used in two different modes: locally working with simulators, or communicating with a board running \textit{IOb-SoC}. The program mode can be choose when calling the \textit{Console} through adding \enquote{-L} or \enquote{--local} to the invoking arguments. This is an alteration to the original \textit{Console} program. The \textit{C} \textit{Console} could only works with the \acrshort{fpga} board. When the \textit{Console} is run in board mode a physical implementation of \textit{IOb-SoC} runs on the board and communicates with \textit{Console} through a \textit{RS-232} serial connection. If the \textit{Console} is called with the \enquote{-L} or \enquote{--local} augment it will communicate with the simulator. The communication with the hardware simulation is identical to the one with the board. They exchange the same messages. When communicating with the simulator the \textit{Console} uses files to send and receive data from the \textit{IOb-SoC} hardware simulation. The \textit{Console} program when stating creates two empty files in the simulation directory. The \enquote{cnsl2soc} is used to send messages from the \textit{Console} to the \acrshort{soc}. The \enquote{soc2cnsl} is used by the \textit{Console} to receive messages from the \acrshort{soc}. Both files only contain one byte at a time. The fact if the files are empty or not is used to synchronize the simulation with the \textit{Console}. After reading from one of the files the simulation or the \textit{Console} program has to empty the respective file.
+The \textit{Python} \textit{Console} program can be used in two different modes: locally working with simulators or communicating with a board running \textit{IOb-SoC}. The program mode can be choose when calling the \textit{Console} through adding \enquote{-L} or \enquote{--local} to the invoking arguments. Working in different modes is an additional feature to the original \textit{Console} program. The \textit{C} \textit{Console} could only works with the \acrshort{fpga} board. When the \textit{Console} is run in board mode a physical implementation of \textit{IOb-SoC} runs on the board and communicates with \textit{Console} through a \textit{RS-232} serial connection. If the \textit{Console} is called with the \enquote{-L} or \enquote{--local} augment it will communicate with the simulator. The communication with the hardware simulation is identical to the one with the board. They exchange the same messages. When communicating with the simulator, the \textit{Console} uses files to send and receive data from the \textit{IOb-SoC} hardware simulation. When stating, the \textit{Console} program creates two empty files in the simulation directory. The \enquote{cnsl2soc} is used to send messages from the \textit{Console} to the \acrshort{soc}. The \enquote{soc2cnsl} is used by the \textit{Console} to receive messages from the \acrshort{soc}. Both files only contain one byte at a time. Whether the files are empty or not is used to synchronise the simulation with the \textit{Console}. After reading from one of the files, the simulation or the \textit{Console} program has to empty the respective file.
 
-The way the code is structured is very similar to how it was on the \textit{C} \textit{Console} program. It starts by defining the parameters that influence messages identifiers and serial communication (for example, the number of bits per byte, the parity and the number of stop bits). When the program enters its primary function, it starts a loop where it waits for an available byte to read, either from the serial port or the file, depending on the mode the \textit{Console} was called. After receiving the byte from the \acrshort{soc}, it computes what type of message it is. The program exits successfully if the byte received is an \acrlong{eot} (\acrshort{eot} = 04, \acrshort{ascii} value in hexadecimal). If the byte received is an \acrlong{enq} (\acrshort{enq} = 05, \acrshort{ascii} value in hexadecimal), the program checks if it was the first time it received an enquiry. If it was, it could have one of either behavior: if the program was called with an argument equivalent to \enquote{-f}, meaning that there is a firmware that should be uploaded to the \textit{IOb-SoC}, the \textit{Console} sends a \textit{Send a file request} message (FRX = 08, value in hexadecimal) to the \textit{IOb-SoC}; if there is not a firmware file to send then the \textit{Console} responds to the \textit{IOb-SoC} with an \acrlong{ack} (\acrshort{ack} = 06, \acrshort{ascii} value in hexadecimal). If the \textit{Console} receives a Receive a file request message (FTX = 07, value in hexadecimal), it will run a function that will receive any file sent from the \textit{IOb-SoC} to the computer and save it under the directory where it is running. If the \textit{Console} receives a \textit{Send a file request} message, it will run a function that will send any file requested from the \textit{IOb-SoC} to it. Any other byte received will be printed onto the stdout.
+How the code is structured is very similar to how it was on the \textit{C} \textit{Console} program. It starts by defining the parameters that influence message identifiers and serial communication (for example, the number of bits per byte, the parity and the number of stop bits). When the program enters its primary function, it starts a loop where it waits for an available byte to read, either from the serial port or the file, depending on the \textit{Console} execution mode. After receiving the byte from the \acrshort{soc}, it computes what type of message it is. The program exits successfully if the byte received is an \acrlong{eot} (\acrshort{eot} = 04, \acrshort{ascii} value in hexadecimal). If the byte received is an \acrlong{enq} (\acrshort{enq} = 05, \acrshort{ascii} value in hexadecimal), the program checks if it was the first time it received an enquiry. If it was, it could have one of either behavior: if the program was called with an argument equivalent to \enquote{-f}, meaning that there is a firmware that should be uploaded to the \textit{IOb-SoC}, the \textit{Console} sends a \acrlong{frx} message (\acrshort{frx} = 08, value in hexadecimal) to the \textit{IOb-SoC}; if there is not a firmware file to send then the \textit{Console} responds to the \textit{IOb-SoC} with an \acrlong{ack} (\acrshort{ack} = 06, \acrshort{ascii} value in hexadecimal). If the \textit{Console} receives a \acrlong{ftx} message (\acrshort{ftx} = 07, value in hexadecimal), it will run a function that will receive any file sent from the \textit{IOb-SoC} to the computer and save it under the directory where it is running. If the \textit{Console} receives a \textit{Send a file request} message, it will run a function that will send any file requested from the \textit{IOb-SoC} to it. Any other byte received will be printed onto the stdout.
 
-The FRX and the FTX bytes are specific to the \textit{IOb-SoC} platform software. This could cause a problem when using external software that does not attribute the same meaning to their respective values. To solve this problem a meaning for the \acrlong{dc1} (\acrshort{dc1} = 11, \acrshort{ascii} value in hexadecimal) byte was created. When receiving a \acrshort{dc1} byte the \textit{Console} deactivates all platform specific meanings for the respective bytes. This means that after receiving a \acrshort{dc1} byte stops associating the value 0x07, 0x08, 0x11 to FTX, FRX and \acrshort{dc1} respectively.
+The FRX and the FTX bytes are specific to the \textit{IOb-SoC} platform software. Being platform-specific could cause a problem when using external software that does not attribute the same meaning to their respective values. To solve this problem a meaning for the \acrlong{dc1} (\acrshort{dc1} = 11, \acrshort{ascii} value in hexadecimal) byte was created. When receiving a \acrshort{dc1} byte the \textit{Console} deactivates all platform-specific meanings for the respective bytes. This means that after receiving a \acrshort{dc1} byte stops associating the value 0x07, 0x08, 0x11 to FTX, FRX and \acrshort{dc1} respectively.
 
-An example of how to call the \textit{Console} to communicate with the simulation and send the firmware to the \textit{IOb-SoC} when it starts would be \ref{lst:call_console}. The \enquote{\&} at the end means that the \textit{Console} program is going to run in the background. Allowing to run other programs while the \textit{Console} executes.
+An example of how to call the \textit{Console} to communicate with the simulation and send the firmware to the \textit{IOb-SoC} when it starts would be \ref{lst:call_console}. The \enquote{\&} at the end means that the \textit{Console} program will run in the background. Consequently, it allows other programs to run while the \textit{Console} executes.
 
 \begin{lstlisting}[language=make, caption={Call \textit{Console} program}, label=lst:call_console]
     CONSOLE_CMD=$(CONSOLE_DIRECTORY)/console -L -f &
@@ -28,14 +30,21 @@ An example of how to call the \textit{Console} to communicate with the simulatio
 
 \section{\textit{IOb-SoC} Simulation}
 \label{section:simulation}
-In order to support the new \textit{Console} simulation mode a new \textit{IOb-SoC} verification mechanism had to be developed. Verification is one an important topic when developing hardware. A correct and precise verification saves time since the hardware does not have to be synthesized and flashed to an FPGA every time an SoC designer wants to test a new feature.
+In order to support the new \textit{Console} simulation mode a new \textit{IOb-SoC} verification mechanism had to be developed. Verification is an important concern when developing hardware. As a result, it is unnecessary to synthesise and flash the hardware to an \acrshort{fpga} every time a developer wants to test a new feature. A correct and precise verification saves time.
 
-The original simulation \textbf{How it worked}... The responses given to the \textit{IOb-SoC} were performed with a emulation of the \textit{Console} program written in Verilog. Every time the \textit{Console} was updated, the simulation \textit{Console} also had to be updated. Hence, the idea was to create a testbench that allowed the simulator to interact with the \textit{Console} program. The new simulation now has the advantage of mostly using the same \textit{Console} program as when the \textit{IOb-SoC} is implemented in a \acrshort{fpga}.
+%might be SOA?
+The original simulation testbench was written in \textit{Verilog} \acrshort{hdl}. The simulation testbench in \textit{Verilog} is a hardware module without any input or output signals. In this hardware module it was instantiated the \acrfull{uut}, a testing \acrshort{uart} and the \acrshort{ddr} memory. The \acrshort{uut} was the \acrshort{soc} being tested during the simulation. The test \acrshort{uart} was used to simulate an RS232 interface with the \acrshort{uut}. The \acrshort{ddr} memory would only be instantiated when the \acrshort{soc} used an external \acrshort{dram} memory.
 
-\subsection{UUT Top Hardware module}
-This top module creates a \textit{verilog} wrapper of the \acrfull{uut} that allows it to interact with the different hardware logic simulators. Even tho this is written hardware logic it is never implemented as real hardware. This module is only used in simulation as software.
+Inside the initial block is where the simulation behaviour is described. In a \textit{Verilog} hardware module, the initial block is run only once when the module is instantiated. The original testbench starts by resetting the \acrshort{soc}. Resetting the \acrshort{soc} initialises the hardware registers to their reset values. The the testbench configures the test \acrshort{uart} to communicate with the \acrshort{soc} \acrshort{uart}. Both \acrshort{uart}s have to be configured to use the same Baud rate. After the initial setup, the simulation enters an \enquote{infinite} loop.
 
-The top module file is an adaptation of the previous \textit{verilog} file used on the Icarus simulation. Previously, the verilog top file would interact directly with the \textit{Console}. Similarly to the new hardware top module an \acrshort{uart} module is instantiated and a serial connection with the \textit{IOb-SoC} is simulated. Although in this project the \textit{IOb-UART} in the \acrfull{soc} was swapped for the \textit{UART16550} in the 
+The \enquote{infinite} loop is used to send and receive bytes from the \acrshort{soc} until the simulation finishes. Thus the loop is not infinite, but the loop condition is always true. There exists a file called \enquote{cpu\_tasks.v} that assists the testbench and contains multiple \textit{Verilog} tasks.  \textit{Verilog} tasks are similar to \textit{C} functions. The tasks in \enquote{cpu\_tasks} are used to read and write to the test \acrshort{uart}. The testbench uses a task to get a byte from the \acrshort{soc} that waits for the UART to have an available byte to read and reads it. Then, the testbench proceeds to process the received byte. If the received byte was a control byte, the testbench responds to the \acrshort{soc} by writing to the test \acrshort{uart}. If not, the console prints the received byte to the stdout in the terminal. The control bytes could be an \acrfull{enq}, \acrfull{eot}, \acrfull{ftx} or \acrfull{frx}.
+
+The simulation testbench would end successfully when an \acrshort{eot} byte was received from \acrshort{soc}. The simulation would end abruptly when a trap notification was received. The \enquote{trap} signal was enabled (set to '1') when the \acrshort{cpu} encountered an illegal instruction.
+%end of SOA? If this is state of the art, I must describe the control signals.
+
+When the old testbench interacted with the test \acrshort{uart} it emulated the \textit{Console} program. Consequently, every time the \textit{Console} was updated, the simulation also had to be updated. Hence, the idea was to create a testbench that allowed the simulator to interact with the \textit{Console} program. The new simulation now has the advantage of mostly using the same \textit{Console} program as when the \textit{IOb-SoC} is implemented in an \acrshort{fpga}.
+
+The new verification software separates the previous simulation testbench into two parts. The first part is a hardware top module used by all hardware logic simulators. The second part is the simulation testbench, which is specific to each simulator. The simulation testbench interacts with the \acrshort{uut} through the hardware top module. A sketch of the verification software can be seen in figure~\ref{fig:uut_top_hw}. The \enquote{trap} signal was only used in the old simulation. Since the \acrshort{cpu} was swapped, it no longer uses the trap signal to notify if something went wrong. Now the \acrshort{cpu} handles exceptions on its hardware. Furthermore, they might not always mean the end of the execution or failure.
 
 \begin{figure}[!ht]
     \centering
@@ -44,15 +53,162 @@ The top module file is an adaptation of the previous \textit{verilog} file used 
     \label{fig:uut_top_hw}
 \end{figure}
 
-\subsection{Verilator Testbench}
-Verilator transforms the Verilog HDL designs into a C++ program that can be executed after being compiled. Using C++ to create a testbench permits to execute the converted hardware program simulating the hardware initially described in Verilog. While also allowing to easily make use of system calls. The testbench needed to run with Verilator is similar to the testbench in Verilog used with Icarus.
-%Tabela comparativa entre icarus e verilator
+\subsection{Top Hardware module}
+This top module creates a \textit{verilog} wrapper of the \acrfull{uut}. The \acrshort{uut} interacts with the different hardware logic simulators through this wrapper. The top hardware module is never implemented as real hardware. This module is only used in simulation as software.
+
+The top module file adapts the previous \textit{verilog} simulation testbench. In the top module, the initial block is only used to obtain the system simulation signals waves. These waves can be used to debug the behaviour of the simulation hardware components. The user can define if the signal waves should be saved or not. The top hardware module instantiates the \acrfull{uut}, a testing \acrshort{uart} and the \acrshort{ddr} memory. The \acrshort{uut} shares an interface with the test \acrshort{uart} and the \acrshort{ddr} memory.
+
+The test \acrshort{uart} is connected to the \acrshort{soc} under test through the \enquote{rx} and \enquote{tx} pins. The \enquote{rx} pin in the \acrshort{soc} is connected to the \enquote{tx} pin in the test \acrshort{uart} and is used to send information from the test \acrshort{uart} to the\acrshort{soc}. Similarly, the \enquote{tx} pin in the \acrshort{soc} is connected to the \enquote{rx} pin in the test \acrshort{uart} and is used to send information from the the\acrshort{soc} to the test \acrshort{uart}. The interface between the \acrshort{soc} and the test \acrshort{uart} simulates an RS232 connection.
+
+The input and output signals with which the top hardware module integrates with the simulation testbench are described in table~\ref{tab:input_output_top_simulation}.
+
+\begin{table}[!ht]
+    \centering
+    \begin{tabular}{|l|l|l|l|}
+    \hline
+    \textbf{Port} & \textbf{Width} & \textbf{Direction} & \textbf{Description}                                                                                                                    \\ \hline
+    clk           & 1              & input              & \begin{tabular}[c]{@{}l@{}}The system clock signal generated in\\  the simulation testbench.\end{tabular}                               \\ \hline
+    rst           & 1              & input              & \begin{tabular}[c]{@{}l@{}}The system reset signal generated in\\  the simulation testbench.\end{tabular}                               \\ \hline
+    trap          & 1              & output             & Not used.                                                                                                                               \\ \hline
+    uart\_valid   & 1              & input              & \begin{tabular}[c]{@{}l@{}}Used for the simulation testbench to\\  make a write/read request to the\\  test UART.\end{tabular}          \\ \hline
+    uart\_addr    & 32             & input              & \begin{tabular}[c]{@{}l@{}}Indicates the test UART register to \\  which the simulation testbench\\  wants to write/read.\end{tabular}  \\ \hline
+    uart\_wdata   & 32             & input              & \begin{tabular}[c]{@{}l@{}}Data that the simulation testbench\\  wants to write in the test UART.\end{tabular}                          \\ \hline
+    uart\_wstrb   & 4              & input              & \begin{tabular}[c]{@{}l@{}}Select bytes from uart\_wdat to write\\  to the test UART register.\end{tabular}                             \\ \hline
+    uart\_rdata   & 32             & output             & \begin{tabular}[c]{@{}l@{}}Data sent from the test UART to the\\  simulation testbench as a response\\  to a read request.\end{tabular} \\ \hline
+    uart\_ready   & 1              & output             & \begin{tabular}[c]{@{}l@{}}Used by the test UART to indicate\\  that the response to a write/read\\  is ready.\end{tabular}             \\ \hline
+    \end{tabular}
+    \caption{Inputs and outputs of the top hardware module used in the simulation.}
+    \label{tab:input_output_top_simulation}
+\end{table}
+
+Although in this project \acrshort{soc} the \textit{IOb-UART} in the \acrfull{soc} was swapped for the \textit{UART16550} in the simulation testbench the \textit{IOb-UART} is still used. If the \acrshort{clint} unit used a \acrlong{rtc} derived from the board, the \acrlong{rtc} should be added in the simulation testbench. When added to the testbench, the top hardware module would have an additional input for the \acrshort{rtc}.
+
+\subsection{Simulation Testbench}
+Two simulation testbench were developed during this project. One testbench was written in \textit{Verilog} and is used by some simulators as for example \textit{Icarus Verilog} and \textit{xcelium}. Another testbench was written in \textit{C} programming language and is used by the \textit{Verilator} hardware logic simulator.
+
+The new \textit{Verilog} simulation testbench developed instantiates only the top hardware module. At the beginning of the testbench module, the system clock is generated. If the development board had a \acrlong{rtc}, the \acrshort{rtc} signal should also be generated. The generation of both these signals can be seen in the code snippet~\ref{lst:clk_rtc_gen}. The \acrshort{rtc} signal does not apply to the \acrshort{soc} developed in the end, so its generation is commented.
+
+\begin{lstlisting}[language=Verilog, caption={System clock and \acrshort{rtc} generation in \textit{Verilog}.}, label=lst:clk_rtc_gen]
+    parameter realtime clk_per = 1s/`FREQ;
+    //parameter realtime rtc_per = 1s/`RTC_FREQ;
+ 
+    //clocks
+    reg clk = 1;
+    always #(clk_per/2) clk = ~clk;
+    //reg rtc = 1;
+    //always #(rtc_per/2) rtc = ~rtc;
+\end{lstlisting}
+
+The new testbench initial block starts by executing the same procedure as the previous testbench. It first sends a reset signal to the system and initialises the test \acrshort{uart}. The test \acrshort{uart} is initialised with a specified baud rate. Before entering an \enquote{infinite} loop, the new testbench will check if the file used to communicate with the \textit{Console} exists. This file is called \enquote{soc2cnsl}. The file \enquote{soc2cnsl} should have been created by the \textit{Console} program, executed before the testbench. If this file does not exist, the simulation will end abruptly. When the simulation ends unsuccessfully, it informs the user of its cause. The \textit{Console} creates the \enquote{cnsl2oc} file simultaneously with the \enquote{soc2cnsl}, but the testbench will only check if that file exists inside the loop. The testbench uses the \enquote{cnsl2oc} file to receive messages from the console. While the \enquote{soc2cnsl} file is used to send messages to the console.
+
+The \enquote{infinite} loop is a while statement whose loop condition is always true, similar to the old testbench. Inside the loop the testbench will read the test \acrshort{uart} \enquote{rx} ready register and the \enquote{tx} ready register until either one of them is enabled (set to '1'). As can be seen in the code snippet~\ref{lst:rx_tx_read}. The \enquote{cpu\_uartread} task is the same task used in the previous testbench to read from the test \acrshort{uart}. The first argument of the task is the address of the \acrshort{uart} register, which is to read. The second argument is the variable that saves the value of the register.
+
+\begin{lstlisting}[language=Verilog, caption={Read the test \acrshort{uart} \enquote{rx} ready register and the \enquote{tx} ready register.}, label=lst:rx_tx_read]
+    while(!rxread_reg && !txread_reg) begin
+        cpu_uartread(`UART_RXREADY_ADDR, rxread_reg);
+        cpu_uartread(`UART_TXREADY_ADDR, txread_reg);
+    end
+\end{lstlisting}
+
+After exiting the while, the testbench executes code depending on the register's value. If the variable used to store the \enquote{rx} ready register value (\enquote{rxread\_reg}) is true the testbench will read a byte sent by the \acrshort{soc} under test and send it to the \textit{Console}. To do that, it will first open the \enquote{soc2cnsl} file in reading mode and check if it is empty. If the file is empty, the testbench will close the file and read the value stored in the test \acrshort{uart} \enquote{rx} data register. Then the testbench will reopen the \enquote{soc2cnsl} file in write mode and write the value read. After writing to the file the testbench will clear the \enquote{rxread\_reg} and close the \enquote{soc2cnsl} file. If the file is not empty, the testbench will just close it and verify if it is empty again in the next loop. The program logic can be seen in code snippet~\ref{lst:write2cnsl}. The simulation clock signal only advances when the testbench reads or writes to the test \acrshort{uart}. By not clearing the \enquote{rxread\_reg} variable, the testbench will wait until the \enquote{soc2cnsl} file is empty before proceeding with the simulation.
+
+\begin{lstlisting}[language=Verilog, caption={Write byte from \acrshort{soc} to \textit{Console}.}, label=lst:write2cnsl]
+    if(rxread_reg) begin
+        soc2cnsl_fd = $fopen("soc2cnsl", "r");
+        n = $fgets(cpu_char, soc2cnsl_fd);
+        if(n == 0) begin
+            $fclose(soc2cnsl_fd);
+            cpu_uartread(`UART_RXDATA_ADDR, cpu_char);
+            soc2cnsl_fd = $fopen("soc2cnsl", "w");
+            $fwriteh(soc2cnsl_fd, "%c", cpu_char);
+            rxread_reg = 0;
+        end
+        $fclose(soc2cnsl_fd);
+    end
+\end{lstlisting}
+
+If the variable used to store the \enquote{tx} ready register value (\enquote{txread\_reg}) is true the testbench will read a byte sent by the \textit{Console} and send it to the \acrshort{soc} under test. In order to do that, the testbench will first try to open the \enquote{cnsl2soc} file in reading mode. If opened successfully, it would proceed, read the first byte in the file, and save it in the \enquote{cpu\_char} variable. When the read is successful, the testbench will write the \enquote{cpu\_char} to the test \acrshort{uart}. Then the testbench will close the \enquote{cnsl2soc} file and reopen it in write mode. This way, the file will be truncated to have 0 bytes. If the read was unsuccessful, it means the \textit{Console} does not want to send aa Byte to thee \acrshort{soc}. Then the testbench will just ignore that part of the code. Finally the \enquote{cnsl2soc} file is closed and the \enquote{txread\_reg} variable is cleared. The simulation finishes if the testbench cannot open the \enquote{cnsl2soc} file. Normally this means that the simulation was successful. The \enquote{cnsl2soc} file is deleted by the \textit{Console} program when the \acrshort{soc} send a \acrfull{eot} Byte. The \acrshort{eot} Byte means the \acrshort{soc} has finished running the firmware.
+
+\begin{lstlisting}[language=Verilog, caption={Write byte from \textit{Console} to \acrshort{soc}.}, label=lst:write2soc]
+    if(txread_reg) begin
+        cnsl2soc_fd = $fopen("cnsl2soc", "r");
+        if (!cnsl2soc_fd) begin
+            $finish;
+        end
+        n = $fscanf(cnsl2soc_fd, "%c", cpu_char);
+        if (n > 0) begin
+            cpu_uartwrite(`UART_TXDATA_ADDR, cpu_char, `UART_TXDATA_W/8);
+            $fclose(cnsl2soc_fd);
+            cnsl2soc_fd = $fopen("./cnsl2soc", "w");
+        end
+        $fclose(cnsl2soc_fd);
+        txread_reg = 0;
+    end
+\end{lstlisting}
+
+The \textit{Verilator} testbench is similarly structured to the \textit{Verilog} testbench. The code in the initial block written for the \textit{Verilog} testbench also applies to the \textit{Verilator} testbench. The code only had to be translated from \textit{Verilog} to \textit{C} language. One of the main differences between the \textit{Verilator} testbench and the \textit{Verilog} testbench is the way the clocks are generated. \textit{Verilator} executes the simulation through cycles. Executing the simulation through cycles means that the testbench controls the time advancement. With that in mind, a global variable was implemented that saves the current time. Moreover, a function that advances time was created. The function can be seen in code snippet~\ref{lst:verilator_timer}. The function, when executed, advances the number of nanoseconds passed as an argument. Every nanosecond passed, a cycle has passed, and \textit{Verilog} verifies the state of the \acrfull{uut}. The system clock signal has to change value every half of the clock period. If a \acrshort{rtc} were used, it would have to change value every half of the \acrlong{rtc} period.
+
+\begin{lstlisting}[language=C, caption={\textit{Verilator} Timer function.}, label=lst:verilator_timer]
+    void Timer(unsigned int ns){
+        for(int i = 0; i<ns; i++){
+            if(!(main_time%(CLK_PERIOD/2))){
+                uut->clk = !(uut->clk);
+            }
+            //if(!(main_time%(RTC_PERIOD/2))){
+            //  uut->rtc_in = !(uut->rtc_in);
+            //}
+            uut->eval();
+            main_time += 1;
+        }
+    }
+\end{lstlisting}
+
+In the \textit{Verilog} testbench, the tasks to initialise the test \acrshort{uart} and read and write to the registers were already developed in the previous testbench. In the \textit{Verilator} testbench those functions had to be rewritten in \textit{C}. The test \acrshort{uart} initialization starts by resetting the test \acrshort{uart} hardware by writing to the \enquote{softreset} register. Then it writes to the \enquote{div} register the value needed for the \acrshort{uart} to work with the defined \acrshort{soc} frequency and baud rate. Finally it enables the \enquote{rx} and \enquote{tx} communication by writing '1' to the \enquote{rxen} and \enquote{txen} registers respectively. The initialization function can be seen in code snippet~\ref{lst:init_uart}.
+
+\begin{lstlisting}[language=C, caption={Function to initialize the test \acrshort{uart}.}, label=lst:init_uart]
+    void inituart(){
+        //pulse reset uart
+        uartwrite(UART_SOFTRESET, 1, UART_SOFTRESET_W/8);
+        uartwrite(UART_SOFTRESET, 0, UART_SOFTRESET_W/8);
+        //config uart div factor
+        uartwrite(UART_DIV, int(FREQ/BAUD), UART_DIV_W/8);
+        //enable uart for receiving
+        uartwrite(UART_RXEN, 1, UART_RXEN_W/8);
+        uartwrite(UART_TXEN, 1, UART_TXEN_W/8);
+    }
+\end{lstlisting}
+
+The testbench takes two clock cycles to read a test \acrshort{uart} register. In the first clock cycle, the testbench makes a read request to the \acrshort{uart}. The \acrshort{uart} address signal is set to the address of the register that the testbench wants to read, and the \acrshort{uart} valid signal is set to '1' to make the request. In the second clock cycle, the testbench reads the response data in the \enquote{rdata} signal. The read function can be seen in code snippet~\ref{lst:read_uart}.
+
+\begin{lstlisting}[language=C, caption={Read from the test \acrshort{uart}.}, label=lst:read_uart]
+    void uartread(unsigned int cpu_address, char *read_reg){
+        dut->uart_addr = cpu_address >> 2; // 32 bit address (ignore 2 LSBs)
+        dut->uart_valid = 1;
+        Timer(CLK_PERIOD);
+        *read_reg = (dut->uart_rdata) >> ((cpu_address & 0b011)*8); // align to 32 bits
+        dut->uart_valid = 0;
+    }
+\end{lstlisting}
+
+The testbench has to send a write request signal to the test \acrshort{uart} to write on a \acrshort{uart} register. To make a write request the testbench as to set the \acrshort{uart} address sign, the \acrshort{uart} valid, the \acrshort{uart} \enquote{wdata} signal and the \acrshort{uart} \enquote{wstrb} signal. The address signal is set to the address of the register where the testbench wants to write. The valid is set to '1'. The \enquote{wdata} is set to the data to be written on the register. The \enquote{wstrb} is set to indicate which Bytes from the \enquote{wdata} are written on the register. After one clock cycle, the write is done, and the valid signal has to be set back to '0'. The write function can be seen in code snippet~\ref{lst:write_uart}.
+
+\begin{lstlisting}[language=C, caption={Write to the test \acrshort{uart}.}, label=lst:write_uart]
+    void uartwrite(unsigned int cpu_address, unsigned int cpu_data, unsigned int nbytes){
+        dut->uart_addr = cpu_address >> 2; // 32 bit address (ignore 2 LSBs)
+        dut->uart_valid = 1;
+        dut->uart_wstrb = nbytes << (cpu_address & 0b011);
+        dut->uart_wdata = cpu_data << ((cpu_address & 0b011)*8); // align data to 32 bits
+        Timer(CLK_PERIOD);
+        dut->uart_wstrb = 0;
+        dut->uart_valid = 0;
+    }
+\end{lstlisting}
 
 \section{Interrupt Routine}
 \label{section:barebones_interrupt_routine}
-During the development of the \acrshort{clint} hardware unit, no firmware used the \acrshort{clint} features. The \acrshort{clint} enables the support for time or software-related interrupts. Therefore, to test the \acrshort{clint} hardware it was needed to create a simulation testbench. Moreover, to understand how interrupts are used in code and handled by the \acrshort{cpu} a bare-metal firmware that uses interrupts was created.
+During the development of the \acrshort{clint} hardware unit, no firmware used the \acrshort{clint} features. The \acrshort{clint} enables the support for time or software-related interrupts. Therefore, to test the \acrshort{clint} hardware, it was needed to create a simulation testbench. Moreover, a bare-metal firmware that uses interrupts was created to understand how interrupts are used in code and handled by the \acrshort{cpu}.
 
-To generate a time-related interrupt the software has to write to the \enquote{MTIMECMP} register. The \enquote{MTIMECMP} register address is the \enquote{MTIMECMP\_BASE} address, which is 0x4000, plus 0x08 times the core id. The core id is the \enquote{TARGET}, \acrshort{cpu} core, which is supposed to receive the interrupt notification. In this project since there is only one core, the core id is 0. Furthermore, when writing firmware to run on the \acrshort{soc} it is needed to consider the \acrshort{clint} peripheral base address and add it to the \enquote{MTIMECMP} register address. To make a timer interrupt trigger after 10 seconds the firmware has to do more than just write to the \enquote{MTIMECMP}. First, the firmware has to read the current time. The current time can be obtained from the \enquote{MTIME} register. Although not directly since the \enquote{MTIME} register increments with the \acrshort{clint} designed frequency, in this case 100MHz. To convert the value in \enquote{MTIME} register to seconds we know that $seconds=\frac{*(MTIME)}{frequency}$. The \enquote{MTIME} register address is obtained similarly to the \enquote{MTIMECMP} register but instead of the \enquote{MTIMECMP\_BASE}, the \enquote{MTIME\_BASE}, which is 0xbff8, is used. After reading the current time, the value that needs to be stored in \enquote{MTIMECMP} register is calculated. The value is calculated by adding the time to wait before the interrupt is triggered to the current time. The value calculated can then be stored in the \enquote{MTIMECMP} register. When the \enquote{MTIME} register value is equal or greater than the \enquote{MTIMECMP} register value the timer interrupt is enabled. The pseudo-code to set up the timer interrupt can be seen in the code snippet \ref*{lst:set_up_mtip}.
+The software has to write to the \enquote{MTIMECMP} register to generate a time-related interrupt. The \enquote{MTIMECMP} register address is the \enquote{MTIMECMP\_BASE} address, which is 0x4000, plus 0x08 times the core id. The core id is the \enquote{TARGET}, \acrshort{cpu} core, which is supposed to receive the interrupt notification. Since there is only one core in this project, the core id is 0. Furthermore, when writing firmware to run on the \acrshort{soc}, it is necessary to consider the \acrshort{clint} peripheral base address and add it to the \enquote{MTIMECMP} register address. For a timer interrupt to trigger after 10 seconds, the firmware has to do more than just write to the \enquote{MTIMECMP}. First, the firmware has to read the current time. The current time can be obtained from the \enquote{MTIME} register. Although not directly since the \enquote{MTIME} register increments with the \acrshort{clint} designed frequency, in this case 100MHz. To convert the value in \enquote{MTIME} register to seconds we know that $seconds=\frac{*(MTIME)}{frequency}$. The \enquote{MTIME} register address is obtained similarly to the \enquote{MTIMECMP} register but instead of the \enquote{MTIMECMP\_BASE}, the \enquote{MTIME\_BASE}, which is 0xbff8, is used. After reading the current time, the value that needs to be stored in \enquote{MTIMECMP} register is calculated. The value is calculated by adding the time to wait before the interrupt is triggered to the current time. The value calculated can then be stored in the \enquote{MTIMECMP} register. When the \enquote{MTIME} register value is equal to or greater than the \enquote{MTIMECMP} register value, the timer interrupt is enabled. The pseudo-code to set up the timer interrupt can be seen in the code snippet \ref*{lst:set_up_mtip}.
 
 \begin{lstlisting}[language=C, caption={Set Up Timer Interrupt.}, label=lst:set_up_mtip]
     #define MTIMECMP_BASE 0x4000
@@ -67,7 +223,7 @@ To generate a time-related interrupt the software has to write to the \enquote{M
     }
 \end{lstlisting}
 
-The core id could have been read from the \acrshort{csr} which saves its value. The RISC-V instruction that does so is \enquote{csrr    \%0, mhartid}. An example of a C code integration would be code snippet \ref*{lst:read_mhartid}.
+The core id could have been read from the \acrshort{csr}, which saves its value. The RISC-V instruction that does so is \enquote{csrr    \%0, mhartid}. An example of a C code integration would be code snippet \ref*{lst:read_mhartid}.
 
 \begin{lstlisting}[language=C, caption={Read core id from \acrshort{csr}.}, label=lst:read_mhartid]
     static inline uint_32_t csr_read_mhartid(void) {
@@ -80,7 +236,7 @@ The core id could have been read from the \acrshort{csr} which saves its value. 
     }
 \end{lstlisting}
 
-One of the software interrupt usages is to synchronize various cores in a system. When dividing the workload between cores there might be a time when core 1 has to synchronize with core 0. To do this core 1 would wait until core 0 generates a software interrupt targeting core 1. In this project, there is only one core so this situation does not occur. But applications can run concurrently with multi-threading. One application could wait until a software interrupt is triggered. This software interrupt could be triggered by another application running in core 0 and targeting core 0. To generate a software-related interrupt the software has to write to the \enquote{MSIP} register. The \enquote{MSIP} register address is the \enquote{MSIP\_BASE} address, which is 0x00, plus 0x04 times the core id. When running the firmware adding the \acrshort{clint} peripheral base address to the \enquote{MSIP} register can not be overlooked. The \enquote{MSIP} register can only be written through external sources. The \acrshort{clint} hardware cannot change it internally. The pseudo-code to set up the software interrupt can be seen in the code snippet \ref*{lst:set_up_msip}.
+One of the software interrupt usages is synchronising various cores in a system. When dividing the workload between cores, there might be a time when core 1 has to synchronise with core 0. Core 1 would wait until core 0 generates a software interrupt targeting core 1. This project has only one core, so this situation does not occur. Nevertheless, applications can run concurrently with multi-threading. One application could wait until a software interrupt is triggered. This software interrupt could be triggered by another application running in core 0 and targeting core 0. The software has to write to the \enquote{MSIP} register to generate a software-related interrupt. The \enquote{MSIP} register address is the \enquote{MSIP\_BASE} address, which is 0x00, plus 0x04 times the core id. When running the firmware adding the \acrshort{clint} peripheral base address to the \enquote{MSIP} register can not be overlooked. The \enquote{MSIP} register can only be written through external sources. The \acrshort{clint} hardware cannot change it internally. The pseudo-code to set up the software interrupt can be seen in the code snippet \ref*{lst:set_up_msip}.
 
 \begin{lstlisting}[language=C, caption={Set Up Software Interrupt.}, label=lst:set_up_msip]
     #define MSIP_BASE 0x00
@@ -90,25 +246,25 @@ One of the software interrupt usages is to synchronize various cores in a system
     }
 \end{lstlisting}
 
-After enabling an interrupt the \acrshort{clint} sends a hardware notification. The interrupt notification has to be handled by the rest of the hardware. The \acrshort{clint} testbench and the bare-metal firmware handle the interrupt notification differently.
+After enabling an interrupt, the \acrshort{clint} sends a hardware notification. The interrupt notification has to be handled by the rest of the hardware. The \acrshort{clint} testbench and the bare-metal firmware handle the interrupt notification differently.
 
 \subsection{CLINT simulation}
-To test the \acrshort{clint} hardware unit a simulation testbench was built in Verilog and another in C++ programming language. This allows the developers to test the correctness of the hardware component without connecting it to the rest of the \acrshort{soc}.
+A simulation testbench was built in Verilog and another in C++ programming language to test the \acrshort{clint} hardware unit. These simulations allow the developers to test the correctness of the hardware component without connecting it to the rest of the \acrshort{soc}.
 
-Both the testbench in Verilog and the testbench in C++ had similar behaviours. First, they would set up a timer interrupt. The timer interrupt was set to trigger in $0.2*10^{-6}$ seconds. Taking into account that the simulation is slow this was a reasonable time. After the timer interrupt is triggered the simulation receives its notification and proceeds to handle the interrupt. When receiving a timer interrupt the simulation sets up the software interrupt. In the next clock cycle, the testbench is notified of an existing software interrupt. It then proceeds to disable the timer and the software interrupt. To disable the timer interrupt the \enquote{MTIMECMP} register has to be set to its maximum value, which is 0xFFFFFFFFFFFFFFFF (i.e. all 64 bits are '1'). To disable the software interrupt the \enquote{MSIP} register had to be set to 0.
+Both the testbench in Verilog and the testbench in C++ had similar behaviours. First, they would set up a timer interrupt. The timer interrupt would be set to trigger in $0.2*10^{-6}$ seconds. Considering that the simulation was slow, this was a reasonable time. After the timer interrupt is triggered, the simulation receives its notification and proceeds to handle the interrupt. When receiving a timer interrupt, the simulation sets up the software interrupt. The testbench is notified of an existing software interrupt in the next clock cycle. It then proceeds to disable the timer and the software interrupt. To disable the timer interrupt the \enquote{MTIMECMP} register has to be set to its maximum value, which is 0xFFFFFFFFFFFFFFFF (i.e. all 64 bits are '1'). The \enquote{MSIP} register had to be set to 0 to disable the software interrupt.
 
-If the interrupts work correctly there will be a message in the terminal indicating their correctness. After testing that both interrupts work as expected the testbench can finish successfully. The simulation will always end $1*10^{-6}$ seconds after starting.
+If the interrupts work correctly, there will be a message in the terminal indicating their correctness. After testing that both interrupts work as expected, the testbench can finish successfully. The simulation will always end $1*10^{-6}$ seconds after starting.
 
 \subsection{Bare-metal firmware}
-Once the \acrshort{clint} unit was developed it had to be tested while integrated into the \acrshort{soc}. Even though it was known that the \acrshort{clint} generated the interrupts through the simulation testbench. To test the \acrshort{clint} in the \acrshort{soc} firmware that took advantage of the timer and/or software interrupts had to be developed.
+Once the \acrshort{clint} unit was developed, even though it was known that the \acrshort{clint} generated the interrupts through the simulation testbench, it had to be tested while integrated into the \acrshort{soc}. To test the \acrshort{clint} in the \acrshort{soc} firmware that took advantage of the timer and software interrupts had to be developed.
 
 Since the \acrshort{clint} hardware developed is compatible with RISC-V, any firmware compatible with RISC-V that took advantage of interrupts should work. With this in mind, the open-source bare-metal firmware made available by \textit{Five EmbedDev}~\cite{bare_metal_int}, an embedded RISC-V blog, would be taken advantage of. The firmware could not all be used directly in \textit{IOb-SoC}. Some functions that interact with the timer in the \acrshort{clint} were adapted to the developed hardware and used. Furthermore, a file that implemented functions that read/write to the \acrlong{csr} is used as a library.
 
-The developed firmware.c, similarly to the original \textit{IOb-SoC} firmware, starts by initializing the \acrshort{uart} and the \acrshort{clint} hardware. Then it will disable all global interrupts. To disable the global interrupts the \enquote{mstatus} \acrshort{csr}, \enquote{mie} \acrshort{csr} and the \enquote{mcause} \acrshort{csr} are cleared. After the timer interrupt is set similarly to the code in \ref{lst:set_up_mtip}. When an interrupt occurs the program counter has to jump to a specific function. The memory address of that function is saved in the \enquote{mtvec} \acrshort{csr}. Succeeding the timer interrupt set up, the respective interrupt bit can be set to '1' (i.e. enable the timer interrupt) in the \enquote{mie} \acrshort{csr}. Following this the global interrupts can be enabled again by setting the needed bits in \enquote{mstatus} \acrshort{csr} to '1'. the bits that need to be set to '1' are the ones corresponding to the machine interrupts (MSTATUS\_MIE\_BIT\_MASK). Finally, the program can wait for an interrupt to happen with the \enquote{wfi} instruction.
+The developed firmware.c, similarly to the original \textit{IOb-SoC} firmware, starts by initializing the \acrshort{uart} and the \acrshort{clint} hardware. Then it will disable all global interrupts. To disable the global interrupts the \enquote{mstatus} \acrshort{csr}, \enquote{mie} \acrshort{csr} and the \enquote{mcause} \acrshort{csr} are cleared. After the timer interrupt is set similarly to the code in \ref{lst:set_up_mtip}. The program counter has to jump to a specific function when an interrupt occurs. The memory address of that function is saved in the \enquote{mtvec} \acrshort{csr}. Succeeding the timer interrupt set up, the respective interrupt bit can be set to '1' (i.e. enable the timer interrupt) in the \enquote{mie} \acrshort{csr}. Following this the global interrupts can be enabled again by setting the needed bits in \enquote{mstatus} \acrshort{csr} to '1'. the bits that need to be set to '1' correspond to the machine interrupts (MSTATUS\_MIE\_BIT\_MASK). Finally, the program can wait for an interrupt to happen with the \enquote{wfi} instruction.
 
-When an interrupt occurs the interrupt handler function is called. The interrupt handler will read what was the reason the interrupt was generated from the \enquote{mcause} \acrshort{csr}. After knowing the cause the interrupt handler will act accordingly to how it was programmed. The developed firmware informs the user that a timer interrupt occurred and it sets the \enquote{MTIMECMP} register to a higher number. The developed firmware finishes after receiving the first interrupt.
+When an interrupt occurs, the interrupt handler function is called. The interrupt handler will read why the interrupt was generated from the \enquote{mcause} \acrshort{csr}. After knowing the cause, the interrupt handler will act accordingly to how it was programmed. The developed firmware informs the user that a timer interrupt occurred, and it sets the \enquote{MTIMECMP} register to a higher number. The developed firmware finishes after receiving the first interrupt.
 
-It is important to note that besides the firmware.c some alterations had to be made in the \textit{IOb-SoC} firmware.S file. In the firmware.S the global pointer had to be set. The global pointer is similar to the stack pointer. The difference is while the stack pointer point to the memory location where functions variables will be stored, the global pointer points to the memory location where global variables are stored. When setting the global pointer it is critical to write the 'norelax' option in the Assembly code. Without \enquote{.option norelax} the global pointer will be loaded relative to the global pointer.
+It is important to note that besides the firmware.c some alterations had to be made in the \textit{IOb-SoC} firmware.S file. In the firmware.S the global pointer had to be set. The global pointer is similar to the stack pointer. The difference is that while the stack pointer points to the memory location where function variables will be stored, the global pointer points to the memory location where global variables are stored. When setting the global pointer, it is critical to write the \enquote{norelax} option in the Assembly code. Without \enquote{.option norelax}, the global pointer will be loaded relative to the global pointer.
 
 \section{IOb-SoC Linux OS integration}
 \label{section:linux_os_integration}
@@ -124,5 +280,3 @@ OpenSBI
 \subsection{Linux kernel}
 
 \subsection{Root File system}
-
-\section{Makefiles}

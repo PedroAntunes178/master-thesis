@@ -87,5 +87,6 @@
         "microcontrollers",
         "verilog"
     ],
-    "latex-workshop.latex.autoBuild.run": "never"
+    "latex-workshop.latex.autoBuild.run": "never",
+    "cSpell.language": "en-GB"
 }
