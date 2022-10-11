@@ -223,7 +223,7 @@ The software has to write to the \enquote{MTIMECMP} register to generate a time-
     }
 \end{lstlisting}
 
-The core id could have been read from the \acrshort{csr}, which saves its value. The RISC-V instruction that does so is \enquote{csrr    \%0, mhartid}. An example of a C code integration would be code snippet \ref*{lst:read_mhartid}.
+The core id could have been read from the \acrshort{csr}, which saves its value. The \textit{RISC-V} instruction that does so is \enquote{csrr    \%0, mhartid}. An example of a C code integration would be code snippet \ref*{lst:read_mhartid}.
 
 \begin{lstlisting}[language=C, caption={Read core id from \acrshort{csr}.}, label=lst:read_mhartid]
     static inline uint_32_t csr_read_mhartid(void) {
@@ -258,7 +258,7 @@ If the interrupts work correctly, there will be a message in the terminal indica
 \subsection{Bare-metal firmware}
 Once the \acrshort{clint} unit was developed, even though it was known that the \acrshort{clint} generated the interrupts through the simulation testbench, it had to be tested while integrated into the \acrshort{soc}. To test the \acrshort{clint} in the \acrshort{soc} firmware that took advantage of the timer and software interrupts had to be developed.
 
-Since the \acrshort{clint} hardware developed is compatible with RISC-V, any firmware compatible with RISC-V that took advantage of interrupts should work. With this in mind, the open-source bare-metal firmware made available by \textit{Five EmbedDev}~\cite{bare_metal_int}, an embedded RISC-V blog, would be taken advantage of. The firmware could not all be used directly in \textit{IOb-SoC}. Some functions that interact with the timer in the \acrshort{clint} were adapted to the developed hardware and used. Furthermore, a file that implemented functions that read/write to the \acrlong{csr} is used as a library.
+Since the \acrshort{clint} hardware developed is compatible with \textit{RISC-V}, any firmware compatible with \textit{RISC-V} that took advantage of interrupts should work. With this in mind, the open-source bare-metal firmware made available by \textit{Five EmbedDev}~\cite{bare_metal_int}, an embedded \textit{RISC-V} blog, would be taken advantage of. The firmware could not all be used directly in \textit{IOb-SoC}. Some functions that interact with the timer in the \acrshort{clint} were adapted to the developed hardware and used. Furthermore, a file that implemented functions that read/write to the \acrlong{csr} is used as a library.
 
 The developed firmware.c, similarly to the original \textit{IOb-SoC} firmware, starts by initializing the \acrshort{uart} and the \acrshort{clint} hardware. Then it will disable all global interrupts. To disable the global interrupts the \enquote{mstatus} \acrshort{csr}, \enquote{mie} \acrshort{csr} and the \enquote{mcause} \acrshort{csr} are cleared. After the timer interrupt is set similarly to the code in \ref{lst:set_up_mtip}. The program counter has to jump to a specific function when an interrupt occurs. The memory address of that function is saved in the \enquote{mtvec} \acrshort{csr}. Succeeding the timer interrupt set up, the respective interrupt bit can be set to '1' (i.e. enable the timer interrupt) in the \enquote{mie} \acrshort{csr}. Following this the global interrupts can be enabled again by setting the needed bits in \enquote{mstatus} \acrshort{csr} to '1'. the bits that need to be set to '1' correspond to the machine interrupts (MSTATUS\_MIE\_BIT\_MASK). Finally, the program can wait for an interrupt to happen with the \enquote{wfi} instruction.
 
@@ -268,15 +268,156 @@ It is important to note that besides the firmware.c some alterations had to be m
 
 \section{IOb-SoC Linux OS integration}
 \label{section:linux_os_integration}
-Talk about the noncannonical.py
+The last step in this thesis development was creating and integrating a minimal \acrfull{os} on the developed \acrfull{soc}. The minimal \acrshort{os} developed has the Linux software as its kernel. The Linux kernel allows the user applications run on the \acrshort{soc} to compile with the \textit{riscv64-unknown-linux-gnu-*} compiler. Applications compiled with \textit{riscv64-unknown-linux-gnu-*} can use the Linux system functions and drivers. Using Linux system functions and drivers allows the software developers to ignore the hardware platform where the software will run.
+
+During the development of the \acrshort{os} to run on the \acrshort{soc}, the author had to adapt the bootloaders firmware and write the device tree describing the developed \acrshort{soc}. Additionally he had to compile the Linux kernel compatible with the \textit{VexRiscv} \acrshort{cpu} implemented on the \acrshort{soc} and create a \acrlong{rootfs}. Moreover, additional features had to be developed for the user to interact with the \acrshort{os}.
+
+For each of the developed components the author developed a Makefile target that automatizes the build process. Furthermore a general target was created. The general target, called \enquote{build-OS}, calls all of the other targets and builds a full-featured minimal \acrshort{os}.
 
 \subsection{Bootloaders}
-IOb-SoC Linux Stage 0 Bootloader
+Before running the Linux kernel software, the \acrshort{soc} has to run two Bootloaders firmware. The first firmware to execute is the stage 0 bootloader. The stage 0 bootloader is an adaptation of the bootloader firmware used in \textit{IOb-SoC}. The second bootloader is a \textit{RISC-V} specific software called \textit{OpenSBI}.
 
-OpenSBI
+The stage 0 bootloader has to copy the developed \acrshort{os} to the external memory of the \acrshort{soc} running on the \acrshort{fpga} board. The bootloader will send a request to the \textit{Console} program asking for the binary data of the \textit{OpenSBI}, the device tree, the Linux kernel and the \acrlong{rootfs}. Each file transferred will be stored in a specific memory location. The transfer bootloader code can be seen in \ref{lst:copy_bynaries}.
+
+\begin{lstlisting}[language=c, caption={Transfer \acrshort{os} to the \acrshort{soc} external memmory.}, label=lst:copy_bynaries]
+    prog_start_addr = (char *)(EXTRA_BASE + 0x00000000);
+    file_size = uart_recvfile(opensbi, prog_start_addr);
+    prog_start_addr = (char *)(EXTRA_BASE + 0x00400000);
+    file_size = uart_recvfile(kernel, prog_start_addr);
+    prog_start_addr = (char *)(EXTRA_BASE + 0x00F80000);
+    file_size = uart_recvfile(dtb, prog_start_addr);
+    prog_start_addr = (char *)(EXTRA_BASE + 0x01000000);
+    file_size = uart_recvfile(rootfs, prog_start_addr);
+\end{lstlisting}
+
+When finishing, the bootloader has to ensure that it clears all of the \acrshort{cpu}’s function argument registers. The bootloader has to write '0' to a function argument register to clear it. An example of clearing the first function argument register is seen in listing \ref{lst:clear_a_reg}. There are in total eight function argument registers in a \textit{RISC-V} \acrshort{cpu} core. If the bootloader does not clear the function argument registers, the \acrshort{cpu} might pass unwanted arguments to the next software that executes.
+
+\begin{lstlisting}[language=c, caption={Clear a function argument register.}, label=lst:clear_a_reg]
+    asm volatile("and     a0,a0,zero");
+\end{lstlisting}
+
+The \textit{OpenSBI} bootloader is platform-specific so the configuration files compatible with the developed \acrshort{soc} had to be created. The \textit{OpenSBI} software provides a template for the platform-specific configuration files. In the \enquote{config.mk} file the author specifies that only the \textit{OpenSBI} \enquote{fw\_jump.bin} binary needs to be generated. The file that differs the most from the template example is the \enquote{platform.c}. In the \enquote{platform.c}, the author configures the functions the \textit{OpenSBI} bootloader runs when executed. Moreover, in the \enquote{platform.c} it is also designated the \acrshort{plic} hardware address, the \acrshort{clint} register addresses, the \acrshort{clint} timer frequency, the \textit{\acrshort{uart}16550} hardware address, the \textit{\acrshort{uart}16550} clock frequency and the \textit{\acrshort{uart}16550} baud rate.
+
+The \textit{OpenSBI} bootloader initializes the \acrshort{plic}, the \acrshort{clint} and the \textit{\acrshort{uart}16550} hardware units. When the \acrshort{plic} and the \acrshort{clint} initialization is successful the \textit{OpenSBI} configures the Linux interrupt handler. Furthermore, the \textit{OpenSBI} checks if the device tree is compatible with the specified hardware. Finally, the \textit{OpenSBI} bootloader will tell the \acrshort{cpu} to start executing the Linux kernel. The device tree memory location is passed to the Linux kernel as an argument through the function argument registers.
+
+The author created a Makefile target to build the \textit{OpenSBI} software automatically. The Makefile target copies the custom platform configuration to the \enquote{OpenSBI/platform} directory and compiles the software for the developed hardware platform. The \enquote{build-opensbi} Makefile target can be seen in~\ref{lst:build_opensbi}.
+
+\begin{lstlisting}[language=make, caption={Makefile target to build OpenSBI.}, label=lst:build_opensbi]
+build-opensbi: clean-opensbi os_dir
+    cp -r $(Custom_Platform_DIR)/opensbi_platform/* $(OpenSBI_DIR)/OpenSBI/platform/ && \
+        cd $(OpenSBI_DIR)/OpenSBI && $(MAKE) run PLATFORM=iob_soc
+\end{lstlisting}
+
+In listing~\ref{lst:build_opensbi} \enquote{PLATFORM=iob\_soc} indicates that the configuration customized for the developed \acrshort{soc} is used.
 
 \subsection{Device Tree}
+A device tree file is needed to execute the Linux kernel on the developed \acrshort{soc}. The device tree file describes the hardware components in a specific \acrshort{soc}. Each component of the \acrshort{soc} is represented as a node in the \acrfull{dts} file. The complete device tree can be seen in annex~\ref{section:annex1}.
+
+The most important nodes are the \acrshort{cpu} and the memory. The \acrshort{cpu} node describes the \acrshort{cpu} hardware, supported architecture and specific features. The \acrshort{cpu} node description used by the author in the \acrfull{dts} was based on the description sugested by the \textit{VexRiscv} developer. The memory node indicates that the \acrshort{soc} \acrshort{dram} start address is 0x80000000 and it has 512MB of available memory (i.e. memory lenght is 0x10000000). The \acrshort{dts} atribute \enquote{regs} indicates the respective hardware devices addresses in the \acrshort{soc}. 
+
+The \enquote{choosen} node is the only node that does not represent a real device. The \enquote{choosen} node is used to indicate the arguments that should be passed to the Linux kernel when it boots. The \enquote{choosen} node also indicates where in the memory the \acrlong{rootfs} is located.
+
+The \acrshort{soc} peripherals are inside a node which the author called \enquote{soc}. The \acrshort{clint} node indicates the  \acrshort{clint} addresses and the interrupts it can create. The \acrshort{plic} is commented because althought it existed when included on the \acrshort{dts} it would cause the Linux kernel to panic and stop working. The \acrshort{uart} node indicated the systems baud rate, frequency, the \acrshort{uart} address and how the registers should be accessed. All the peripherals nodes have an atribute called \enquote{compatible} which indicates the device drives with which the component is compatible.
+
+Using the \acrfull{dtc} a developer is able to create a binary \acrfull{dtb} from the \acrfull{dts} files. The command needed to run to compile the \acrshort{dts} is~\ref{lst:build_dtb}.
+
+\begin{lstlisting}[language=bash, caption={Makefile target to build the device tree blob.}, label=lst:build_dtb]
+dtc -O dtb -o $(DTB_DIR)/iob_soc.dtb $(DTS_DIR)/iob_soc.dts
+\end{lstlisting}
 
 \subsection{Linux kernel}
+To build a Linux kernel compatible with the developed \acrshort{soc} the kernel had to be compatible with the \textit{VexRiscv} \acrshort{cpu} in it. The \textit{SpinalHDL} author has a Linux kernel fork compatible with the \textit{VexRiscv} \acrshort{cpu}. Consequently, the \textit{SpinalHDL} kernel fork is used by the user to create the kernel to run with the \acrshort{soc} developed in this project.
 
-\subsection{Root File system}
+The thesis author developed a Makefile target, called \enquote{build-linux-kernel}, to automatically build the Linux kernel. The author also created a configuration file adapted to the \acrshort{soc}. The Makefile target has to copy the customized configuration file to the configs directory related to the \textit{RISC-V} \acrshort{isa}. Then the target has to configure the  kernel build process with the copied file. Finally, the kernel can be compiled and the resulting binnary image copied to the \acrshort{os} directory.
+
+\begin{lstlisting}[language=make, caption={Root file system Makefile target.}, label=lst:rootfs_makefile]
+build-linux-kernel: clean-linux-kernel os_dir
+    cd $(Linux_DIR)/Linux && \
+        cp $(Custom_Platform_DIR)/linux_config $(Linux_DIR)/Linux/arch/riscv/configs/iob_soc_defconfig && \
+        $(MAKE) ARCH=riscv CROSS_COMPILE=riscv64-unknown-linux-gnu- iob_soc_defconfig && \
+        $(MAKE) ARCH=riscv CROSS_COMPILE=riscv64-unknown-linux-gnu- -j$(nproc) && \
+        cp $(Linux_DIR)/Linux/arch/riscv/boot/Image $(VEX_OS_DIR)
+\end{lstlisting}
+
+An alternative way to build the Linux kernel would be using \textit{Buildroot}. \textit{Buildroot}~\cite{buildroot} is a tool that simplifies and automates building a complete Linux system for an embedded system. Since it allows cross-compilation, anyone can build a root filesystem, a Linux kernel image and a bootloader for any existing CPU architecture using only their personal computer.
+
+The author tested the build process using \textit{Buildroot} and was successful in creating a executable Linux kernel. However, the process of creating the Linux kernel with \textit{Buildroot} is slower than the previous method. For the development of the \acrshort{os}, \textit{Buildroot} could be useful in the future when creating a more complex system. A more complex system would be a \acrshort{soc} with more peripherals, for example an Ethernet peripheral.
+
+\subsection{Root File System}
+The \acrfull{rootfs} stores the user applications that the users can execute while the \acrshort{os} runs. The kernel mounts the \acrshort{rootfs} during the boot process. The \acrshort{rootfs} contains the files and directories that the users can access within the \acrshort{os}.
+
+The \acrshort{rootfs} developed is populated with applications present in \textit{Busybox}~\cite{busybox}. \textit{Busybox} is a combination of essential programs commonly found on UNIX systems. Since the developers of \textit{Busybox} developed it for size-optimization and limited resources, it is ideal for adding to a minimal Linux distribution that might run on an embedded SoC. However, its programs' functionality is limited compared to the equivalent programs in general Linux distributions. The \textit{Busybox} applications will be able to be seen in the \enquote{/bin}, \enquote{/sbin}, \enquote{/usr/bin} and \enquote{/usr/sbin} directories of the \acrshort{rootfs}.
+
+The first program, called init, runs after the kernel boots. The init program has PID id 0. The Linux kernel uses the PID id to identify the different programs running. The init program is located at the root directory (\enquote{/}) of the \acrshort{os} \acrlong{rootfs}. The init program is a shell script that starts by mounting files needed by the Linux kernel to work with user applications. Then it will greet the user with a welcoming message printed to the stdout. The greeting message indicates the time it took the system to boot. Finally, the init script will launch a Bourne shell or sh. The Bourne shell allows users to interact with the \acrshort{os} and launch other applications. The init script is seen in listing \ref{lst:rootfs_init}.
+
+\begin{lstlisting}[language=sh, caption={Init script.}, label=lst:rootfs_init]
+#!/bin/sh
+echo "### INIT SCRIPT ###"
+/bin/mkdir /proc /sys /tmp
+/bin/mount -t proc none /proc
+/bin/mount -t sysfs sysfs /sys
+/bin/mount -t tmpfs none /tmp
+
+echo 'IObundle-OpenCryptoLinux >   '
+echo -e "\nThis boot took $(cut -d' ' -f1 /proc/uptime) seconds\n"
+
+/bin/sh    
+\end{lstlisting}
+
+The author developed a build-\acrlong{rootfs} Makefile target to automatise the process of creating a \acrlong{rootfs}. First, the Makefile script has to enter the directory where the \textit{Busybox} software is. Then the Makefile script will compile the \textit{Busybox} programs for the developed hardware platform and copy the binaries to an \enquote{./\_install} directory. Succeeding the creation of the \enquote{./\_install} directory, the Makefile target will copy the init program to it and create special files used by the Linux kernel during execution. Finally, the script will compress the \enquote{./\_install} directory to a \enquote{.cpio.gz} format. The \enquote{.cpio.gz} format is a format that the Linux kernel can uncompress while booting. The Linux kernel will then use the uncompressed archive as the \acrlong{rootfs}. The build-\acrlong{rootfs} Makefile target can be seen in listing~\ref{lst:rootfs_makefile}.
+
+\begin{lstlisting}[language=make, caption={Root file system Makefile target.}, label=lst:rootfs_makefile]
+build-rootfs: clean-rootfs
+    cd $(busybox_DIR)/busybox && \
+        cp $(Custom_Platform_DIR)/rootfs_busybox/busybox_config $(busybox_DIR)/busybox/configs/iob_defconfig && \
+        $(MAKE) ARCH=riscv CROSS_COMPILE=riscv64-unknown-linux-gnu- iob_defconfig && \
+        CROSS_COMPILE=riscv64-unknown-linux-gnu- $(MAKE) -j$(nproc) && \
+        CROSS_COMPILE=riscv64-unknown-linux-gnu- $(MAKE) install && \
+        cd _install/ && cp $(Custom_Platform_DIR)/rootfs_busybox/init init && \
+        mkdir -p dev && sudo mknod dev/console c 5 1 && sudo mknod dev/ram0 b 1 0 && \
+        find -print0 | cpio -0oH newc | gzip -9 > $(OS_DIR)/rootfs.cpio.gz
+\end{lstlisting}
+
+The \acrshort{rootfs} created can be tested with \textit{QEMU} before implementing it on the developed \acrshort{soc}. The developer would have to compile the Linux kernel to be compatible with the \textit{QEMU} virtual hardware. Then the \acrshort{rootfs} can be simulated by running the bash command~\ref{lst:qemu_rootfs}.
+
+\begin{lstlisting}[language=bash, caption={\acrlong{rootfs} \textit{QEMU} simulation.}, label=lst:qemu_rootfs]
+sudo qemu-system-riscv32 -nographic -machine virt -kernel linux/arch/riscv/boot/Image -append "root=/dev/ram init=/init ro console=ttyS0" -initrd rootfs.cpio.gz -bios default
+\end{lstlisting}
+
+\subsection{User Interaction}
+After successfully creating the \acrlong{os} the interaction with the \textit{Console} program was incomplete. The \textit{Console} could receive and print messages sent by Linux to the stdout. However, the \textit{Console} could not read user input and sent it to the Linux running on the \acrshort{soc}. When a user types a message on their computer, they will send the message to the stdin of the \acrshort{os} running in their personal computer. The stdin in the user's computer had to be redirected to the \acrshort{soc} serial input to send a message to the Linux running on the \acrshort{soc}.
+
+The \textit{Console} program had to check if there was data in the user's stdin before reading a Byte from it. After reading a Byte, the \textit{Console} would write the Byte to the \acrshort{soc} serial input. In the code snippet~\ref{lst:user_input} it can be seen the python code added to the \textit{Console}. The author also had to ensure that the \textit{Console} program would not block when reading from \acrshort{soc} serial output.
+
+\begin{lstlisting}[language=Python, caption={Read user input and send to the \acrshort{soc}.}, label=lst:user_input]
+    if select.select([stdin, ], [], [], 0.0)[0]:
+        user_str = stdin.read(1)
+        if(user_str!=''):
+            if SerialFlag:
+                ser.write(bytes(user_str, 'UTF-8'))
+            else:
+                tb_write(bytes(user_str, 'UTF-8'))
+\end{lstlisting}
+
+After receiving data from the serial input, the Linux running on the \acrshort{soc} would send that data to its stdin. Even though now the user could send information to the \acrshort{soc}, there was still a problem. The problem was that the terminal on his computer captured the user input. The terminal, by default, only sends data to the stdin after receiving a new line ('\\n') character. Furthermore, by default, the terminal echoes the user input. Consequently, the user input would appear repeated.
+
+A UNIX \acrshort{os} terminal has two modes of receiving user input. The default is the canonical mode, which waits until the user inserts a new line to send the data to the stdin. In the non-canonical mode, the terminal sends the data of a keyboard key to the stdin after the user presses it without editing. Developers can also configure the terminal to echo or not the character sent by the user. To configure the terminal, the author developed a python script that reads the current terminal configuration related to the stdin. Then the script will change the values corresponding to the canonical and the echo mode to the opposite of the original value. Before executing the script, the terminal, by default, is configured to echo the input in canonical mode. Changing the values to the opposite of the original value means that after executing the script, the terminal will be configured not to echo the input and be in non-canonical mode. Finally, the script will set the terminal configuration to the new configuration. The python script that changes the terminal mode is seen in the code snippet \ref{lst:noncanonical}.
+
+\begin{lstlisting}[language=Python, caption={Enable or disable non-canonical mode.}, label=lst:noncanonical]
+#!/usr/bin/python
+import sys
+import termios
+
+stdin = sys.stdin
+fd = stdin.fileno()
+
+old = termios.tcgetattr(fd)
+new = termios.tcgetattr(fd)
+new[3] &= ~termios.ECHO
+new[3] &= ~termios.ICANON
+
+termios.tcsetattr(fd, termios.TCSAFLUSH, new)
+print()
+\end{lstlisting}
+
+The Makefile called by the user has to run the script in listing~\ref{lst:noncanonical} in his computer before executing the console program and connecting to the \acrshort{soc} on the \acrshort{fpga}. However, the Makefile must only execute the script after it executes the file transfers. The file transferring copies the files in the user's computer to the computer connected to the \acrshort{fpga} board. The Makefiles executes the file transferring using the \enquote{rsync} command. The \enquote{rsync} command needs to function with the terminal in canonical mode. The current solution is to run the Python script right before the \textit{Console} and right after the connection with the \acrshort{soc} ends. The first time the Makefile runs the script, the terminal mode changes to non-canonical and disables input echo. The second time the Makefile runs the script, the terminal is set to default again.
