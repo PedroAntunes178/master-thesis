@@ -6,7 +6,7 @@ Some software developed was not mandatory to get a full-fledged \acrlong{os} to 
 
 In this chapter, the software developed will be analysed. The new \textit{Python} \textit{Console} and the new simulation system were already implemented on the upstream \textit{IOb-SoC} template. Other developers are already using this software. Moreover, the \textit{IObundle} developers using it have already been improving the software.
 
-Developers write new Makefiles while developing new hardware and software tools. In this project, the author based some of the new Makefiles on existing \textit{IOb-SoC} Makefiles. In contrast, the author wrote other Makefiles from scratch. The Makefiles help to automatise build processes and simplify the \acrshort{soc} usage.
+Developers write new Makefiles while developing new hardware and software tools. In this project, the author based some of the new Makefiles on existing \textit{IOb-SoC} Makefiles. In contrast, the author wrote other Makefiles from scratch. The Makefiles help to automate the build processes and simplify the \acrshort{soc} usage.
 
 \section{\textit{Python} \textit{Console}}
 \label{section:pyhton_console}
@@ -194,9 +194,15 @@ The testbench has to send a write request signal to the test \acrshort{uart} to 
 
 \begin{lstlisting}[language=C, caption={Write to the test \acrshort{uart}.}, label=lst:write_uart]
     void uartwrite(unsigned int cpu_address, unsigned int cpu_data, unsigned int nbytes){
+        char wstrb_int = 0;
+        switch (nbytes) {
+            case 1:  wstrb_int = 0b01; break;
+            case 2:  wstrb_int = 0b011; break;
+            default: wstrb_int = 0b01111; break;
+        }
         dut->uart_addr = cpu_address >> 2; // 32 bit address (ignore 2 LSBs)
         dut->uart_valid = 1;
-        dut->uart_wstrb = nbytes << (cpu_address & 0b011);
+        dut->uart_wstrb = wstrb_int << (cpu_address & 0b011);
         dut->uart_wdata = cpu_data << ((cpu_address & 0b011)*8); // align data to 32 bits
         Timer(CLK_PERIOD);
         dut->uart_wstrb = 0;
@@ -275,7 +281,7 @@ During the development of the \acrshort{os} to run on the \acrshort{soc}, the au
 The author developed a Makefile target for each component that automates the build process. Furthermore, he created a general target called \enquote{build-OS}. \enquote{build-OS} calls all other targets and builds a full-featured minimal \acrshort{os}.
 
 \subsection{Bootloaders}
-Before running the Linux kernel software, the \acrshort{soc} has to run two Bootloaders firmware. The first firmware to execute is the stage 0 bootloader. The stage 0 bootloader is an adaptation of the bootloader firmware used in \textit{IOb-SoC}. The second bootloader is a \textit{RISC-V} specific software called \textit{OpenSBI}.
+Before running the Linux kernel software, the \acrshort{soc} has to run two bootloader firmware programs. The first firmware to execute is the stage 0 bootloader. The stage 0 bootloader is an adaptation of the bootloader firmware used in \textit{IOb-SoC}. The second bootloader is a \textit{RISC-V} specific software called \textit{OpenSBI}.
 
 The stage 0 bootloader has to copy the developed \acrshort{os} to the external memory of the \acrshort{soc} running on the \acrshort{fpga} board. The bootloader will send a request to the \textit{Console} program asking for the binary data of the \textit{OpenSBI}, the device tree, the Linux kernel and the \acrlong{rootfs}. Each file transferred will be stored in a specific memory location. The transfer bootloader code can be seen in \ref{lst:copy_bynaries}.
 
@@ -364,7 +370,7 @@ echo -e "\nThis boot took $(cut -d' ' -f1 /proc/uptime) seconds\n"
 /bin/sh    
 \end{lstlisting}
 
-The author developed a build-\acrlong{rootfs} Makefile target to automatise the process of creating a \acrlong{rootfs}. First, the Makefile script has to enter the directory where the \textit{Busybox} software is. Then the Makefile script will compile the \textit{Busybox} programs for the developed hardware platform and copy the binaries to an \enquote{./\_install} directory. Succeeding the creation of the \enquote{./\_install} directory, the Makefile target will copy the init program to it and create special files used by the Linux kernel during execution. Finally, the script will compress the \enquote{./\_install} directory to a \enquote{.cpio.gz} format. The \enquote{.cpio.gz} format is a format that the Linux kernel can uncompress while booting. The Linux kernel will then use the uncompressed archive as the \acrlong{rootfs}. The build-\acrlong{rootfs} Makefile target can be seen in listing~\ref{lst:rootfs_makefile}.
+The author developed a build-\acrlong{rootfs} Makefile target to automate the process of creating a \acrlong{rootfs}. First, the Makefile script has to enter the directory where the \textit{Busybox} software is. Then the Makefile script will compile the \textit{Busybox} programs for the developed hardware platform and copy the binaries to an \enquote{./\_install} directory. Succeeding the creation of the \enquote{./\_install} directory, the Makefile target will copy the init program to it and create special files used by the Linux kernel during execution. Finally, the script will compress the \enquote{./\_install} directory to a \enquote{.cpio.gz} format. The \enquote{.cpio.gz} format is a format that the Linux kernel can uncompress while booting. The Linux kernel will then use the uncompressed archive as the \acrlong{rootfs}. The build-\acrlong{rootfs} Makefile target can be seen in listing~\ref{lst:rootfs_makefile}.
 
 \begin{lstlisting}[language=make, caption={Root file system Makefile target.}, label=lst:rootfs_makefile]
 build-rootfs: clean-rootfs
