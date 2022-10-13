@@ -1,23 +1,23 @@
 \chapter{Project Results}
 \label{chapter:project_results}
-In the following chapter the author is going to analyse the results obtained from the hardware and software developed in this thesis project. The author's first objective was running the \enquote{Hello World!} firmware with the \textit{VexRiscv} \acrshort{cpu}. Secondly, he tested the implementation of the interrupt routine software with the developed \acrshort{clint} hardware. Finally, the candidate successfully executed the minimal Linux \acrshort{os} in real hardware using the developed \acrlong{soc}.
+In the following chapter, the author will analyse the results obtained from the hardware and software developed in this thesis project. The author's first objective was running the \enquote{Hello World!} firmware with the \textit{VexRiscv} \acrshort{cpu}. Secondly, he tested the implementation of the interrupt routine software with the developed \acrshort{clint} hardware. Finally, the candidate successfully executed the minimal Linux \acrshort{os} in real hardware using the developed \acrlong{soc}.
 
-All the results obtained in this thesis which communicate with the \acrshort{fpga} board or the \acrlong{soc} testbench are executing the developed \textit{Console} program. The hardware components comprising the \acrshort{soc} differ in each section of this chapter. The author customizes the \acrlong{soc} hardware depending on the software needs. 
+All the results obtained in this thesis which communicate with the \acrshort{fpga} board or the \acrshort{soc} testbench, are executing the developed \textit{Console} program. The hardware components comprising the \acrshort{soc} differ in each section of this chapter. The author customises the \acrshort{soc} hardware depending on the software needs.
 
-In each step the author studied the simulation with the different logic simulators and the memory resources needed to run the respective firmware. Furthermore, when running the \acrshort{soc} on the \acrshort{fpga} board he examined the required \acrshort{fpga} resources.
+In each step, the author studied the simulation with the different logic simulators and the memory resources needed to run the respective firmware. Furthermore, when running the \acrshort{soc} on the \acrshort{fpga} board he examined the required \acrshort{fpga} resources.
 
 \section{System Running \enquote{Hello World!}}
 \label{section:hello_world}
-The \textit{IObundle} developers created the \enquote{Hello World!} firmware to test the functionality of the \textit{IOb-SoC} template. After the author implemented the \textit{VexRiscv} \acrshort{cpu} on the developed \acrlong{soc}, he executed a regression test to verify the correctness of the \acrlong{soc}. The regression test was the execution of the the \enquote{Hello World!} which was known to work correctly on the \textit{IOb-SoC}.
+The \textit{IObundle} developers created the \enquote{Hello World!} firmware to test the functionality of the \textit{IOb-SoC} template. After the author implemented the \textit{VexRiscv} \acrshort{cpu} on the developed \acrshort{soc}, he executed a regression test to verify the correctness of the \acrshort{soc}. The regression test was the execution of the \enquote{Hello World!}, which was known to work correctly on the \textit{IOb-SoC}.
 
-The \enquote{Hello World!} firmware is a program that prints a \enquote{Hello World!} message to the user, prints the value of $\pi$ which is a floating number and tests file transferring between the \textit{Console} and \textit{IOb-SoC}. The only alteration the author made to the \textit{IOb-SoC} hardware to obtain the results presented in this section was swapping the \acrshort{cpu}.
+The \enquote{Hello World!} firmware is a program that prints a \enquote{Hello World!} message to the user, prints the value of $\pi$, which is a floating number, and tests file transferring between the \textit{Console} and \textit{IOb-SoC}. The only alteration the author made to the \textit{IOb-SoC} hardware to obtain the results presented in this section was swapping the \acrshort{cpu}.
 
-The \enquote{Hello World!} program size is .... The minimal size of the memory on the \acrlong{soc} is dictated by the firmware size. The memory size should be the closest upper bound power of two.
+The \enquote{Hello World!} program size is 23964 Bytes. The minimal size of the memory on the \acrshort{soc} is dictated by the firmware size. The memory size should be the closest upper bound power of two.
 
-\subsection{Simulation}
-The author simulated the \enquote{Hello World!} program using the \textit{Icarus} simulator and \textit{Verilator}. The \enquote{Hello World!} simulation allows the author to make a fair comparison between both logic simulators. 
+\subsection{Execute in simulation}
+The author simulated the \enquote{Hello World!} program using the \textit{Icarus} simulator and \textit{Verilator}. The \enquote{Hello World!} simulation allows the author to make a fair comparison between both logic simulators.
 
-In figure \ref{fig:hello_sim} the reader can see the expected output when executing the \enquote{Hello World!} firmware. In this example, the simulator executed the firmware using the internal memory of the \acrlong{soc} and considered that the firmware was already on the memory. Considering the firmware was already on the memory allow the simulator to not execute the firmware transfer between the \textit{Console} and the testbench.
+In figure \ref{fig:hello_sim} the reader can see the expected output when executing the \enquote{Hello World!} firmware. In this example, the simulator executed the firmware using the internal memory of the \acrshort{soc} and considered that the firmware was already on the memory. Considering the firmware was already on the memory, allow the simulator not to execute the firmware transfer between the \textit{Console} and the testbench.
 
 \begin{figure}[!ht]
     \centering
@@ -34,12 +34,11 @@ In figure \ref{fig:hello_sim} the reader can see the expected output when execut
         \caption{End of the \enquote{Hello World!} firmware.}
         \label{fig:end_hello_sim}
     \end{subfigure}
-    \caption{Running Linux with \textit{Verilator}.}
+    \caption{Running the \enquote{Hello World!} firmware in simulation.}
     \label{fig:hello_sim}
 \end{figure}
 
-Both open-source logic simulators are capable of executing the \enquote{Hello World!} program. 
-% Things that slow the simulation baud rate (serial transfer) and memory access; Baud rate used in simulation was 5000000 which is the number of bits per second transferred to the \acrshort{uart}. The simulations where run considering the system clock frequency 100MHz.
+Both open-source logic simulators are capable of executing the \enquote{Hello World!} program. When the baud rate decreases or the memory size increases the simulation is slower. The baud rate used in the simulation was 5000000, which is the number of bits per second transferred to the \acrshort{uart}. The simulations were run considering the system clock frequency 100MHz. The bootloader is always stored in internal memory. The bootloader memory is 4KB ($2^12$), since the bootloader binary is 1508 Bytes 4KB is enough memory to store the bootloader program. The firmware by default is stored in the internal memory and the memory size is 32KB ($2^15$). In table \ref{tab:hello_sim} the reader can see a timing comparison between the different logic simulators simulating the original \textit{IOb-SoC} and the developed \acrshort{soc}. The \enquote{INIT\_MEM} flag indicates whether the firmware is already loaded in the \acrshort{fpga} or if the \textit{Console} needs to transfer the firmware to the \acrshort{soc}, the user can set the flag to '1' or '0' respectively. The simulations can be executed with or without external memory. Furthermore, the firmware can run in the internal or external memory. The \enquote{make sim-test} command tests the different possible simulations.
 
 \begin{table}[!ht]
     \centering
@@ -47,24 +46,188 @@ Both open-source logic simulators are capable of executing the \enquote{Hello Wo
     \cline{2-5}
                                                            & \multicolumn{2}{l|}{Authors \acrshort{soc}} & \multicolumn{2}{l|}{\textit{IOb-SoC}}    \\ \hline
     \multicolumn{1}{|l|}{Command \textbackslash Simulator} & \multicolumn{1}{l|}{Icarus}  & Verilator & \multicolumn{1}{l|}{Icarus}  & Verilator \\ \hline
-    \multicolumn{1}{|l|}{sim-run INIT\_MEM=1}              & \multicolumn{1}{l|}{2m 26s}  & 0m 3s     & \multicolumn{1}{l|}{0m 25s}  & 0m 3s     \\ \hline
-    \multicolumn{1}{|l|}{sim-run INIT\_MEM=0}              & \multicolumn{1}{l|}{88m 19s} & 1m 1s     & \multicolumn{1}{l|}{}        & 0m 27s    \\ \hline
-    \multicolumn{1}{|l|}{sim-test}                         & \multicolumn{1}{l|}{N/A}     & 2m 27s    & \multicolumn{1}{l|}{43m 34s} & 1m 34s    \\ \hline
+    \multicolumn{1}{|l|}{make sim-run INIT\_MEM=1}              & \multicolumn{1}{l|}{2m 26s}  & 0m 3s     & \multicolumn{1}{l|}{0m 25s}  & 0m 3s     \\ \hline
+    \multicolumn{1}{|l|}{make sim-run INIT\_MEM=0}              & \multicolumn{1}{l|}{88m 19s} & 1m 1s     & \multicolumn{1}{l|}{15m 18s} & 0m 27s    \\ \hline
+    \multicolumn{1}{|l|}{make sim-test}                         & \multicolumn{1}{l|}{231m 3s} & 2m 27s    & \multicolumn{1}{l|}{43m 34s} & 1m 34s    \\ \hline
     \end{tabular}
+    \caption{Timing the \enquote{Hello World!} firmware simulation.}
+    \label{tab:hello_sim}
 \end{table}
 
-From table ... engineers are able to conclude the advantage of using \textit{Verilator}. For more complexed systems the \textit{C++} testbench is much faster than the \textit{Verilog} counterpart. The disadvantage of using \textit{Verilator} is that signal values can only be either '0' or '1'. However, the speed-up in the simulation is also due to the signal value limitation. In \textit{Icarus} the signal are also evaluated as unknown ('x') when they are uninitialized.
-% Verilator is slower to compile the testbench; but mush faster executing. The \textit{IOb-SoC} simulation is faster then the authors \acrlong{soc} simulation because the \textit{PicoRV32} is less complex then the \textit{VexRiscv} \acrshort{cpu}.
+From table \ref{tab:hello_sim} engineers are able to conclude the advantage of using \textit{Verilator}. For more complexed systems the \textit{C++} testbench is much faster than the \textit{Verilog} counterpart. The disadvantage of using \textit{Verilator} is that signal values can only be either '0' or '1'. However, the speed-up in the simulation is also due to the signal value limitation. In \textit{Icarus} the simulation can evaluate the signal as unknown ('x') when they are uninitialized. The author noted that \textit{Verilator} is slower to compile the testbench, however, it is mush faster executing the software. The \textit{IOb-SoC} simulation is faster then the authors \acrshort{soc} simulation because the \textit{PicoRV32} is less complex then the \textit{VexRiscv} \acrshort{cpu}.
 
-\subsection{FPGA Board}
+\subsection{Execute in the FPGA Board}
+In figure \ref{fig:hello_fpga} the readers can see the output of executing the \enquote{Hello World!} firmware in the \acrshort{fpga}. The author synthesized the \acrshort{soc} with the external memory. Furthermore, the firmware is running from the external memory.
 
-fpga-run: 
-real	0m41,603s
-user	0m0,214s
-sys	0m0,119s
+\begin{figure}[!ht]
+    \centering
+    \begin{subfigure}[b]{0.49\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{start_hello_fpga.png}
+        \caption{Start of the \enquote{Hello World!} firmware.}
+        \label{fig:start_hello_fpga}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}[b]{0.49\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{end_hello_fpga.png}
+        \caption{End of the \enquote{Hello World!} firmware.}
+        \label{fig:end_hello_fpga}
+    \end{subfigure}
+    \caption{Running the \enquote{Hello World!} firmware in the FPGA Board.}
+    \label{fig:hello_fpga}
+\end{figure}
 
+In the tables in \ref{tab:fpga_hello} are the FPGA implementation results for two FPGA families. The author implemented the developed \acrshort{soc} on the kintex Ultrascale AES-KU040-DB-G board and in the CYCLONE V GT-DK. The kintex Ultrascale has an \acrshort{fpga} more capable then the CYCLONE V.
+
+\begin{table}[h]
+    \begin{subtable}[h]{0.45\textwidth}
+        \centering
+        \begin{tabular}{l|l|l|}
+            \cline{2-3}
+                                              & Authors SoC & \textit{IOb-SoC} \\ \hline
+            \multicolumn{1}{|l|}{ALM}         & 10,062      & 9,280            \\ \hline
+            \multicolumn{1}{|l|}{FF}          & 12150       & 10020            \\ \hline
+            \multicolumn{1}{|l|}{DSP}         & 8           & 3                \\ \hline
+            \multicolumn{1}{|l|}{BRAM blocks} & 234         & 352              \\ \hline
+            \multicolumn{1}{|l|}{BRAM bits}   & 753,248     & 779,744          \\ \hline
+        \end{tabular}
+       \caption{Cyclone V GT}
+       \label{tab:cyclone_hello}
+    \end{subtable}
+    \hfill
+    \begin{subtable}[h]{0.45\textwidth}
+        \centering
+        \begin{tabular}{l|l|l|}
+            \cline{2-3}
+                                            & Authors SoC & \textit{IOb-SoC} \\ \hline
+            \multicolumn{1}{|l|}{LUTs}      & 21226       & 23003            \\ \hline
+            \multicolumn{1}{|l|}{Registers} & 23373       & 22588            \\ \hline
+            \multicolumn{1}{|l|}{DSPs}      & 10          & 7                \\ \hline
+            \multicolumn{1}{|l|}{BRAM}      & 39.5        & 34.5             \\ \hline
+        \end{tabular}
+        \caption{Kintex Ultrascale}
+        \label{tab:kintex_hello}
+     \end{subtable}
+     \caption{FPGA results for \enquote{Hello World!} program using external memory.}
+     \label{tab:fpga_hello}
+\end{table}
+
+The author obtained the values in table \ref{tab:fpga_hello} while using the \acrshort{soc} with the external memory. When synthesising the \acrshort{soc} the user is able to define whether he wants to use external memory with the \enquote{RUN\_EXTMEM} flag. If \enquote{RUN\_EXTMEM=1} then a memory controller will be synthesised alongside the developed \acrshort{soc} and loaded onto the \acrshort{fpga}. The memory controller is hardware logic written in Verilog and specific to the \acrshort{fpga} where the \acrshort{soc} is running. In order to better understand the resources utilization the author decided to compare the resources uses when running the \enquote{Hello World!} firmware from the internal memory. The resources without the memory controller are in tables \ref{tab:fpga_hello_int_mem}.
+
+\begin{table}[h]
+    \begin{subtable}[h]{0.45\textwidth}
+        \centering
+        \begin{tabular}{l|l|l|}
+            \cline{2-3}
+                                              & Authors SoC & \textit{IOb-SoC} \\ \hline
+            \multicolumn{1}{|l|}{ALM}         & 3,687       & 1,542            \\ \hline
+            \multicolumn{1}{|l|}{FF}          & 4707        & 1214             \\ \hline
+            \multicolumn{1}{|l|}{DSP}         & 8           & 3                \\ \hline
+            \multicolumn{1}{|l|}{BRAM blocks} & 56          & 38               \\ \hline
+            \multicolumn{1}{|l|}{BRAM bits}   & 408,800     & 296,960          \\ \hline
+        \end{tabular}
+       \caption{Cyclone V GT}
+       \label{tab:cyclone_hello_int_mem}
+    \end{subtable}
+    \hfill
+    \begin{subtable}[h]{0.45\textwidth}
+        \centering
+        \begin{tabular}{l|l|l|}
+            \cline{2-3}
+                                            & Authors SoC & \textit{IOb-SoC} \\ \hline
+            \multicolumn{1}{|l|}{LUTs}      & 5457        & 2072             \\ \hline
+            \multicolumn{1}{|l|}{Registers} & 4405        & 1074             \\ \hline
+            \multicolumn{1}{|l|}{DSPs}      & 7           & 4                \\ \hline
+            \multicolumn{1}{|l|}{BRAM}      & 14          & 9                \\ \hline
+        \end{tabular}
+        \caption{Kintex Ultrascale}
+        \label{tab:kintex_hello_int_mem}
+     \end{subtable}
+     \caption{FPGA results for \enquote{Hello World!} program.}
+     \label{tab:fpga_hello_int_mem}
+\end{table}
+
+From the tables in \ref{tab:fpga_hello_int_mem} the author can confirm the \textit{VexRiscv} \acrshort{cpu} requires more resources than the \textit{PicoRV32}. Since all components except the \acrshort{cpu} are equal in both \acrshort{soc} the difference in resources is the difference in the \acrshort{cpu}.
 
 \section{Interrupt Routines}
+To test the correct functionality of the interrupts in the \acrshort{soc} the author executed the developed \acrshort{clint} testbench. Moreover to test the complete \acrshort{soc} he run the bare-metal firmware created to handled interrupts. The firmware was executed in simulation and implemented in the \acrshort{fpga} Board.
+
+The size of the firmware that testes the interrupt routine is 24364 Bytes. Consequently the only difference in the \acrshort{soc} used on this section tests is the addition of the \acrshort{clint} hardware. The memory size is the same since the \enquote{Hello World!} program and this firmware have similar sizes, both are under 32 KB.
+
+\subsection{Execute CLINT simulation}
+After developing the \acrshort{clint} unit the author executed its testbench testing the timer and software interrupts. In figure ... the readers can see a successful simulation of the \acrshort{clint} executing the interrupts.
+
+\begin{figure}[!ht]
+    \centering
+    \includegraphics[width=\textwidth]{clint_sim.png}
+    \caption{\acrshort{clint} timer and software interrupt simulation.}
+    \label{fig:clint_sim}
+\end{figure}
+
+\subsection{Execute in simulation}
+\begin{figure}[!ht]
+    \centering
+    \begin{subfigure}[b]{0.49\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{icarus_int_sim.png}
+        \caption{Interrupt routine firmware with \textit{Icarus}.}
+        \label{fig:icarus_int_sim}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}[b]{0.49\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{verilator_int_sim.png}
+        \caption{Interrupt routine firmware with \textit{Verilator}.}
+        \label{fig:verilator_int_sim}
+    \end{subfigure}
+    \caption{Running the interrupt routine firmware in the FPGA Board.}
+    \label{fig:int_sim}
+\end{figure}
+
+\subsection{Execute in the FPGA Board}
+
+\begin{figure}[!ht]
+    \centering
+    \includegraphics[width=0.49\textwidth]{int_fpga.png}
+    \caption{Executing the interrupt routine program on the \acrshort{fpga}.}
+    \label{fig:int_fpga}
+\end{figure}
+% talk 0.004 seconds after it is the time the interrupt handler takes to execute. It is different from the simulation because of the baud rate.
+
+\begin{table}[h]
+    \begin{subtable}[h]{0.45\textwidth}
+        \centering
+        \begin{tabular}{|l|l|l|}
+            \hline
+            RUN\_EXTMEM & 0       & 1       \\ \hline
+            ALM         & 3,883   & 10,257  \\ \hline
+            FF          & 4940    & 12300   \\ \hline
+            DSP         & 8       & 8       \\ \hline
+            BRAM blocks & 56      & 234     \\ \hline
+            BRAM bits   & 408,800 & 753,248 \\ \hline
+        \end{tabular}
+       \caption{Cyclone V GT}
+       \label{tab:cyclone_int}
+    \end{subtable}
+    \hfill
+    \begin{subtable}[h]{0.45\textwidth}
+        \centering
+        \begin{tabular}{|l|l|l|}
+            \hline
+            RUN\_EXTMEM & 0    & 1     \\ \hline
+            LUTs        & 5729 & 21478 \\ \hline
+            Registers   & 4580 & 23545 \\ \hline
+            DSPs        & 7    & 10    \\ \hline
+            BRAM        & 14   & 39.5  \\ \hline
+        \end{tabular}
+        \caption{Kintex Ultrascale}
+        \label{tab:kintex_int}
+     \end{subtable}
+     \caption{FPGA results for interrupt routine program.}
+     \label{tab:fpga_int}
+\end{table}
+
 
 \section{Run/Boot Linux Performance}
 \begin{figure}
@@ -86,8 +249,8 @@ sys	0m0,119s
     \label{fig:linux_verilator}
 \end{figure}
 time that it takes to build a complete OS
-real	4m29,570s
-user	8m12,039s
-sys	0m56,887s
+real    4m29,570s
+user    8m12,039s
+sys    0m56,887s
 
-\section{FPGA Resources Consumption}
+
