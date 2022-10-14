@@ -198,14 +198,14 @@ After developing the \acrshort{clint} unit the author executed its testbench tes
 \begin{table}[h]
     \begin{subtable}[h]{0.45\textwidth}
         \centering
-        \begin{tabular}{|l|l|l|}
-            \hline
-            RUN\_EXTMEM & 0       & 1       \\ \hline
-            ALM         & 3,883   & 10,257  \\ \hline
-            FF          & 4940    & 12300   \\ \hline
-            DSP         & 8       & 8       \\ \hline
-            BRAM blocks & 56      & 234     \\ \hline
-            BRAM bits   & 408,800 & 753,248 \\ \hline
+        \begin{tabular}{l|l|l|}
+            \cline{2-3}
+                                              & RUN\_EXTMEM=0 & RUN\_EXTMEM=1 \\ \hline
+            \multicolumn{1}{|l|}{ALM}         & 3,883         & 10,257        \\ \hline
+            \multicolumn{1}{|l|}{FF}          & 4940          & 12300         \\ \hline
+            \multicolumn{1}{|l|}{DSP}         & 8             & 8             \\ \hline
+            \multicolumn{1}{|l|}{BRAM blocks} & 56            & 234           \\ \hline
+            \multicolumn{1}{|l|}{BRAM bits}   & 408,800       & 753,248       \\ \hline
         \end{tabular}
        \caption{Cyclone V GT}
        \label{tab:cyclone_int}
@@ -213,13 +213,13 @@ After developing the \acrshort{clint} unit the author executed its testbench tes
     \hfill
     \begin{subtable}[h]{0.45\textwidth}
         \centering
-        \begin{tabular}{|l|l|l|}
-            \hline
-            RUN\_EXTMEM & 0    & 1     \\ \hline
-            LUTs        & 5729 & 21478 \\ \hline
-            Registers   & 4580 & 23545 \\ \hline
-            DSPs        & 7    & 10    \\ \hline
-            BRAM        & 14   & 39.5  \\ \hline
+        \begin{tabular}{l|l|l|}
+            \cline{2-3}
+                                            & RUN\_EXTMEM=0 & RUN\_EXTMEM=1 \\ \hline
+            \multicolumn{1}{|l|}{LUTs}      & 5729          & 21478         \\ \hline
+            \multicolumn{1}{|l|}{Registers} & 4580          & 23545         \\ \hline
+            \multicolumn{1}{|l|}{DSPs}      & 7             & 10             \\ \hline
+            \multicolumn{1}{|l|}{BRAM}      & 14            & 39.5          \\ \hline
         \end{tabular}
         \caption{Kintex Ultrascale}
         \label{tab:kintex_int}
