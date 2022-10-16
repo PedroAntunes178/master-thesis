@@ -12,7 +12,7 @@ The \textit{IObundle} developers created the \enquote{Hello World!} firmware to 
 
 The \enquote{Hello World!} firmware is a program that prints a \enquote{Hello World!} message to the user, prints the value of $\pi$, which is a floating number, and tests file transferring between the \textit{Console} and \textit{IOb-SoC}. The alterations the author made to the \textit{IOb-SoC} hardware to obtain the results presented in this section was swapping the \acrshort{cpu} and removing the \textit{IOb-SoC} external memory L1 cache.
 
-The firmware size dictates the minimal size of the memory on the \acrshort{soc}. The \textit{IOb-SoC-Linux} memory is 32 KB because the \enquote{Hello World!} program size is 23964 Bytes. The memory size should always be the closest upper bound power of two. 
+The firmware size dictates the minimal size of the memory on the \acrshort{soc}. The \textit{IOb-SoC-Linux} memory is 32 KB because the \enquote{Hello World!} program size is 23964 Bytes. The memory size should always be the closest upper bound power of two.
 
 \subsection{Execute in simulation}
 The author simulated the \enquote{Hello World!} program using the \textit{Icarus} simulator and \textit{Verilator}. The \enquote{Hello World!} simulation allows the author to make a fair comparison between both logic simulators.
@@ -157,7 +157,7 @@ To test the correct functionality of the interrupts in the \acrshort{soc}, the a
 The size of the firmware that tests the interrupt routine is 24364 Bytes. Consequently, the only difference in the \acrshort{soc} used on this section tests is the addition of the \acrshort{clint} hardware. The memory size is the same since the \enquote{Hello World!} program and this firmware have similar sizes, under 32 KB.
 
 \subsection{Execute CLINT simulation}
-After developing the \acrshort{clint} unit, the author executed its testbench, testing the timer and software interrupts. In figure \ref{fig:clint_sim} the readers can see a successful simulation of the \acrshort{clint} executing the interrupts.
+After developing the \acrshort{clint} unit, the author executed its testbench, testing the timer and software interrupts. Figure~\ref{fig:clint_sim} shows the complete process when running a simulation. The author executed the simulation with \textit{Icarus Verilog}. However, the process is similar with \textit{Verilator}. First, the Makefile script has to compile the testbench software. The \lstinline[language=bash]{make sim-run} calls the \enquote{build} target of the Makefile in the simulator directory. The Makefile calls the \enquote{build} target in figure~\ref{fig:clint_sim} with the command \lstinline[language=bash]{make -C ./hardware/simulator/icarus build}. The build target executes the \enquote{iverilog} application which compiles the hardware sources and the testbench into an executable program. Secondly the Makefile calls the \enquote{run} target. The \enquote{run} target will call the software application that runs the testbench. Figure~\ref{fig:clint_sim} shows the executable being called with \lstinline[language=bash]{./a.out}. After that, the testbench will run until it finishes or the user kills the process.
 
 \begin{figure}[!ht]
     \centering
@@ -166,9 +166,11 @@ After developing the \acrshort{clint} unit, the author executed its testbench, t
     \label{fig:clint_sim}
 \end{figure}
 
-Explain all the simulation processes.
+The author previously discussed the testbench executed in figure~\ref{fig:clint_sim} in subsection~\ref{subsection:clint_simulation}. The testbench first sets the timer interrupt to trigger when the \enquote{MTIMER} register counter hits 200. The testbench disables the timer interrupt after the \acrshort{clint} notifies its occurrence and then triggers the software interrupt. In the clock cycle, right after triggering the software interrupt, the testbench will receive the notification from the \acrshort{clint} unit and disable the interrupt. The testbench finishes after enough time have passed to allow the interrupts to happen if there is nothing wrong with the hardware. Since the testbench and hardware are , \textit{Icarus} is better then \textit{Verilator} to simulate the \acrshort{clint}.
 
 \subsection{Execute in simulation}
+The author executed the firmware discussed in subsection~\ref{subsection:interrupt_firmware} on simulation with both \textit{Icarus} and \textit{Verilator}. The figures in \ref{fig:int_sim} show the execution of the firmware. The \textit{IOb-SoC-Linux} implemented does not use external memory.
+
 \begin{figure}[!ht]
     \centering
     \begin{subfigure}[b]{0.49\textwidth}
@@ -188,7 +190,10 @@ Explain all the simulation processes.
     \label{fig:int_sim}
 \end{figure}
 
+The author wrote the firmware to set the timer interrupt differently for the simulation with \textit{Icarus} and the simulation with \textit{Verilator}. Since the simulation with \textit{Icarus} is slower than with \textit{Verilator}, the time the firmware is waiting for the interrupt to trigger does not have to be as big for the user to notice it while simulating. The \textit{Icarus} simulation set the timer interrupt to trigger after 0.001 seconds, while the \textit{Verilator} simulation set to 0.01 seconds. When the interrupt handler executes, the firmware prints the current time and the value in the \enquote{MTIMER} register. If 0.001 seconds had passed the value of the \enquote{MTIMER} register should be $100KHz*0.001s=100$. The \enquote{MTIMER} register value is not the exact time the interrupt takes to trigger because it also counts the time it takes to execute the rest of the firmware.
+
 \subsection{Execute in the FPGA Board}
+Lastly, the author implemented the \textit{IOb-SoC-Linux} in the \acrshort{fpga} boards. Figure~\ref{fig:int_fpga} shows the correct execution of the firmware from the \textit{IOb-SoC-Linux} internal memory. The firmware programs the timer interrupt to trigger one second after the firmware starts.
 
 \begin{figure}[!ht]
     \centering
@@ -196,19 +201,22 @@ Explain all the simulation processes.
     \caption{Executing the interrupt routine program on the \acrshort{fpga}.}
     \label{fig:int_fpga}
 \end{figure}
-% talk 0.004 seconds after is time the interrupt handler takes to execute. It is different from the simulation because of the baud rate.
+
+In figure~\ref{fig:int_fpga}, the interrupt handler prints the current time that has passed since the firmware started. The hardware consumed approximately one second waiting for the interrupt to trigger. The firmware uses the extra 0.004 seconds to print the \enquote{Hello World} message at the start of the firmware and to execute the interrupt handler. The extra time consumed when executing the \textit{IOb-SoC-Linux} in hardware differs from the simulation's extra time. This difference is due to the baud rate used. Since the hardware baud rate is lower than the simulation baud rate, the messages theoretically take more time to print to the terminal.
+
+Tables \ref{tab:cyclone_int} and \ref{tab:kintex_int} represent how much \acrshort{fpga} resources are consumed by the \textit{IOb-SoC-Linux}. The author executed the firmware from the external memory and the internal memory. The tables in \ref{tab:fpga_int} show the resources when the \acrshort{soc} contains an external memory (w/ DDR) and when it does not (w/o DDR).
 
 \begin{table}[!ht]
     \begin{subtable}[h]{0.45\textwidth}
         \centering
         \begin{tabular}{l|l|l|}
             \cline{2-3}
-                                              & w/o DDR  & w/ DDR  \\ \hline
-            \multicolumn{1}{|l|}{ALM}         & 3,883    & 10,257  \\ \hline
-            \multicolumn{1}{|l|}{FF}          & 4940     & 12300   \\ \hline
-            \multicolumn{1}{|l|}{DSP}         & 8        & 8       \\ \hline
-            \multicolumn{1}{|l|}{BRAM blocks} & 56       & 234     \\ \hline
-            \multicolumn{1}{|l|}{BRAM bits}   & 408,800  & 753,248 \\ \hline
+                                              & w/o DDR & w/ DDR  \\ \hline
+            \multicolumn{1}{|l|}{ALM}         & 3,883   & 10,257  \\ \hline
+            \multicolumn{1}{|l|}{FF}          & 4940    & 12300   \\ \hline
+            \multicolumn{1}{|l|}{DSP}         & 8       & 8       \\ \hline
+            \multicolumn{1}{|l|}{BRAM blocks} & 56      & 234     \\ \hline
+            \multicolumn{1}{|l|}{BRAM bits}   & 408,800 & 753,248 \\ \hline
         \end{tabular}
        \caption{Cyclone V GT}
        \label{tab:cyclone_int}
@@ -218,11 +226,11 @@ Explain all the simulation processes.
         \centering
         \begin{tabular}{l|l|l|}
             \cline{2-3}
-                                            & w/o DDR  & w/ DDR \\ \hline
-            \multicolumn{1}{|l|}{LUTs}      & 5729     & 21478  \\ \hline
-            \multicolumn{1}{|l|}{Registers} & 4580     & 23545  \\ \hline
-            \multicolumn{1}{|l|}{DSPs}      & 7        & 10     \\ \hline
-            \multicolumn{1}{|l|}{BRAM}      & 14       & 39.5   \\ \hline
+                                            & w/o DDR & w/ DDR \\ \hline
+            \multicolumn{1}{|l|}{LUTs}      & 5729    & 21478  \\ \hline
+            \multicolumn{1}{|l|}{Registers} & 4580    & 23545  \\ \hline
+            \multicolumn{1}{|l|}{DSPs}      & 7       & 10     \\ \hline
+            \multicolumn{1}{|l|}{BRAM}      & 14      & 39.5   \\ \hline
         \end{tabular}
         \caption{Kintex Ultrascale}
         \label{tab:kintex_int}
@@ -231,6 +239,7 @@ Explain all the simulation processes.
      \label{tab:fpga_int}
 \end{table}
 
+Comparing the table in~\ref{tab:fpga_int} with the tables in~\ref{tab:fpga_hello_int_mem} and~\ref{tab:fpga_hello} engineers can see that the \acrshort{clint} hardware does not use much resources.
 
 \section{Boot and use the Linux Operating System}
 \label{section:boot_linux}
@@ -312,12 +321,13 @@ Table \ref{tab:fpga_linux} show the resources used by the \textit{IOb-SoC-Linux}
     \begin{subtable}[h]{0.45\textwidth}
         \centering
         \begin{tabular}{l|l|l|}
-            \hline
-            \multicolumn{1}{|l|}{ALM}         & 11,227  \\ \hline
-            \multicolumn{1}{|l|}{FF}          & 13725   \\ \hline
-            \multicolumn{1}{|l|}{DSP}         & 8       \\ \hline
-            \multicolumn{1}{|l|}{BRAM blocks} & 234     \\ \hline
-            \multicolumn{1}{|l|}{BRAM bits}   & 755,424 \\ \hline
+            \cline{2-3}
+                                              & Resources & \acrshort{fpga} usage \% \\ \hline
+            \multicolumn{1}{|l|}{ALM}         & 11,227    & 10                       \\ \hline
+            \multicolumn{1}{|l|}{DSP}         & 8         & 3                        \\ \hline
+            \multicolumn{1}{|l|}{FF}          & 13725     & 2                        \\ \hline
+            \multicolumn{1}{|l|}{BRAM blocks} & 234       & 19                       \\ \hline
+            \multicolumn{1}{|l|}{BRAM bits}   & 755,424   & 9                        \\ \hline
         \end{tabular}
        \caption{Cyclone V GT}
        \label{tab:cyclone_linux}
@@ -326,11 +336,12 @@ Table \ref{tab:fpga_linux} show the resources used by the \textit{IOb-SoC-Linux}
     \begin{subtable}[h]{0.45\textwidth}
         \centering
         \begin{tabular}{l|l|l|}
-            \hline
-            \multicolumn{1}{|l|}{LUTs}      & 23126 \\ \hline
-            \multicolumn{1}{|l|}{Registers} & 24505 \\ \hline
-            \multicolumn{1}{|l|}{DSPs}      & 10    \\ \hline
-            \multicolumn{1}{|l|}{BRAM}      & 39.5  \\ \hline
+            \cline{2-3}
+                                            & Resources & \acrshort{fpga} usage \% \\ \hline
+            \multicolumn{1}{|l|}{LUTs}      & 23126     & 9.54                     \\ \hline
+            \multicolumn{1}{|l|}{Registers} & 24505     & 5.05                     \\ \hline
+            \multicolumn{1}{|l|}{DSPs}      & 10        & 0.52                     \\ \hline
+            \multicolumn{1}{|l|}{BRAM}      & 39.5      & 6.58                     \\ \hline
         \end{tabular}
         \caption{Kintex Ultrascale}
         \label{tab:kintex_linux}
@@ -339,4 +350,4 @@ Table \ref{tab:fpga_linux} show the resources used by the \textit{IOb-SoC-Linux}
      \label{tab:fpga_linux}
 \end{table}
 
-The difference in registers between tables. MABE is not sure if there is space.
+The tables in \ref{tab:fpga_linux} show that the resources utilization from the \textit{IOb-SoC-Linux} is not much bigger than the \textit{IOb-SoC}. The \acrshort{fpga} still has enough resources to implement hardware accelerators.

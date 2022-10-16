@@ -264,6 +264,7 @@ One of the software interrupt usages is synchronising various cores in a system.
 After enabling an interrupt, the \acrshort{clint} sends a hardware notification. The interrupt notification has to be handled by the rest of the hardware. The \acrshort{clint} testbench and the bare-metal firmware handle the interrupt notification differently.
 
 \subsection{CLINT simulation}
+\label{subsection:clint_simulation}
 The author built a simulation testbench in Verilog and another in C++ programming language to test the \acrshort{clint} hardware unit. These simulations allow the developers to test the correctness of the hardware component without connecting it to the rest of the \acrshort{soc}.
 
 Both the testbench in Verilog and the testbench in C++ had similar behaviours. First, they would set up a timer interrupt. The testbench set the timer interrupt to trigger in $0.2*10^{-6}$ seconds. Considering that the simulation was slow, this was a reasonable time. After the timer interrupt is triggered, the simulation receives its notification and proceeds to handle the interrupt. When receiving a timer interrupt, the simulation sets up the software interrupt. The \acrshort{clint} unit notifies the testbench of an existing software interrupt in the next clock cycle. It then proceeds to disable the timer and the software interrupt. To disable the timer interrupt the \enquote{MTIMECMP} register has to be set to its maximum value, which is 0xFFFFFFFFFFFFFFFF (i.e. all 64 bits are '1'). The \enquote{MSIP} register had to be set to 0 to disable the software interrupt.
@@ -271,6 +272,7 @@ Both the testbench in Verilog and the testbench in C++ had similar behaviours. F
 If the interrupts work correctly, there will be a message in the terminal indicating their correctness. After testing that both interrupts work as expected, the testbench can finish successfully. The simulation will always end $1*10^{-6}$ seconds after starting.
 
 \subsection{Bare-metal firmware}
+\label{subsection:interrupt_firmware}
 Once the author developed the \acrshort{clint} unit, even though he knew that the \acrshort{clint} generated the interrupts through the simulation testbench, he had to test it while integrated into the \acrshort{soc}. To test the \acrshort{clint} in the \acrshort{soc} firmware that took advantage of the timer and software interrupts had to be developed.
 
 Since the \acrshort{clint} hardware developed is compatible with \textit{RISC-V}, any firmware compatible with \textit{RISC-V} that took advantage of interrupts should work. With this in mind, the open-source bare-metal firmware made available by \textit{Five EmbedDev}~\cite{bare_metal_int}, an embedded \textit{RISC-V} blog, would be taken advantage of. The firmware could not all be used directly in \textit{IOb-SoC}. Some functions that interact with the timer in the \acrshort{clint} were adapted to the developed hardware and used. Furthermore, as a library, the firmware uses a file that implements functions that read/write to the \acrlong{csr}.
