@@ -290,9 +290,9 @@ During the development of the \acrshort{os} to run on the \acrshort{soc}, the au
 The author developed a Makefile target for each component that automates the build process. Furthermore, he created a general target called \enquote{build-OS}. \enquote{build-OS} calls all other targets and builds a full-featured minimal \acrshort{os}.
 
 \subsection{Bootloaders}
-Before running the Linux kernel software, the \acrshort{soc} has to run two bootloader firmware programs. The first firmware to execute is the stage 0 bootloader. The stage 0 bootloader is an adaptation of the bootloader firmware used in \textit{IOb-SoC}. The second bootloader is a \textit{RISC-V} specific software called \textit{OpenSBI}.
+Before running the Linux kernel software, the \acrshort{soc} has to run two bootloader firmware programs. The first firmware to execute is the stage 0 bootloader. The stage 0 bootloader , which the author refers to as \textit{iob-bootloader}, is an adaptation of the bootloader firmware used in \textit{IOb-SoC}. The second bootloader is a \textit{RISC-V} specific software called \textit{OpenSBI}.
 
-The stage 0 bootloader has to copy the developed \acrshort{os} to the external memory of the \acrshort{soc} running on the \acrshort{fpga} board. The bootloader will send a request to the \textit{Console} program asking for the binary data of the \textit{OpenSBI}, the device tree, the Linux kernel and the \acrlong{rootfs}. Each file transferred will be stored in a specific memory location. The transfer bootloader code can be seen in \ref{lst:copy_bynaries}.
+The \textit{iob-bootloader} has to copy the developed \acrshort{os} to the external memory of the \acrshort{soc} running on the \acrshort{fpga} board. The bootloader will send a request to the \textit{Console} program asking for the binary data of the \textit{OpenSBI}, the device tree, the Linux kernel and the \acrlong{rootfs}. Each file transferred will be stored in a specific memory location. The transfer bootloader code can be seen in \ref{lst:copy_bynaries}.
 
 \begin{lstlisting}[language=c, caption={Transfer \acrshort{os} to the \acrshort{soc} external memmory.}, label=lst:copy_bynaries]
     prog_start_addr = (char *)(EXTRA_BASE + 0x00000000);
@@ -305,7 +305,7 @@ The stage 0 bootloader has to copy the developed \acrshort{os} to the external m
     file_size = uart_recvfile(rootfs, prog_start_addr);
 \end{lstlisting}
 
-When finishing, the bootloader has to ensure that it clears all of the \acrshort{cpu}’s function argument registers. The bootloader has to write '0' to a function argument register to clear it. An example of clearing the first function argument register is seen in listing \ref{lst:clear_a_reg}. There are in total eight function argument registers in a \textit{RISC-V} \acrshort{cpu} core. If the bootloader does not clear the function argument registers, the \acrshort{cpu} might pass unwanted arguments to the next software that executes.
+When finishing, the \textit{iob-bootloader} has to ensure that it clears all of the \acrshort{cpu}’s function argument registers. The bootloader has to write '0' to a function argument register to clear it. An example of clearing the first function argument register is seen in listing \ref{lst:clear_a_reg}. There are in total eight function argument registers in a \textit{RISC-V} \acrshort{cpu} core. If the bootloader does not clear the function argument registers, the \acrshort{cpu} might pass unwanted arguments to the next software that executes.
 
 \begin{lstlisting}[language=c, caption={Clear a function argument register.}, label=lst:clear_a_reg]
     asm volatile("and     a0,a0,zero");
@@ -359,13 +359,14 @@ An alternative way to build the Linux kernel would be using \textit{Buildroot}. 
 The author tested the build process using \textit{Buildroot} and successfully created an executable Linux kernel. However, the process of creating the Linux kernel with \textit{Buildroot} is slower than the previous method. For the development of the \acrshort{os}, \textit{Buildroot} could be helpful in the future when creating a more complex system. A more complex system would be a \acrshort{soc} with more peripherals, for example, an Ethernet peripheral.
 
 \subsection{Root File System}
+\label{subection:linux_rootfs}
 The \acrfull{rootfs} stores the user applications that the users can execute while the \acrshort{os} runs. The kernel mounts the \acrshort{rootfs} during the boot process. The \acrshort{rootfs} contains the files and directories that the users can access within the \acrshort{os}.
 
 The \acrshort{rootfs} developed is populated with applications present in \textit{Busybox}~\cite{busybox}. \textit{Busybox} is a combination of essential programs commonly found on UNIX systems. Since the developers of \textit{Busybox} developed it for size-optimization and limited resources, it is ideal for adding to a minimal Linux distribution that might run on an embedded SoC. However, its programs' functionality is limited compared to the equivalent programs in general Linux distributions. The \textit{Busybox} applications will be able to be seen in the \enquote{/bin}, \enquote{/sbin}, \enquote{/usr/bin} and \enquote{/usr/sbin} directories of the \acrshort{rootfs}.
 
-The first program, called init, runs after the kernel boots. The init program has PID id 0. The Linux kernel uses the PID id to identify the different programs running. The init program is located at the root directory (\enquote{/}) of the \acrshort{os} \acrlong{rootfs}. The init program is a shell script that starts by mounting files needed by the Linux kernel to work with user applications. Then it will greet the user with a welcoming message printed to the stdout. The greeting message indicates the time it took the system to boot. Finally, the init script will launch a Bourne shell or sh. The Bourne shell allows users to interact with the \acrshort{os} and launch other applications. The init script is seen in listing \ref{lst:rootfs_init}.
+The first program, called \enquote{init}, runs after the kernel boots. The \enquote{init} program has PID id 0. The Linux kernel uses the PID id to identify the different programs running. The \enquote{init} program is located at the root directory (\enquote{/}) of the \acrshort{os} \acrlong{rootfs}. The \enquote{init} program is a shell script that starts by mounting files needed by the Linux kernel to work with user applications. Then it will greet the user with a welcoming message printed to the stdout. The greeting message indicates the time it took the system to boot. Finally, the \enquote{init} script will launch a Bourne shell or sh. The Bourne shell allows users to interact with the \acrshort{os} and launch other applications. The \enquote{init} script is seen in listing \ref{lst:rootfs_init}.
 
-\begin{lstlisting}[language=sh, caption={Init script.}, label=lst:rootfs_init]
+\begin{lstlisting}[language=sh, caption={\enquote{init} script.}, label=lst:rootfs_init]
 #!/bin/sh
 echo "### INIT SCRIPT ###"
 /bin/mkdir /proc /sys /tmp
@@ -373,13 +374,14 @@ echo "### INIT SCRIPT ###"
 /bin/mount -t sysfs sysfs /sys
 /bin/mount -t tmpfs none /tmp
 
-echo 'IObundle-OpenCryptoLinux >   '
+echo 'IObundle'
+echo 'OpenCryptoLinux >   '
 echo -e "\nThis boot took $(cut -d' ' -f1 /proc/uptime) seconds\n"
 
 /bin/sh    
 \end{lstlisting}
 
-The author developed a build-\acrlong{rootfs} Makefile target to automate the process of creating a \acrlong{rootfs}. First, the Makefile script has to enter the directory where the \textit{Busybox} software is. Then the Makefile script will compile the \textit{Busybox} programs for the developed hardware platform and copy the binaries to an \enquote{./\_install} directory. Succeeding the creation of the \enquote{./\_install} directory, the Makefile target will copy the init program to it and create special files used by the Linux kernel during execution. Finally, the script will compress the \enquote{./\_install} directory to a \enquote{.cpio.gz} format. The \enquote{.cpio.gz} format is a format that the Linux kernel can uncompress while booting. The Linux kernel will then use the uncompressed archive as the \acrlong{rootfs}. The build-\acrlong{rootfs} Makefile target can be seen in listing~\ref{lst:rootfs_makefile}.
+The author developed a build-\acrlong{rootfs} Makefile target to automate the process of creating a \acrlong{rootfs}. First, the Makefile script has to enter the directory where the \textit{Busybox} software is. Then the Makefile script will compile the \textit{Busybox} programs for the developed hardware platform and copy the binaries to an \enquote{./\_install} directory. Succeeding the creation of the \enquote{./\_install} directory, the Makefile target will copy the \enquote{init} program to it and create special files used by the Linux kernel during execution. Finally, the script will compress the \enquote{./\_install} directory to a \enquote{.cpio.gz} format. The \enquote{.cpio.gz} format is a format that the Linux kernel can uncompress while booting. The Linux kernel will then use the uncompressed archive as the \acrlong{rootfs}. The build-\acrlong{rootfs} Makefile target can be seen in listing~\ref{lst:rootfs_makefile}.
 
 \begin{lstlisting}[language=make, caption={Root file system Makefile target.}, label=lst:rootfs_makefile]
 build-rootfs: clean-rootfs
