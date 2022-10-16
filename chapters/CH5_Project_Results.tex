@@ -2,7 +2,7 @@
 \label{chapter:project_results}
 In the following chapter, the author will analyse the results obtained from the hardware and software developed in this thesis project. The author's first objective was running the \enquote{Hello World!} firmware with the \textit{VexRiscv} \acrshort{cpu}. Secondly, he tested the implementation of the interrupt routine software with the developed \acrshort{clint} hardware. Finally, the candidate successfully executed the minimal Linux \acrshort{os} in real hardware using the developed \acrlong{soc}.
 
-All the results obtained in this thesis which communicate with the \acrshort{fpga} board or the \acrshort{soc} testbench, are executing the developed \textit{Console} program. The hardware components comprising the \acrshort{soc} differ in each section of this chapter. The author customises the \acrshort{soc} hardware depending on the software needs.
+All the results obtained in this thesis which communicate with the \acrshort{fpga} board or the \acrshort{soc} testbench, are executing the developed \textit{Console} program. The hardware components comprising the \acrshort{soc} differ in each section of this chapter. The author customises the \acrshort{soc} hardware depending on the software needs. Along this chapter the developed \acrshort{soc} is going to be referenced as the \textit{IOb-SoC-Linux}.
 
 In each step, the author studied the simulation with the different logic simulators and the memory resources needed to run the respective firmware. Furthermore, when running the \acrshort{soc} on the \acrshort{fpga} board he examined the required \acrshort{fpga} resources.
 
@@ -10,7 +10,7 @@ In each step, the author studied the simulation with the different logic simulat
 \label{section:hello_world}
 The \textit{IObundle} developers created the \enquote{Hello World!} firmware to test the functionality of the \textit{IOb-SoC} template. After the author implemented the \textit{VexRiscv} \acrshort{cpu} on the developed \acrshort{soc}, he executed a regression test to verify the correctness of the \acrshort{soc}. The regression test was the execution of the \enquote{Hello World!}, which was known to work correctly on the \textit{IOb-SoC}.
 
-The \enquote{Hello World!} firmware is a program that prints a \enquote{Hello World!} message to the user, prints the value of $\pi$, which is a floating number, and tests file transferring between the \textit{Console} and \textit{IOb-SoC}. The only alteration the author made to the \textit{IOb-SoC} hardware to obtain the results presented in this section was swapping the \acrshort{cpu}.
+The \enquote{Hello World!} firmware is a program that prints a \enquote{Hello World!} message to the user, prints the value of $\pi$, which is a floating number, and tests file transferring between the \textit{Console} and \textit{IOb-SoC}. The alterations the author made to the \textit{IOb-SoC} hardware to obtain the results presented in this section was swapping the \acrshort{cpu} and removing the \textit{IOb-SoC} external memory L1 cache.
 
 The \enquote{Hello World!} program size is 23964 Bytes. The minimal size of the memory on the \acrshort{soc} is dictated by the firmware size. The memory size should be the closest upper bound power of two.
 
@@ -44,7 +44,7 @@ Both open-source logic simulators are capable of executing the \enquote{Hello Wo
     \centering
     \begin{tabular}{l|ll|ll|}
     \cline{2-5}
-                                                           & \multicolumn{2}{l|}{Authors \acrshort{soc}} & \multicolumn{2}{l|}{\textit{IOb-SoC}}    \\ \hline
+                                                           & \multicolumn{2}{l|}{\textit{IOb-SoC-Linux}} & \multicolumn{2}{l|}{\textit{IOb-SoC}}    \\ \hline
     \multicolumn{1}{|l|}{Command \textbackslash Simulator} & \multicolumn{1}{l|}{Icarus}  & Verilator & \multicolumn{1}{l|}{Icarus}  & Verilator \\ \hline
     \multicolumn{1}{|l|}{make sim-run INIT\_MEM=1}              & \multicolumn{1}{l|}{2m 26s}  & 0m 3s     & \multicolumn{1}{l|}{0m 25s}  & 0m 3s     \\ \hline
     \multicolumn{1}{|l|}{make sim-run INIT\_MEM=0}              & \multicolumn{1}{l|}{88m 19s} & 1m 1s     & \multicolumn{1}{l|}{15m 18s} & 0m 27s    \\ \hline
@@ -80,17 +80,17 @@ In figure \ref{fig:hello_fpga} the readers can see the output of executing the \
 
 In the tables in \ref{tab:fpga_hello} are the FPGA implementation results for two FPGA families. The author implemented the developed \acrshort{soc} on the kintex Ultrascale AES-KU040-DB-G board and in the CYCLONE V GT-DK. The kintex Ultrascale has an \acrshort{fpga} more capable then the CYCLONE V.
 
-\begin{table}[h]
+\begin{table}[!ht]
     \begin{subtable}[h]{0.45\textwidth}
         \centering
         \begin{tabular}{l|l|l|}
             \cline{2-3}
-                                              & Authors SoC & \textit{IOb-SoC} \\ \hline
-            \multicolumn{1}{|l|}{ALM}         & 10,062      & 9,280            \\ \hline
-            \multicolumn{1}{|l|}{FF}          & 12150       & 10020            \\ \hline
-            \multicolumn{1}{|l|}{DSP}         & 8           & 3                \\ \hline
-            \multicolumn{1}{|l|}{BRAM blocks} & 234         & 352              \\ \hline
-            \multicolumn{1}{|l|}{BRAM bits}   & 753,248     & 779,744          \\ \hline
+                                              & \textit{IOb-SoC-Linux} & \textit{IOb-SoC} \\ \hline
+            \multicolumn{1}{|l|}{ALM}         & 10,062                 & 9,280            \\ \hline
+            \multicolumn{1}{|l|}{FF}          & 12150                  & 10020            \\ \hline
+            \multicolumn{1}{|l|}{DSP}         & 8                      & 3                \\ \hline
+            \multicolumn{1}{|l|}{BRAM blocks} & 234                    & 352              \\ \hline
+            \multicolumn{1}{|l|}{BRAM bits}   & 753,248                & 779,744          \\ \hline
         \end{tabular}
        \caption{Cyclone V GT}
        \label{tab:cyclone_hello}
@@ -100,11 +100,11 @@ In the tables in \ref{tab:fpga_hello} are the FPGA implementation results for tw
         \centering
         \begin{tabular}{l|l|l|}
             \cline{2-3}
-                                            & Authors SoC & \textit{IOb-SoC} \\ \hline
-            \multicolumn{1}{|l|}{LUTs}      & 21226       & 23003            \\ \hline
-            \multicolumn{1}{|l|}{Registers} & 23373       & 22588            \\ \hline
-            \multicolumn{1}{|l|}{DSPs}      & 10          & 7                \\ \hline
-            \multicolumn{1}{|l|}{BRAM}      & 39.5        & 34.5             \\ \hline
+                                            & \textit{IOb-SoC-Linux} & \textit{IOb-SoC} \\ \hline
+            \multicolumn{1}{|l|}{LUTs}      & 21226                  & 23003            \\ \hline
+            \multicolumn{1}{|l|}{Registers} & 23373                  & 22588            \\ \hline
+            \multicolumn{1}{|l|}{DSPs}      & 10                     & 7                \\ \hline
+            \multicolumn{1}{|l|}{BRAM}      & 39.5                   & 34.5             \\ \hline
         \end{tabular}
         \caption{Kintex Ultrascale}
         \label{tab:kintex_hello}
@@ -115,17 +115,17 @@ In the tables in \ref{tab:fpga_hello} are the FPGA implementation results for tw
 
 The author obtained the values in table \ref{tab:fpga_hello} while using the \acrshort{soc} with the external memory. When synthesising the \acrshort{soc} the user is able to define whether he wants to use external memory with the \enquote{RUN\_EXTMEM} flag. If \enquote{RUN\_EXTMEM=1} then a memory controller will be synthesised alongside the developed \acrshort{soc} and loaded onto the \acrshort{fpga}. The memory controller is hardware logic written in Verilog and specific to the \acrshort{fpga} where the \acrshort{soc} is running. In order to better understand the resources utilization the author decided to compare the resources uses when running the \enquote{Hello World!} firmware from the internal memory. The resources without the memory controller are in tables \ref{tab:fpga_hello_int_mem}.
 
-\begin{table}[h]
+\begin{table}[!ht]
     \begin{subtable}[h]{0.45\textwidth}
         \centering
         \begin{tabular}{l|l|l|}
             \cline{2-3}
-                                              & Authors SoC & \textit{IOb-SoC} \\ \hline
-            \multicolumn{1}{|l|}{ALM}         & 3,687       & 1,542            \\ \hline
-            \multicolumn{1}{|l|}{FF}          & 4707        & 1214             \\ \hline
-            \multicolumn{1}{|l|}{DSP}         & 8           & 3                \\ \hline
-            \multicolumn{1}{|l|}{BRAM blocks} & 56          & 38               \\ \hline
-            \multicolumn{1}{|l|}{BRAM bits}   & 408,800     & 296,960          \\ \hline
+                                              & \textit{IOb-SoC-Linux} & \textit{IOb-SoC} \\ \hline
+            \multicolumn{1}{|l|}{ALM}         & 3,687                  & 1,542            \\ \hline
+            \multicolumn{1}{|l|}{FF}          & 4707                   & 1214             \\ \hline
+            \multicolumn{1}{|l|}{DSP}         & 8                      & 3                \\ \hline
+            \multicolumn{1}{|l|}{BRAM blocks} & 56                     & 38               \\ \hline
+            \multicolumn{1}{|l|}{BRAM bits}   & 408,800                & 296,960          \\ \hline
         \end{tabular}
        \caption{Cyclone V GT}
        \label{tab:cyclone_hello_int_mem}
@@ -135,11 +135,11 @@ The author obtained the values in table \ref{tab:fpga_hello} while using the \ac
         \centering
         \begin{tabular}{l|l|l|}
             \cline{2-3}
-                                            & Authors SoC & \textit{IOb-SoC} \\ \hline
-            \multicolumn{1}{|l|}{LUTs}      & 5457        & 2072             \\ \hline
-            \multicolumn{1}{|l|}{Registers} & 4405        & 1074             \\ \hline
-            \multicolumn{1}{|l|}{DSPs}      & 7           & 4                \\ \hline
-            \multicolumn{1}{|l|}{BRAM}      & 14          & 9                \\ \hline
+                                            & \textit{IOb-SoC-Linux} & \textit{IOb-SoC} \\ \hline
+            \multicolumn{1}{|l|}{LUTs}      & 5457                   & 2072             \\ \hline
+            \multicolumn{1}{|l|}{Registers} & 4405                   & 1074             \\ \hline
+            \multicolumn{1}{|l|}{DSPs}      & 7                      & 4                \\ \hline
+            \multicolumn{1}{|l|}{BRAM}      & 14                     & 9                \\ \hline
         \end{tabular}
         \caption{Kintex Ultrascale}
         \label{tab:kintex_hello_int_mem}
@@ -148,15 +148,16 @@ The author obtained the values in table \ref{tab:fpga_hello} while using the \ac
      \label{tab:fpga_hello_int_mem}
 \end{table}
 
-From the tables in \ref{tab:fpga_hello_int_mem} the author can confirm the \textit{VexRiscv} \acrshort{cpu} requires more resources than the \textit{PicoRV32}. Since all components except the \acrshort{cpu} are equal in both \acrshort{soc} the difference in resources is the difference in the \acrshort{cpu}.
+From the tables in \ref{tab:fpga_hello_int_mem} the author can confirm the \textit{VexRiscv} \acrshort{cpu} requires more resources than the \textit{PicoRV32}. Comparing tables \ref{tab:fpga_hello} and \ref{tab:fpga_hello_int_mem} the reader can see that there is a big difference in resources due to the utilization of the external memory. Interestingly, in table \ref{tab:cyclone_hello} the \textit{IOb-SoC-Linux} uses less \acrshort{bram}s than the \textit{IOb-SoC}. The \textit{IOb-SoC-Linux} uses less \acrshort{bram}s because the L1 cache integrated with the \textit{VexRiscv} \acrshort{cpu} is smaller than the L1 \textit{iob-cache} hardware module used by the \textit{IOb-SoC}. In table \ref{tab:fpga_hello_int_mem} the \textit{IOb-SoC-Linux} clearly uses more resources because the \textit{VexRiscv} \acrshort{cpu} contains the L1 cache and is more complex than the \textit{PicoRV32}. \textit{VexRiscv} is more complex than \textit{PicoRV32} because it supports more instruction extensions and has more \acrlong{csr}.
 
 \section{Interrupt Routines}
+\label{section:interrupt_routine}
 To test the correct functionality of the interrupts in the \acrshort{soc} the author executed the developed \acrshort{clint} testbench. Moreover to test the complete \acrshort{soc} he run the bare-metal firmware created to handled interrupts. The firmware was executed in simulation and implemented in the \acrshort{fpga} Board.
 
 The size of the firmware that testes the interrupt routine is 24364 Bytes. Consequently the only difference in the \acrshort{soc} used on this section tests is the addition of the \acrshort{clint} hardware. The memory size is the same since the \enquote{Hello World!} program and this firmware have similar sizes, both are under 32 KB.
 
 \subsection{Execute CLINT simulation}
-After developing the \acrshort{clint} unit the author executed its testbench testing the timer and software interrupts. In figure ... the readers can see a successful simulation of the \acrshort{clint} executing the interrupts.
+After developing the \acrshort{clint} unit the author executed its testbench testing the timer and software interrupts. In figure \ref{fig:clint_sim} the readers can see a successful simulation of the \acrshort{clint} executing the interrupts.
 
 \begin{figure}[!ht]
     \centering
@@ -164,6 +165,8 @@ After developing the \acrshort{clint} unit the author executed its testbench tes
     \caption{\acrshort{clint} timer and software interrupt simulation.}
     \label{fig:clint_sim}
 \end{figure}
+
+Explain all the simulation process.
 
 \subsection{Execute in simulation}
 \begin{figure}[!ht]
@@ -195,17 +198,17 @@ After developing the \acrshort{clint} unit the author executed its testbench tes
 \end{figure}
 % talk 0.004 seconds after it is the time the interrupt handler takes to execute. It is different from the simulation because of the baud rate.
 
-\begin{table}[h]
+\begin{table}[!ht]
     \begin{subtable}[h]{0.45\textwidth}
         \centering
         \begin{tabular}{l|l|l|}
             \cline{2-3}
-                                              & RUN\_EXTMEM=0 & RUN\_EXTMEM=1 \\ \hline
-            \multicolumn{1}{|l|}{ALM}         & 3,883         & 10,257        \\ \hline
-            \multicolumn{1}{|l|}{FF}          & 4940          & 12300         \\ \hline
-            \multicolumn{1}{|l|}{DSP}         & 8             & 8             \\ \hline
-            \multicolumn{1}{|l|}{BRAM blocks} & 56            & 234           \\ \hline
-            \multicolumn{1}{|l|}{BRAM bits}   & 408,800       & 753,248       \\ \hline
+                                              & w/o DDR  & w/ DDR  \\ \hline
+            \multicolumn{1}{|l|}{ALM}         & 3,883    & 10,257  \\ \hline
+            \multicolumn{1}{|l|}{FF}          & 4940     & 12300   \\ \hline
+            \multicolumn{1}{|l|}{DSP}         & 8        & 8       \\ \hline
+            \multicolumn{1}{|l|}{BRAM blocks} & 56       & 234     \\ \hline
+            \multicolumn{1}{|l|}{BRAM bits}   & 408,800  & 753,248 \\ \hline
         \end{tabular}
        \caption{Cyclone V GT}
        \label{tab:cyclone_int}
@@ -215,11 +218,11 @@ After developing the \acrshort{clint} unit the author executed its testbench tes
         \centering
         \begin{tabular}{l|l|l|}
             \cline{2-3}
-                                            & RUN\_EXTMEM=0 & RUN\_EXTMEM=1 \\ \hline
-            \multicolumn{1}{|l|}{LUTs}      & 5729          & 21478         \\ \hline
-            \multicolumn{1}{|l|}{Registers} & 4580          & 23545         \\ \hline
-            \multicolumn{1}{|l|}{DSPs}      & 7             & 10             \\ \hline
-            \multicolumn{1}{|l|}{BRAM}      & 14            & 39.5          \\ \hline
+                                            & w/o DDR  & w/ DDR \\ \hline
+            \multicolumn{1}{|l|}{LUTs}      & 5729     & 21478  \\ \hline
+            \multicolumn{1}{|l|}{Registers} & 4580     & 23545  \\ \hline
+            \multicolumn{1}{|l|}{DSPs}      & 7        & 10     \\ \hline
+            \multicolumn{1}{|l|}{BRAM}      & 14       & 39.5   \\ \hline
         \end{tabular}
         \caption{Kintex Ultrascale}
         \label{tab:kintex_int}
@@ -229,28 +232,111 @@ After developing the \acrshort{clint} unit the author executed its testbench tes
 \end{table}
 
 
-\section{Run/Boot Linux Performance}
-\begin{figure}
+\section{Boot and use the Linux Operating System}
+\label{section:boot_linux}
+The objective of this thesis project was to run an \acrlong{os} in the \textit{IOb-SoC-Linux}. The \textit{IOb-SoC-Linux} used in this section adds the \acrshort{plic} hardware and substitutes the \textit{iob-UART} for the \textit{iob-UART16550}. The software that comprises the complete \acrshort{os} is the \textit{OpenSBI} bootloader, the \acrlong{dtb}, the Linux kernel and the \acrlong{rootfs}.
+
+Table \ref{tab:time_os} presents how much time it takes to build the complete \acrshort{os} with the command \lstinline[language=sh]{make build-OS}. The \enquote{real} time is the time that passes since the user executes the command until it finishes. The \enquote{user} time is the time the \acrshort{cpu} takes while executing operations in the user space. The \enquote{user} time is bigger than the \enquote{real} time because it counts the time passed in each \acrshort{cpu} core. Part of the compilation, of the \acrshort{rootfs} and the kernel, is done in parallel using two cores.
+
+\begin{table}[!ht]
+    \centering
+    \begin{tabular}{ll}
+    real & 4m29,570s \\
+    user & 8m12,039s \\
+    sys  & 0m56,887s
+    \end{tabular}
+    \caption{Time it takes to build the \acrshort{os}.}
+    \label{tab:time_os}
+\end{table}
+
+The \acrshort{os} size is to big to run in the \acrshort{fpga} internal memory. The \textit{OpenSBI} bootloader is 90896 Bytes. The \acrlong{dtb} is 1669 Bytes. The Linux kernel is 4426152 Bytes. Lastly the \acrlong{rootfs} is 1142733 Bytes. To store all this software the memory has to have at least 8 MB ($2^23$).Consequently, the \textit{IOb-SoC-Linux} was tested and implemented on the \acrshort{fpga} with the external memory.
+
+In figure \ref{fig:bootloader_sim} the reader can see the start of the \acrshort{os} simulation with \textit{Verilator}.
+
+\begin{figure}[!ht]
     \centering
     \begin{subfigure}[b]{0.49\textwidth}
         \centering
-        \includegraphics[width=\textwidth]{start_Linux_sim.png}
-        \caption{Start of the Linux kernel.}
-        \label{fig:start_linux_verilator}
+        \includegraphics[width=\textwidth]{start_bootloader_sim.png}
+        \caption{\textit{iob-UART16550} and \textit{iob-PLIC} properties.}
+        \label{fig:start_bootloader_sim}
     \end{subfigure}
     \hfill
     \begin{subfigure}[b]{0.49\textwidth}
         \centering
-        \includegraphics[width=\textwidth]{end_Linux_sim.png}
-        \caption{End of Linux kernel boot.}
-        \label{fig:end_linux_verilator}
+        \includegraphics[width=\textwidth]{end_bootloader_sim.png}
+        \caption{\textit{IOb-SoC} bootloader and \textit{OpenSBI} firmware.}
+        \label{fig:end_bootloader_sim}
     \end{subfigure}
-    \caption{Running Linux with \textit{Verilator}.}
-    \label{fig:linux_verilator}
+    \caption{Start of the \acrshort{os} simulation with \textit{Verilator}.}
+    \label{fig:bootloader_sim}
 \end{figure}
-time that it takes to build a complete OS
-real    4m29,570s
-user    8m12,039s
-sys    0m56,887s
 
+Figure \ref{fig:start_bootloader_sim} shows the initialization of the \textit{Console} program. Furthermore, it shows the instantiation of the \textit{iob-UART16550} and the \textit{iob-PLIC}. The \textit{iob-UART16550} and the \acrshort{plic} core have an initial block that prints their properties. The initial block is not synthesised to real hardware but is executed by the simulator. Figure \ref{fig:end_bootloader_sim} shows the \textit{iob-bootloader} and the start of the \textit{OpenSBI} bootloader. The \textit{iob-bootloader} in figure \ref{fig:end_bootloader_sim} does not transfer the software to the memory because the author executed the simulation considering that the software was already in the memory.
 
+Figure \ref{fig:start_linux_sim} shows the end of the \textit{OpenSBI} bootloader and the start of the linux kernel. The first line printed by the Linux kernel indicates the author built the kernel executing, the kernel version and which toolchain was used to compile it.
+
+\begin{figure}[!ht]
+    \centering
+    \centering
+    \includegraphics[width=0.9\textwidth]{start_Linux_sim.png}
+    \caption{Start of the Linux kernel boot with \textit{Verilator}.}
+    \label{fig:start_linux_sim}
+\end{figure}
+
+While figure \ref{fig:start_linux_sim} shows the start of the Linux kernel, figure \ref{fig:end_linux_verilator} shows the end of the Linux kernel booting process and the execution of the \enquote{init} script. The \enquote{init} script , as seen in subsection \ref{subection:linux_rootfs}, is the first program the \acrshort{os} executes after the Linux kernel mounts the \acrshort{rootfs} and finishes booting. There exist multiple messages printed to the terminal between the output shown in figure \ref{fig:start_linux_sim} and in \ref{fig:end_linux_verilator}. Those messages show the progress while the Linux kernel boots. The last message the Linux kernel boot process prints is \lstinline{Run /init as init process}. After that message the \acrshort{soc} executes the \enquote{init} program.
+
+\begin{figure}[!ht]
+    \centering
+    \includegraphics[width=0.9\textwidth]{end_Linux_sim.png}
+    \caption{End of Linux kernel boot with \textit{Verilator}.}
+    \label{fig:end_linux_verilator}
+\end{figure}
+
+The warning \lstinline{/bin/sh: can't access tty; job control turned off} that appears at the end of the Linux boot in figure \ref{fig:end_linux_verilator} means the shell program in not writing to a tty, but to a socket. When writing to a socket advanced commands such as Ctrl+Z and Ctrl+C are not available. Furthermore, sh will not support background processes (command \&) and the associated bg/fg/disown/jobs commands. However, processes forking themselves and closing their inputs will still work. This way the system is protected from a race condition that could occur if both the shell and the background process were waiting for user input. This problem happens because the developed \acrshort{rootfs} is design to be lightweight for embedded systems. Consequently it does not implement some Linux files and programs that would enable such features. To suppress the warning the shell program could be called as \lstinline[language=sh]{sh +m}.
+
+Figure \ref{fig:linux_fpga} shows the developed minimal \acrshort{os} running on an \acrshort{fpga}. The reader can see that the shell warning as been suppress. In the initial part of the figure, it shows the final stage of the Linux kernel botting. After booting the author tested the \lstinline[language=sh]{ls /} command that showed the files and directories present in the systems' root. Lastly the author executed the \lstinline[language=sh]{cat init} command for the \acrshort{os} to print the contents of the \enquote{init} script to the terminal. The difference between the \enquote{init} script printed and the one presented in listing \ref{lst:rootfs_init} is that \enquote{IObundle} is printed as a design with \acrshort{ascii} characters and the shell program is called with the \enquote{+m} argument.
+
+\begin{figure}[!ht]
+    \centering
+    \includegraphics[width=0.9\textwidth]{linux_fpga.png}
+    \caption{Linux kernel boot in the \acrshort{fpga}.}
+    \label{fig:linux_fpga}
+\end{figure}
+
+The time the Linux kernel takes to boot in real hardware, figure \ref{fig:linux_fpga}, the time is almost double of what it takes to boot in simulation, figure \ref{fig:linux_fpga}. The time to boot is almost double because the memory module used in simulation does not have any latency. When the L2 cache fetches data from the memory in real hardware it has to wait before receiving the data burst. Using the \textit{CYCLONE V} \acrshort{fpga} board the Linux kernel takes 7.01 seconds to boot. The author expected the boot to take longer since the system clock frequency used with the \textit{CYCLONE V} is 50 MHz. The Kintex Ultrascale was able to run with a frequency of 100 MHz. The \textit{OpenSBI} bootloader and the \acrlong{dtb} had to be recompiled with the system frequency defined to 50 MHz.
+
+Table \ref{tab:fpga_linux} show the resources used by the \textit{IOb-SoC-Linux} in the different \acrshort{fpga}s.
+
+\begin{table}[!ht]
+    \begin{subtable}[h]{0.45\textwidth}
+        \centering
+        \begin{tabular}{l|l|l|}
+            \hline
+            \multicolumn{1}{|l|}{ALM}         & 11,227  \\ \hline
+            \multicolumn{1}{|l|}{FF}          & 13725   \\ \hline
+            \multicolumn{1}{|l|}{DSP}         & 8       \\ \hline
+            \multicolumn{1}{|l|}{BRAM blocks} & 234     \\ \hline
+            \multicolumn{1}{|l|}{BRAM bits}   & 755,424 \\ \hline
+        \end{tabular}
+       \caption{Cyclone V GT}
+       \label{tab:cyclone_linux}
+    \end{subtable}
+    \hfill
+    \begin{subtable}[h]{0.45\textwidth}
+        \centering
+        \begin{tabular}{l|l|l|}
+            \hline
+            \multicolumn{1}{|l|}{LUTs}      & 23126 \\ \hline
+            \multicolumn{1}{|l|}{Registers} & 24505 \\ \hline
+            \multicolumn{1}{|l|}{DSPs}      & 10    \\ \hline
+            \multicolumn{1}{|l|}{BRAM}      & 39.5  \\ \hline
+        \end{tabular}
+        \caption{Kintex Ultrascale}
+        \label{tab:kintex_linux}
+     \end{subtable}
+     \caption{FPGA results for interrupt routine program.}
+     \label{tab:fpga_linux}
+\end{table}
+
+The difference in registers between tables. MABE is not sure if there is space.
