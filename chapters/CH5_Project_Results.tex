@@ -258,7 +258,7 @@ Table \ref{tab:time_os} presents how much time it takes to build the complete \a
     \label{tab:time_os}
 \end{table}
 
-The \acrshort{os} size is to big to run in the \acrshort{fpga} internal memory. The \textit{OpenSBI} bootloader is 90896 Bytes. The \acrlong{dtb} is 1669 Bytes. The Linux kernel is 4426152 Bytes. Lastly the \acrlong{rootfs} is 1142733 Bytes. The memory has to have at least 8 MB ($2^23$) to store all this software. Consequently, the \textit{IOb-SoC-Linux} was tested and implemented on the \acrshort{fpga} with the external memory.
+The \acrshort{os} size is to big to run in the \acrshort{fpga} internal memory. The \textit{OpenSBI} bootloader is 90896 Bytes. The \acrlong{dtb} is 1669 Bytes. The Linux kernel is 4426152 Bytes. Lastly the \acrlong{rootfs} is 1142733 Bytes. The memory has to have at least 8 MB ($2^23$) to store all this software. However, the Linux kernel needs a bigger memory where it can store virtual memory pages and execute the different application processes. The \acrlong{dts} describes the system had 512 MB of available memory. Consequently, the author had to implement the \textit{IOb-SoC-Linux} on the \acrshort{fpga} with access to the external memory. The internal memory could never be as big as 512 MB.
 
 In figure \ref{fig:bootloader_sim} the reader can see the start of the \acrshort{os} simulation with \textit{Verilator}.
 
