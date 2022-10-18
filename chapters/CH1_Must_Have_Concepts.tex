@@ -1,12 +1,12 @@
 \chapter{Must Have Concepts}
 \label{chapter:must_have_concepts}
-During this chapter, it is going to be discuss topics that help understand the technology developments made along the thesis project. The developments will involve both hardware and software components. As such there are hardware and software concepts that are important to have before discussing the next chapters.
+During this chapter, the author will discuss topics that help understand the technological developments along this thesis project. The developments will involve both hardware and software components. As such, there are hardware and software concepts that are important to have before discussing the following chapters.
 
-In this project a \acrshort{soc} is going to be developed. But it is not going to be created from scratch. The \textit{IOb-SoC} is going to be used as a starting point. Consequently it is important to understand how it works beforehand. It is also important to study the \textit{RISC-V} \acrfull{isa}. Since the hardware developed in this project will be compatible with the \textit{RISC-V} \acrshort{isa}. Additionally, the software and firmware used will be compiled with the \textit{RISC-V} cross-compiler toolchain. An important part when developing a system is its testing and simulation before implementation. Therefor, an overview of available methods for simulation of the developed components is going to be seen. Finally, the last concept that is important to this project is the boot flow of an \acrfull{os} on a \textit{RISC-V} platform.
+The candidate will develop a \acrshort{soc} in this project. However, he will not create it from scratch. The candidate will use the \textit{IOb-SoC} as a starting point. Consequently, it is important to understand how the \textit{IOb-SoC} works beforehand. It is also important to study the \textit{RISC-V} \acrfull{isa}. Since the hardware developed in this project will be compatible with the \textit{RISC-V} \acrshort{isa}. Furthermore, the software developed will be cross-compiled with the \textit{RISC-V} toolchain. An important part when developing a system is its testing and simulation before implementation. Therefore, the author will review the available methods for simulating the developed components. Lastly, an important concept for this project is the boot flow of an \acrfull{os} on a \textit{RISC-V} platform.
 
 \section{The \textit{IOb-SoC} template}
 \label{section:the_iob_soc_template}
-The \textit{IOb-SoC}~\cite{iob_soc_repo} is a System-on-Chip (SoC) template that eases the creation of a new SoC. The \textit{IOb-SoC} provides a base Verilog hardware design equipped with an open-source \textit{RISC-V} processor, an internal SRAM memory subsystem, a UART, and an optional interface to external memory. If the external memory interface is selected, an instruction L1 cache, a data L1 cache and a shared L2 cache are added. The L2 cache communicates with a third party memory controller IP (typically a DDR controller) using an AXI4 master bus. Users can add IP cores and software to build their own SoCs quickly. This way, hardware accelerators can be easily created and tested with the developed firmware.
+The \textit{IOb-SoC}~\cite{iob_soc_repo} is a System-on-Chip (SoC) template that eases the creation of a new SoC. The \textit{IOb-SoC} provides a base Verilog hardware design equipped with an open-source \textit{RISC-V} processor, an internal SRAM memory subsystem, a UART, and an optional interface to external memory. If the external memory interface is selected, the \textit{IOb-SoC} will include an instruction L1 cache, a data L1 cache and a shared L2 cache. The L2 cache communicates with a third-party memory controller IP (typically a DDR controller) using an AXI4 master bus. Users can add IP cores and software to build their own SoCs quickly. This way, hardware accelerators can be easily created and tested with the developed firmware.
 
 In figure \ref{fig:bd_original} it is represented a sketch of the \acrshort{soc} design. This design is valid at the start of this project. During the hardware developed chapter \ref{chapter:hardware_developed} some alterations were made to the \textit{IOb-SoC} original template.
 
@@ -17,9 +17,24 @@ In figure \ref{fig:bd_original} it is represented a sketch of the \acrshort{soc}
     \label{fig:bd_original}
 \end{figure}
 
-Building a new processor-based system from scratch can be difficult. \textit{IOb-SoC} has been created to facilitate this process. In this work, a variant of the existing \textit{IOb-SoC} capable of running a Linux Operating System is developed. \textit{IOb-SoC} currently supports three FPGA board models: the Xilinx Kintex UltraScale KU040 Development Board, the Basys 3 Artix-7 FPGA Trainer Board and the Cyclone V GT FPGA Development Kit.
+Building a new processor-based system from scratch can be difficult. The \textit{IObundle} developers created the \textit{IOb-SoC} to facilitate this process. This work develops a variant of the existing \textit{IOb-SoC} capable of running a Linux Operating System. \textit{IOb-SoC} currently supports two FPGA board models: the Xilinx Kintex UltraScale KU040 Development Board and the Cyclone V GT FPGA Development Kit.
 
-\subsection{Adding peripherals}
+\subsection{\textit{IOb-SoC} \textit{Makefiles}}
+\textit{Makefiles} are essential because they allow automating processes. This way, instead of executing multiple lines to achieve a goal, the user can run a single command. That command will execute a \textit{Makefile} script that runs the multiple processes needed to achieve a specific goal without specifying them. For example, to run a simulation, a developer using this project \acrshort{soc} would only have to write in the terminal the commands in listing~\ref{lst:run_simulation}.
+
+\begin{lstlisting}[language=make, caption={Run a simulation.}, label=lst:run_simulation]
+    make sim-clean
+    make sim-run
+\end{lstlisting}
+
+The first command in listing~\ref{lst:run_simulation} cleans all the files related to a previous simulation execution. Then the second command runs a new simulation. This simulation will use the default configurations in the \enquote{config.mk} file. A \textit{Makefile} target follows each of the \enquote{make} commands. A target is a section of the \textit{Makefile} that may or may not depend on other targets and executes a sequence of commands. In the example~\ref{lst:run_simulation} there are two targets, \enquote{sim-clean} and \enquote{sim-run}.
+
+The main \textit{Makefile} in \textit{IOb-SoC} is located at the \textit{IOb-SoC} root directory. The main \textit{Makefile} contains targets that call other \textit{Makefiles} and sets the values for the default frequency, baud rate, \acrshort{fpga} board used and simulator used. The \textit{Makefiles} the main one can call are at the \textit{IOb-SoC} \acrshort{fpga} boards, simulators, firmware, \enquote{PC} emulation or documentation directory. Each directory in \textit{IOb-SoC} contains a \enquote{*.mk} file which holds \enquote{make} variables and targets that complement the \textit{Makefiles}. The \textit{IOb-SoC} \textit{Makefiles} can include only the \enquote{*.mk} they need.
+
+When executing the command \lstinline[language=bash]{make sim-run} the computer will run the \enquote{run} target of the \textit{Makefile} in the default simulator directory. The simulator \textit{Makefile} will include the \enquote{simulator.mk}, \enquote{hardware.mk} and \enquote{config.mk} files. The \enquote{simulator.mk} file is common to all simulators. Both \acrshort{fpga}s and simulators \textit{Makefiles} include the \enquote{hardware.mk} file. The \enquote{hardware.mk} file includes all the hardware modules that the \acrshort{soc} uses. Lastly, the \enquote{config.mk} is located at the \textit{IOb-SoC} root directory and all \textit{Makefiles} use it. The \enquote{config.mk} defines the \enquote{make} variables that are important for hardware and software, for example which peripherals the \acrshort{soc} contains.
+
+\subsection{\textit{IOb-SoC} peripherals}
+
 \subsection{Internal Buses}
 Review the \enquote{cpu\_i\_resp}, \enquote{cpu\_d\_resp}, \enquote{cpu\_i\_req} and \enquote{cpu\_d\_req} signals.
 %define WSTRB_W `WSTRB_W_(DATA_W)
@@ -52,17 +67,6 @@ The \textbf{\textit{iob-merge}} works similar to the \textit{iob-split} but inst
 
 \subsection{Bootloader and bare-metal firmware}
 %\subsection{Old simulation testbench}
-
-\subsection{Makefile scripts}
-Makefiles are important because they allow to automatize processes. This way instead of having to execute multiples lines to achieve a goal the user can run a single command. That command will execute a Makefile script that runs the multiple processes needed to achieve a specific goal without specifying them one by one.
-For example to run a simulation a developer using this projects \acrshort{soc} would only have to write in the terminal the line in listing~\ref{lst:run_simulation}.
-
-\begin{lstlisting}[language=make, caption={Run a simulation.}, label=lst:run_simulation]
-    make sim-clean
-    make sim-run
-\end{lstlisting}
-
-the lines in listing~\ref{lst:run_simulation} would first clean all the files related to a previous simulation execution. Then it will run a new simulation. This simulation will use the default configurations in the \enquote{config.mk} file. And will execute the run target on the default simulator directory Makefile. The simulator software will be compiled and then executed.
 
 \section{\textit{RISC-V}}
 \label{section:riscv}
