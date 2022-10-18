@@ -4,7 +4,7 @@ During this chapter, the author will discuss topics that help understand the tec
 
 The candidate will develop a \acrshort{soc} in this project. However, he will not create it from scratch. The candidate will use the \textit{IOb-SoC} as a starting point. Consequently, it is important to understand how the \textit{IOb-SoC} works beforehand. It is also important to study the \textit{RISC-V} \acrfull{isa}. Since the hardware developed in this project will be compatible with the \textit{RISC-V} \acrshort{isa}. Furthermore, the software developed will be cross-compiled with the \textit{RISC-V} toolchain. An important part when developing a system is its testing and simulation before implementation. Therefore, the author will review the available methods for simulating the developed components. Lastly, an important concept for this project is the boot flow of an \acrfull{os} on a \textit{RISC-V} platform.
 
-\section{The \textit{IOb-SoC} template}
+\section{The \textit{IOb-SoC} platform}
 \label{section:the_iob_soc_template}
 The \textit{IOb-SoC}~\cite{iob_soc_repo} is a System-on-Chip (SoC) template that eases the creation of a new SoC. The \textit{IOb-SoC} provides a base Verilog hardware design equipped with an open-source \textit{RISC-V} processor, an internal SRAM memory subsystem, a UART, and an optional interface to external memory. If the external memory interface is selected, the \textit{IOb-SoC} will include an instruction L1 cache, a data L1 cache and a shared L2 cache. The L2 cache communicates with a third-party memory controller IP (typically a DDR controller) using an AXI4 master bus. Users can add IP cores and software to build their own SoCs quickly. This way, hardware accelerators can be easily created and tested with the developed firmware.
 
@@ -34,6 +34,41 @@ The main \textit{Makefile} in \textit{IOb-SoC} is located at the \textit{IOb-SoC
 When executing the command \lstinline[language=bash]{make sim-run} the computer will run the \enquote{run} target of the \textit{Makefile} in the default simulator directory. The simulator \textit{Makefile} will include the \enquote{simulator.mk}, \enquote{hardware.mk} and \enquote{config.mk} files. The \enquote{simulator.mk} file is common to all simulators. Both \acrshort{fpga}s and simulators \textit{Makefiles} include the \enquote{hardware.mk} file. The \enquote{hardware.mk} file includes all the hardware modules that the \acrshort{soc} uses. Lastly, the \enquote{config.mk} is located at the \textit{IOb-SoC} root directory and all \textit{Makefiles} use it. The \enquote{config.mk} defines the \enquote{make} variables that are important for hardware and software, for example which peripherals the \acrshort{soc} contains.
 
 \subsection{\textit{IOb-SoC} peripherals}
+Developers add the \textit{IOb-SoC} peripherals under the submodules directory in the \textit{IOb-SoC} folder. Inside the submodules directory there exists a folder for each of the peripherals. Furthermore, the \acrshort{cpu}, the \enquote{iob_cache} module, the \enquote{iob_mem} hardware, the \enquote{iob_axi} interface and the \textit{iob-LIB} repository can also be found in the submodules directory. The \textit{IObundle} engineers developed the \textit{iob-LIB} submodule for it to contain small generic hardware modules and software script used in \textit{IOb-SoC}.
+
+All the submodules may contain hardware and software components. For each hardware peripheral it is recommended to develop a set of bare metal firmware functions that allow to use the peripheral with the \acrshort{soc} without an \acrshort{os}. Since the \textit{IOb-SoC} platform also allows to emulate the developed firmware in the users personal computer, the peripherals should have software function that emulate its firmware drivers.
+
+The peripheral should have the following \enquote{*.mk} files to integrate it into \textit{IOb-SoC}:
+\begin{itemize}
+    \item the \enquote{PERIPHERAL_REPO/hardware/hardware.mk} so the user can add the peripheral hardware modules to the \acrshort{soc}.
+    \item the \enquote{PERIPHERAL_REPO/software/embedded/embedded.mk} allows the user to use the peripheral firmware drivers.
+    \item the \enquote{PERIPHERAL_REPO/software/pc-emul/pc-emul.mk} permits to emulate the peripheral behaviour in the users' computer.
+\end{itemize}
+The developer has to include the \enquote{PERIPHERAL_REPO/hardware/hardware.mk} file in the \textit{IOb-SoC} \enquote{hardware.mk} file. He can include it by adding \lstinline[language=make]{include $(PERIPHERAL_DIR)/hardware/hardware.mk} to the \textit{IOb-SoC} \enquote{hardware.mk}. In the firmware \textit{Makefile} the develops has to include the \enquote{PERIPHERAL_REPO/software/embedded/embedded.mk} file to use the peripheral drivers. Lastly in the \enquote{pc_emul} \textit{Makefile} he has to include the \enquote{PERIPHERAL_REPO/software/pc-emul/pc-emul.mk} file.
+
+In the \enquote{config.mk} file, located in the \textit{IOb-SoC} repository root, the developer needs to add the \enquote{PERIPHERAL_REPO} to the \enquote{PERIPHERALS} \enquote{make} variable and create a variable that indicates the peripheral directory. The user should define the variable that indicates the peripheral directory similarly to: \lstinline[language=make]{PERIPHERAL_REPO_DIR=$(ROOT_DIR)/submodules/PERIPHERAL_REPO}.
+
+The peripheral also needs the following files to be automatically instantiated in the \acrshort{soc} hardware: \enquote{inst_tb.vh}, \enquote{inst.vh} and \enquote{pio.vh}. The \textit{Makefiles} use the \enquote{inst_tb.vh} file to add the needed verilog to the testbench core for the system to simulate. It uses the \enquote{inst.vh} to instantiate the peripheral hardware module in the \textit{IOb-SoC} core. Finally, the \enquote{pio.vh} file contains which input and outputs signals that should be added to the system core hardware. Those files should be in the \enquote{PERIPHERAL_REPO/hardware/include} directory. Listing \ref{lst:inst_file} presents an example of the \enquote{inst.vh} contents.
+
+
+\begin{lstlisting}[language=Verilog, caption={Example of the \enquote{inst.vh} file.}, label=lst:inst_file]
+//
+// TIMER
+//
+iob_timer timer
+  (
+   .clk      (clk),
+   .rst      (reset),
+
+   //cpu interface
+   .valid(slaves_req[`valid(`TIMER)]),
+   .address(slaves_req[`address(`TIMER,`TIMER_ADDR_W+2)-2]),
+   .wdata(slaves_req[`wdata(`TIMER)]),
+   .wstrb(slaves_req[`wstrb(`TIMER)]),
+   .rdata(slaves_resp[`rdata(`TIMER)]),
+   .ready(slaves_resp[`ready(`TIMER)])
+   );
+\end{lstlisting}
 
 \subsection{Internal Buses}
 Review the \enquote{cpu\_i\_resp}, \enquote{cpu\_d\_resp}, \enquote{cpu\_i\_req} and \enquote{cpu\_d\_req} signals.
