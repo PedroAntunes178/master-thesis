@@ -70,26 +70,62 @@ iob_timer timer
 \end{lstlisting}
 
 \subsection{Internal Buses}
-Review the \enquote{cpu\_i\_resp}, \enquote{cpu\_d\_resp}, \enquote{cpu\_i\_req} and \enquote{cpu\_d\_req} signals.
-%define WSTRB_W `WSTRB_W_(DATA_W)
-%define WRITE_W `WRITE_W_(DATA_W)
-%define READ_W  `READ_W_(DATA_W)
-%define WDATA_P `WDATA_P_(DATA_W)
-%define ADDR_P  `ADDR_P_(DATA_W)
-%define VALID_P `VALID_P_(ADDR_W, DATA_W)
-%define REQ_W  `REQ_W_(ADDR_W, DATA_W)
-%define RESP_W `RESP_W_(DATA_W)
-%define req(I)       `req_(I, ADDR_W, DATA_W)
-%define resp(I)      `resp_(I, DATA_W)
-%define valid(I)     `valid_(I, ADDR_W, DATA_W)
-%define address(I,W) `address_(I, W, ADDR_W, DATA_W)
-%define wdata(I)     `wdata_(I, ADDR_W, DATA_W)
-%define wstrb(I)     `wstrb_(I, ADDR_W, DATA_W)
-%define write(I)     `write_(I, ADDR_W, DATA_W)
-%define rdata(I)     `rdata_(I, DATA_W)
-%define ready(I)     `ready_(I, DATA_W)
+The \textit{IOb-SoC} is designed in a way there exists one master hardware component and multiple slave hardware components. To Interconnect the hardware components \textit{IOb-SoC} defines two type of buses, the request bus and the response bus. In \textit{IOb-SoC} the master component is the \acrshort{cpu}. The \acrshort{cpu} send requests to the internal or external memory and the peripherals through the request buses. After making a request the \acrshort{cpu} will receive the response through the respective response bus. The \acrshort{cpu} instantiated in the \textit{IOb-SoC} core has the \enquote{cpu\_i\_req}, \enquote{cpu\_d\_req}, \enquote{cpu\_i\_resp} and \enquote{cpu\_d\_resp} signals. The \enquote{cpu\_i\_req} signal serves to fetch instructions from memory and the \enquote{cpu\_i\_resp} will contain the instruction fetched after a few clock cycles. The \acrshort{cpu} uses the \enquote{cpu\_d\_req} to make data requests to either the memory or a \acrshort{soc} peripheral.
+
+The request bus is composed by a valid bit, an address signal, a data signal and a strobe signal. The hardware sets the valid bit to high when it wants to execute a request and the other signal are already set. The address signal indicates the memory address request is meant for. Figure \ref{fig:req_bus} shows how the signals in the request bus are distributed. Furthermore, figure \ref{fig:req_bus} also represents the bits equivalent to each signal when the address width and data width are 32 bits. The address and data width in \textit{IOb-SoC} are 32 bit by default.
+
+\begin{figure}[!h]
+    \centering
+    \includegraphics[width=\linewidth]{req_bus.pdf}
+    \caption{Request bus with address and data width equal to 32 bits.}
+    \label{fig:req_bus}
+\end{figure}
+
+The response bus is comprised of a ready bit and a data signal. The hardware sets the ready signal to high when the component who made the request can receive the response. The data signal is the response data to the request made. For example, if the cpu wants to read the value in a register at address \enquote{x} the data in the response bus will be the data on register \enquote{x}. Figure \ref{fig:resp_bus} shows how the request signal is composed when the address and data width are 32 bits.
+
+\begin{figure}[!h]
+    \centering
+    \includegraphics[width=\linewidth]{resp_bus.pdf}
+    \caption{Response bus with address and data width equal to 32 bits.}
+    \label{fig:resp_bus}
+\end{figure}
+
+In the \textit{iob-LIB} submodule exists a file, called \enquote{iob\_intercon.vh}, that defines a set of macros that can be used in \textit{Verilog}. Those macros can be used to access the specific bits in the \textit{IOb-SoC} buses. Table \ref{tab:bus_defines} shows the defined macros, how the pre-compiler calculates their value and their values when the address and data width are 32 bit.
+
+\begin{table}[!ht]
+    \centering
+    \begin{tabular}{|l|l|l|l|}
+    \hline
+    \textbf{Name} & \textbf{Defined expression}          & \textbf{Description}                  & \textbf{\begin{tabular}[c]{@{}l@{}}Value with:\\   ADDR\_W=32\\   DATA\_W=32\end{tabular}} \\ \hline
+    READY\_W      & 1                                    & Response ready width                  & 1                                                                                          \\ \hline
+    VALID\_W      & 1                                    & Request valid width                   & 1                                                                                          \\ \hline
+    WSTRB\_W      & DATA\_W/8                            & Request data width                    & 4                                                                                          \\ \hline
+    WRITE\_W      & DATA\_W+DATA\_W/8                    & Most significant bit of request data  & 36                                                                                         \\ \hline
+    READ\_W       & DATA\_W+READY\_W                     & Most significant bit of response data & 33                                                                                         \\ \hline
+    WDATA\_P      & DATA\_W/8                            & Less significant bit of request data  & 4                                                                                          \\ \hline
+    ADDR\_P       & DATA\_W+DATA\_W/8                    & Less significant bit of request data  & 36                                                                                         \\ \hline
+    VALID\_P      & ADDR\_W+DATA\_W+DATA\_W/8            & Request bus valid bit position        & 67                                                                                         \\ \hline
+    REQ\_W        & VALID\_W+ADDR\_W+WRITE\_W            & Request bus width                     & 69                                                                                         \\ \hline
+    RESP\_W       & DATA\_W+READY\_W                     & Response bus width                    & 33                                                                                         \\ \hline
+    req(I)        & I*REQ\_W +: REQ\_W                   & Request bus bits boundary             & I*69 +: 69                                                                                 \\ \hline
+    resp(I)       & I*RESP\_W +: RESP\_W                 & Response bus bits boundary            & I*33 +: 33                                                                                 \\ \hline
+    valid(I)      & I*REQ\_W+VALID\_P                    & Request valid bit position            & I*69+1                                                                                     \\ \hline
+    address(I,W)  & I*REQ\_W+ADDR\_P+W-1 -: W            & Request address bits boundary         & I*69+W+35 -: W                                                                             \\ \hline
+    wdata(I)      & I*REQ\_W+WDATA\_P +: DATA\_W         & Request data bits boundary            & I*69+4 +: 32                                                                               \\ \hline
+    wstrb(I)      & I*REQ\_W +: WSTRB\_W                 & Request strb bits boundary            & I*69 +: 4                                                                                  \\ \hline
+    write(I)      & I*REQ\_W +: WRITE\_W                 & Request write bits boundary           & I*69 +: 36                                                                                 \\ \hline
+    rdata(I)      & I*RESP\_W+READY\_W +: DATA\_W        & Response data bits boundary           & I*33+1 +: 32                                                                               \\ \hline
+    ready(I)      & I*RESP\_W                            & Response ready bit position           & I*33                                                                                       \\ \hline
+    \end{tabular}
+    \caption{Bus interconnect macros.}
+    \label{tab:bus_defines}
+\end{table}
+
+Understanding the interconnect macros is essential when developing the interface with peripherals and hardware components for the \textit{IOb-SoC}. Some macros depend on an \enquote{I} value given to them when using the macro. That \enquote{I} value is used to distinguish which request or response signal the developers wants to access when there is a bus (i.e. wire) with multiple requests or responses bundled up together. In the \enquote{address(I,W)} macro, the \enquote{W} value corresponds to the number of bits of the address in the request signal the developer wants to select.
 
 \subsection{\textit{iob-split} and \textit{iob-merge}}
+The \textit{iob-split} and the \textit{iob-merge} hardware modules can both be found in the \textit{iob-LIB} submodule hardware directory. The \textit{IOb-SoC} uses the \textit{iob-split} in the systems core and in the internal memory hardware modules. The \textit{iob-split} in \textit{IOb-SoC} serves to separate one request and one response bus into multiple buses and only enable the needed one. For example, there are multiple peripheral and each peripheral has an input request bus and an output response bus. However there is only one \enquote{cpu\_d\_req}. The \textit{iob-split} only sends the \enquote{cpu\_d\_req} signal to the selected peripheral and sets the other peripherals request bus to zeros. The \textit{IOb-SoC} instantiates the \textit{iob-merge} in the external and internal memory hardware modules. The \textit{iob-merge} unifies multiple request and response buses into one. For example the \acrshort{cpu} can execute both instructions and data request to the memory. Nevertheless, the memory can only process one request at a time. The \textit{iob-merge} merges the \enquote{cpu\_i\_req} and the \enquote{cpu\_i\_req} and sends to the memory the request with higher priority or the one that was first set has valid.
+
 The \textbf{\textit{iob-split}} is simply a configurable \acrfull{demux}. Meaning that when the \textit{iob-split} hardware module is instantiated the developer can configure it. The developer is able to change the size of the \acrlong{demux} and the selection bits, through N\_SLAVES and P\_SLAVES respectively. N\_SLAVES corresponds to the number of slaves, witch can also be seen as the number of the \acrshort{demux} outputs. P\_SLAVES indicates the slave select word \acrfull{msb} position, in other words it is the position of the \acrshort{msb} of the \acrlong{demux} selection bits. The number of the selection bits is given by equation \ref{eq:number_bits}.
 
 \begin{equation}
@@ -99,11 +135,30 @@ The \textbf{\textit{iob-split}} is simply a configurable \acrfull{demux}. Meanin
 
 The \textbf{\textit{iob-merge}} works similar to the \textit{iob-split} but instead of being a \acrshort{demux} it is a configurable \acrfull{mux}. Meaning that instead of having multiple outputs and one input it has multiple inputs and one output. The number of inputs is indicated by N\_SLAVES and the selection bits are chosen by P\_SLAVES.
 
-\subsection{Bootloader and bare-metal firmware}
-%\subsection{Old simulation testbench}
+\subsection{Bootloader}
+The \textit{IObundle} engineers developed a bootloader for \textit{IOb-SoC} that is the first firmware to run on the \acrlong{soc}. The bootloader firmware is always saved in the \acrshort{soc} internal memory in a boot control hardware unit. The boot control hardware unit defines the boot signal. The boot signal is one bit that can be set to high ('1') or low ('0') and indicates whether the \acrshort{soc} should execute the bootloader or other firmware. Moreover, the boot control unit sends a reset signal to the \acrshort{cpu} when the bootloader ends, before starting the users firmware.
+
+Figure \ref{fig:boot_flow} represents a flow chart of the bootloader firmware behaviour. The bootloader starts by initializing the \acrshort{uart} hardware which the \acrshort{soc} uses to communicate with the users computer. Then it will send an \acrfull{enq} if it still has not sent one. The \acrshort{enq} byte has the value of 0x05 in ascii and is sent to the users computer to indicate that the \textit{IOb-SoC} is waiting for the users computer. The bootloader is going to make sure the \acrshort{uart} is sending the \acrshort{enq} byte while the users computer does not send a response. After receiving a response byte the bootloader firmware checks if the received byte is an \acrfull{frx}. The \acrshort{frx} Byte has the value 0x07. If the bootloader receives a \acrshort{frx} it means the bootloader has to transfer the firmware that is to run after it.
+
+\begin{figure}[!h]
+    \centering
+    \includegraphics[width=\linewidth]{boot_flow.pdf}
+    \caption{Bootloader firmware flow chart.}
+    \label{fig:boot_flow}
+\end{figure}
+
+When transferring the firmware the bootloader receives the firmware binary data through the \acrshort{uart} and copies it to the \acrshort{soc} memory. The bootloader can copy the firmware to either the internal or external memory depending on where the user defined the firmware would run from. After copying the firmware to the \textit{IOb-SoC} the bootloader will send the data saved in the memory back to the users computer. The users computer can then check if the firmware was successfully transferred by comparing the original firmware binary with the received copy. Before exiting the bootloader will clean the cache so that the next firmware to run does not fetch data previously in cache. Finally, when exiting the bootloader asks the boot control unit to set the boot signal to low and reset the \acrshort{cpu}.
 
 \section{\textit{RISC-V}}
 \label{section:riscv}
+RISC-V is a free, open-source RISC Instruction Set Architecture (ISA). An ISA is the bridge that connects software and hardware. RISC is one possible classification of the computer ISA's; it means reduced instruction set computer, and the essence of this approach is the simplicity of the instructions computed by the CPU. Unlike a Complex Instruction Set Computer (CISC) ISA, the CPU might have to execute a more significant number of instructions with a RISC ISA to obtain the same result. Since the instructions are simple, more instructions need to be run to complete a given task. However, the architecture is lighter and can run at a higher frequency, compensating for executing more instructions.
+
+The RISC-V was initially designed at the University of California, Berkeley. Furthermore, it is called RISC-V because it is the fifth RISC instruction set architecture to come out of that university. It was created to support computer architecture research and education. Although now RISC-V is used on commercial projects as well. A key advantage of RISC-V is its flexibility. It can be used from high-performance computers to deeply embedded systems with no MMU. There exists a 32, 64 and 128-bit version of RISC-V. In this report, the 32 and 64-bit versions will be discussed. On the work developed during the thesis preferentially, the 32-bit version will be used. If an instruction is not on the standard RISC-V, it can be created as an ISA extension, which provides excellent flexibility.
+
+There are two main parts of the RISC-V ISA. There are the \textit{unprivileged} instructions that correspond to the base ISA~\cite{riscv_unpriviledge}, which is composed of only 32-bit instructions and some unprivileged extensions. {\it Unprivileged instructions} are the instructions that can be used on all privilege modes in all privilege architecture. Moreover, there exists the privilege instructions~\cite{riscv_priviledge} that implements support for the three different privilege levels. Machine mode is the most trusted privilege level, and typically what runs in this mode has low-level access to the machine implementation. The other two modes are the User mode, where most common applications run, and the OS's Supervisor mode. Each privileged mode has its extensions to the ISA.
+
+To install the RISC-V tool chain~\cite{riscv:toolchain} the user can clone their repository and make the necessary cross-compilers. To work with the IOb-SoC, the user will have to install the Newlib cross-compiler. For this work and the development of the thesis, the Linux cross-compiler had to be installed.
+
 Talk about the 32 registers in the register file
 
 The instruction each ISA extension contains...
