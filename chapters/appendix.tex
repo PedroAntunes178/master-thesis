@@ -1,7 +1,53 @@
 \appendix
-\chapter{Device Tree Source}
-\label{chapter:annex1}
+\chapter{Annexes}
+\label{chapter:annexes}
 
+\section{\textit{RISC-V} CPU registers}
+\label{appendix:riscv_cpu_regs}
+\begin{table}[!ht]
+  \centering
+  \begin{tabular}{|l|l|l|l|l|l|}
+  \hline
+  \textbf{\begin{tabular}[c]{@{}l@{}}5-bit\\  Encoding (rx)\end{tabular}} & \textbf{\begin{tabular}[c]{@{}l@{}}3-bit Compressed\\  Encoding (rx')\end{tabular}} & \textbf{Register} & \textbf{ABI Name} & \textbf{Description}                                                            & \textbf{Saved by Calle-} \\ \hline
+  0                                                                       & -                                                                                   & x0                & zero              & hardwired zero                                                                  & -                        \\ \hline
+  1                                                                       & -                                                                                   & x1                & ra                & return address                                                                  & -R                       \\ \hline
+  2                                                                       & -                                                                                   & x2                & sp                & stack pointer                                                                   & -E                       \\ \hline
+  3                                                                       & -                                                                                   & x3                & gp                & global pointer                                                                  & -                        \\ \hline
+  4                                                                       & -                                                                                   & x4                & tp                & thread pointer                                                                  & -                        \\ \hline
+  5                                                                       & -                                                                                   & x5                & t0                & temporary register 0                                                            & -R                       \\ \hline
+  6                                                                       & -                                                                                   & x6                & t1                & temporary register 1                                                            & -R                       \\ \hline
+  7                                                                       & -                                                                                   & x7                & t2                & temporary register 2                                                            & -R                       \\ \hline
+  8                                                                       & 0                                                                                   & x8                & s0 / fp           & \begin{tabular}[c]{@{}l@{}}saved register 0\\  / frame pointer\end{tabular}     & -E                       \\ \hline
+  9                                                                       & 1                                                                                   & x9                & s1                & saved register 1                                                                & -E                       \\ \hline
+  10                                                                      & 2                                                                                   & x10               & a0                & \begin{tabular}[c]{@{}l@{}}function argument 0\\  / return value 0\end{tabular} & -R                       \\ \hline
+  11                                                                      & 3                                                                                   & x11               & a1                & \begin{tabular}[c]{@{}l@{}}function argument 1\\  / return value 1\end{tabular} & -R                       \\ \hline
+  12                                                                      & 4                                                                                   & x12               & a2                & function argument 2                                                             & -R                       \\ \hline
+  13                                                                      & 5                                                                                   & x13               & a3                & function argument 3                                                             & -R                       \\ \hline
+  14                                                                      & 6                                                                                   & x14               & a4                & function argument 4                                                             & -R                       \\ \hline
+  15                                                                      & 7                                                                                   & x15               & a5                & function argument 5                                                             & -R                       \\ \hline
+  16                                                                      & -                                                                                   & x16               & a6                & function argument 6                                                             & -R                       \\ \hline
+  17                                                                      & -                                                                                   & x17               & a7                & function argument 7                                                             & -R                       \\ \hline
+  18                                                                      & -                                                                                   & x18               & s2                & saved register 2                                                                & -E                       \\ \hline
+  19                                                                      & -                                                                                   & x19               & s3                & saved register 3                                                                & -E                       \\ \hline
+  20                                                                      & -                                                                                   & x20               & s4                & saved register 4                                                                & -E                       \\ \hline
+  21                                                                      & -                                                                                   & x21               & s5                & saved register 5                                                                & -E                       \\ \hline
+  22                                                                      & -                                                                                   & x22               & s6                & saved register 6                                                                & -E                       \\ \hline
+  23                                                                      & -                                                                                   & x23               & s7                & saved register 7                                                                & -E                       \\ \hline
+  24                                                                      & -                                                                                   & x24               & s8                & saved register 8                                                                & -E                       \\ \hline
+  25                                                                      & -                                                                                   & x25               & s9                & saved register 9                                                                & -E                       \\ \hline
+  26                                                                      & -                                                                                   & x26               & s10               & saved register 10                                                               & -E                       \\ \hline
+  27                                                                      & -                                                                                   & x27               & s11               & saved register 11                                                               & -E                       \\ \hline
+  28                                                                      & -                                                                                   & x28               & t3                & temporary register 3                                                            & -R                       \\ \hline
+  29                                                                      & -                                                                                   & x29               & t4                & temporary register 4                                                            & -R                       \\ \hline
+  30                                                                      & -                                                                                   & x30               & t5                & temporary register 5                                                            & -R                       \\ \hline
+  31                                                                      & -                                                                                   & x31               & t6                & temporary register 6                                                            & -R                       \\ \hline
+  \end{tabular}
+  \caption{\textit{RISC-V} \acrshort{cpu} registers.}
+  \label{tab:riscv_cpu_registers}
+\end{table}
+
+\section{Device Tree Source}
+\label{appendix:dts}
 \begin{lstlisting}[caption={Makefile target to build OpenSBI.}, label=lst:build_opensbi]
 /dts-v1/;
 
@@ -87,7 +133,3 @@
   };
 };
 \end{lstlisting}
-
-
-\section{Annex 2}
-Annex 2
