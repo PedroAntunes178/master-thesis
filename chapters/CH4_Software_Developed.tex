@@ -328,7 +328,7 @@ build-opensbi: clean-opensbi os_dir
 In listing~\ref{lst:build_opensbi} \enquote{PLATFORM=iob\_soc} indicates that the configuration customized for the developed \acrshort{soc} is used.
 
 \subsection{Device Tree}
-A device tree file is needed to execute the Linux kernel on the developed \acrshort{soc}. The device tree file describes the hardware components in a specific \acrshort{soc}. Each component of the \acrshort{soc} is represented as a node in the \acrfull{dts} file. The reader can see the complete device tree in annex~\ref{section:annex1}.
+A device tree file is needed to execute the Linux kernel on the developed \acrshort{soc}. The device tree file describes the hardware components in a specific \acrshort{soc}. Each component of the \acrshort{soc} is represented as a node in the \acrfull{dts} file. The reader can see the complete device tree in annex~\ref{chapter:annex1}.
 
 The most important nodes are the \acrshort{cpu} and the memory. The \acrshort{cpu} node describes the \acrshort{cpu} architecture, the \acrshort{cpu} cache and additional specific features. The \acrshort{cpu} node description used by the author in the \acrfull{dts} was based on the description suggested by the \textit{VexRiscv} developer. The memory node indicates that the \acrshort{soc} \acrshort{dram} start address is 0x80000000 and it has 512MB of available memory (i.e. memory length is 0x10000000). The \acrshort{dts} attribute \enquote{regs} indicates the respective hardware devices addresses in the \acrshort{soc}.
 
