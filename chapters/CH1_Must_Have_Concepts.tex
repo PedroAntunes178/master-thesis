@@ -94,6 +94,7 @@ In the \textit{IOb-Lib} submodule exists a file, called \enquote{iob\_intercon.v
 
 \begin{table}[!ht]
     \centering
+    \resizebox{\textwidth}{!}{%
     \begin{tabular}{|l|l|l|l|}
     \hline
     \textbf{Name} & \textbf{Defined expression}          & \textbf{Description}                  & \textbf{\begin{tabular}[c]{@{}l@{}}Value with:\\   ADDR\_W=32\\   DATA\_W=32\end{tabular}} \\ \hline
@@ -117,6 +118,7 @@ In the \textit{IOb-Lib} submodule exists a file, called \enquote{iob\_intercon.v
     rdata(I)      & I*RESP\_W+READY\_W +: DATA\_W        & Response data bits boundary           & I*33+1 +: 32                                                                               \\ \hline
     ready(I)      & I*RESP\_W                            & Response ready bit position           & I*33                                                                                       \\ \hline
     \end{tabular}
+    }
     \caption{Bus interconnect macros.}
     \label{tab:bus_defines}
 \end{table}
@@ -157,9 +159,11 @@ The \textit{RISC-V} was initially designed at the University of California, Berk
 
 There are two main parts of the \textit{RISC-V} ISA. There are the \textit{unprivileged} instructions that correspond to the base ISA~\cite{riscv_unpriviledge}, which is composed of only 32-bit instructions and some unprivileged extensions. {Unprivileged instructions} are the instructions that can be used on all privilege modes in all privilege architecture. Moreover, there exists the privilege instructions~\cite{riscv_priviledge} that implements support for the three different privilege levels. Machine mode is the most trusted privilege level, and typically what runs in this mode has low-level access to the machine implementation. The other two modes are the User mode, where most common applications run, and the OS's Supervisor mode. Each privileged mode has its extensions to the ISA.
 
-To install the \textit{RISC-V} tool chain the user can clone their repository and make the necessary cross-compilers. To work with the IOb-SoC, the user will have to install the Newlib cross-compiler. For this work and the development of the thesis, the Linux cross-compiler had to be installed.
+What a hart is???
 
-Talk about the 32 registers in the register file
+Developers need the \textit{RISC-V} toolchain to cross-compile software for \textit{RISC-V} platforms. The \textit{RISC-V} foundation makes the toolchain available for download in their github page. The \textit{RISC-V} toolchain has two main types of the cross-compilers the Newlib and the Linux version. Furthermore developers can install the toolchain to work with 32-bit, 64-bit or both system architectures. The author installed the Newlib and the Linux \textit{RISC-V} toolchain with multilib (i.e. support for both 32-bit and 64-bit architecture). The \textit{IOb-SoC} uses the Newlib cross-compiler to compile firmware to run in bare-metal. Developers need to compile the linux kernel and software related to the \acrshort{os} with the Linux cross-compiler.
+
+The \textit{RISC-V} specification defines that a \acrshort{cpu} compatible with \textit{RISC-V} has to have thirty two internal registers. Those registers width is equal to the architecture bit width, it could be 32-bit, 64-bit or 128-bit. The table \ref{tab:riscv_cpu_registers} in annex \ref{appendix:riscv_cpu_regs} presents the 32 registers a \textit{RISC-V} \acrshort{cpu} has.
 
 
 \subsection{ISA extensions}
@@ -172,8 +176,32 @@ The instruction each ISA extension contains...
 
 \subsection{Compatible CLINT}
 \label{subsection:clint_riscv}
-The \textit{RISC-V} \textbf{CLINT} is described ...
-Platform must support an ACLINT MTIME counter resolution of 100ns or less (corresponding to a clock tick frequency of at least 10 MHz).
+The \textit{RISC-V} \acrshort{clint} specification~\cite{clint_riscv_spec} describes the hardware registers of a \acrfull{clint} compatible with \textit{RISC-V} platforms. The hardware uses the \acrshort{clint} to generate the inter-processor software and timer interrupts. \textit{SiFive} developed their Core-Local Interrupt (CLINT) device before the \textit{RISC-V} foundation made the \acrshort{clint} specification. Therefore, the RISC-V community has widely adopted it in their projects.
+
+Table \ref{tab:clint_spec_regs} shows the \acrshort{clint} registers compatible with the \textit{SiFive} \acrshort{clint} and the \textit{RISC-V} specification. The \acrshort{clint} implemented in this thesis project only uses machine-level interrupts. However, the \textit{RISC-V} \acrshort{clint} specification also specifies the supervisor inter-processor software interrupts, which the author does not approach here.
+
+\begin{table}[!ht]
+    \centering
+    \begin{tabular}{|l|l|l|l|l|}
+    \hline
+    \textbf{Name} & \textbf{Address} & \textbf{Width (bit)} & \textbf{Access}        & \textbf{Description}                                                                  \\ \hline
+    MSIP0         & 0x0              & 32                   & RW                     & HART index 0 machine-level IPI register                                               \\ \hline
+    MSIP1         & 0x4              & 32                   & RW                     & HART index 1 machine-level IPI register                                               \\ \hline
+    ...           & ...              & ...                  & ...                    & ...                                                                                   \\ \hline
+    RESERVED      & 0x3FFC           & 32                   & \multicolumn{1}{c|}{-} & Reserved for future use.                                                              \\ \hline
+    MTIMECMP0     & 0x4000           & 64                   & RW                     & HART index 0 machine-level time compare                                               \\ \hline
+    MTIMECMP1     & 0x4000           & 64                   & RW                     & HART index 1 machine-level time compare                                               \\ \hline
+    ...           & ...              & ...                  & ...                    & ...                                                                                   \\ \hline
+    MTIMECMP4094  & 0x7FF0           & 64                   & RW                     & \begin{tabular}[c]{@{}l@{}}HART index 4094 machine-level time\\  compare\end{tabular} \\ \hline
+    MTIME         & 0xbff8           & 64                   & RW                     & Machine-level time counter                                                            \\ \hline
+    \end{tabular}
+    \caption{\acrshort{clint} registers compatible with \textit{SiFive} and the \textit{RISC-V} specification.}
+    \label{tab:clint_spec_regs}
+\end{table}
+
+Each \textit{RISC-V} hart should be connected to an \enquote{msip} and \enquote{mtip} pin in the \acrshort{clint} hardware unit. Through those pins, the \acrshort{clint} will notify the \acrshort{cpu} when software or timer interrupt occurs. Each \enquote{msip} pin is hardwired to the \acrshort{lsb} of the corresponding \enquote{MSIP} register. The value stored in the \enquote{MSIP} register must be '0' after the hardware resets the \acrshort{clint}. The only way the \enquote{MSIP} register value changes is if the \acrshort{cpu} writes to it. The \acrshort{cpu} is only able to write either '0' or '1' to the \enquote{MSIP} register. The 31 \acrshort{msb} of the \enquote{MSIP} can be hardwired to '0' and only the \acrshort{lsb} changes value.
+
+The \enquote{mtip} pins are connected to the output of a digital comparator with the respective \enquote{MTIMECMP} register and the \enquote{MTIME} register as input. A digital comparator is a hardware component that takes two numbers as input in binary form and determines whether one number is greater than, less than or equal to the other. The \enquote{mtip} triggers when the \enquote{MTIMECMP} register value is lower then the \enquote{MTIME} register. On \acrshort{clint} reset, the hardware has to set the \enquote{MTIME} register value to '0', and the \enquote{MTIMECMP} register to a value that does not trigger the timer interrupt, for example, all bits set to '1'. Moreover, the \acrshort{clint} timer counter resolution must be 100ns or less (corresponding to a clock tick frequency of at least 10 MHz).
 
 \subsection{Compatible PLIC}
 \label{subsection:plic_riscv}
