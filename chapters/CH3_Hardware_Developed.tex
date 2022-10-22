@@ -227,9 +227,24 @@ Finally, the \enquote{iob\_uart16550} also has to pass the interface between the
 
 \section{CLINT Unit}
 \label{section:clint}
-The \acrshort{clint} was the only hardware component developed from scratch. Even though there already exist open-source \acrfull{clint} hardware modules. For example, the \acrshort{clint} used with the \textit{CVA6} core and developed by the \textit{PULP platform}. The problem with this \acrshort{clint} module is that it is written in system-Verilog and uses packages and definitions from the \textit{CVA6} core. The \acrshort{clint} core is a simple hardware component that only needs a few registers and signals to work, as the reader can see in section \ref{subsection:clint_riscv}. The author would have to create an interface with \textit{IOb-SoC} independently of the \acrshort{clint} core used. The best solution was to entirely create the \acrshort{clint} hardware unit.
+The \acrshort{clint} was the only hardware component developed from scratch. Even though there already exist open-source \acrfull{clint} hardware modules. For example, the \acrshort{clint} used with the \textit{CVA6} core and developed by the \textit{PULP platform}. The problem with this \acrshort{clint} module is that it is written in system-Verilog and uses packages and definitions from the \textit{CVA6} core. The \acrshort{clint} core is a simple hardware component that only needs a few registers and signals to work. The author would have to create an interface with \textit{IOb-SoC} independently of the \acrshort{clint} core used. The best solution was to entirely create the \acrshort{clint} hardware unit.
 
-The inputs and outputs of the \acrshort{clint} unit can be seen in table \ref{tab:clint_signals}. \enquote{N\_CORES} is the number of \acrshort{cpu} core that are used in the \acrshort{soc}. In the \acrfull{soc} developed, there is only one core. Nevertheless, the author built the \acrshort{clint} considering a possibility of a multi-core system. Each core has its timer and software interrupt. As such, the \enquote{mtip} and \enquote{msip} registers width is the number of core, \enquote{N\_CORES}.
+Table \ref{tab:clint_registers} shows the memory mapped register and their respective address implemented on the developed \acrshort{clint} hardware. The \acrshort{clint} registers are compatible with both the \textit{SiFive} and the \textit{RISC-V} specification. Since the \acrshort{soc} developed only has one hart (i.e. \acrshort{cpu} core), the Verilog code only creates one register of each type, three registers in total. Nevertheless, the register's address must be separate because developers could use the \acrshort{clint} created by the author in more complex systems. Furthermore, the logic behaviour of the \acrshort{clint} hardware is identical to the behaviour described in the \textit{RISC-V} specification reviewed in section \ref{subsection:clint_riscv}.
+
+\begin{table}[!ht]
+  \centering
+  \begin{tabular}{|l|l|l|l|l|}
+  \hline
+  \textbf{Name} & \textbf{Address} & \textbf{Width (bit)} & \textbf{Access} & \textbf{Description}                    \\ \hline
+  MSIP          & 0x0              & 32                   & RW              & Software interrupt                      \\ \hline
+  MTIMECMP      & 0x4000           & 64                   & RW              & Register to compare with timer register \\ \hline
+  MTIME         & 0x1bff8          & 64                   & RW              & Timer register                          \\ \hline
+  \end{tabular}
+  \caption{CLINT Registers.}
+  \label{tab:clint_registers}
+\end{table}
+
+The inputs and outputs of the \acrshort{clint} unit can be seen in table \ref{tab:clint_signals}. \enquote{N\_CORES} is the number of \acrshort{cpu} core that are used in the \acrshort{soc}. In the \acrfull{soc} developed, there is only one core. Nevertheless, the author built the \acrshort{clint} considering a possibility of a multi-core system. Each core has its timer and software interrupt. As such, the \enquote{mtip} and \enquote{msip} signals width is the number of core, \enquote{N\_CORES}. When the \acrshort{clint} hardware receives a request from the \acrshort{cpu}, the response is ready one clock cycle after. The response data will be the data stored in the register designated by the request address signal. If the request strobe signal is different from 0, then the \acrshort{clint} writes to the register the request addresses. The value stored in that register will be the same as the request data signal.
 
 \begin{table}[!ht]
   \centering
@@ -254,11 +269,9 @@ The inputs and outputs of the \acrshort{clint} unit can be seen in table \ref{ta
   \label{tab:clint_signals}
 \end{table}
 
-The \enquote{rt\_clk} signal, although it is connected to \enquote{rtc} wire, is not available in \textit{IOb-SoC} since the development board does not have any \acrfull{rtc} crystal connected. The \acrshort{rtc} frequency is commonly 32.768 kHz, because it is a power of 2 ($2^15$) value. To get a precise 1-second period (1 Hz frequency) would only be needed a 15 stage binary counter. With a \acrshort{rtc} the \acrshort{clint} unit had to detect the rising edge of the \enquote{rt\_clk} signal. The hardware detected the rising edge by taking samples of the \enquote{rt\_clk} signal at the system clock frequency. Taking those samples is possible because the \acrshort{rtc} is slower than the system clock. Suppose in the future, the \acrshort{clint} unit developed is implemented in a system with a \acrshort{rtc}. In that case, developers can easily adapt the hardware design to support the \acrshort{rtc} since the author developed the logic. 
+The \enquote{rt\_clk} signal, although it is connected to \enquote{rtc} wire, is not available in \textit{IOb-SoC} since the development board does not have any \acrfull{rtc} crystal connected. The \acrshort{rtc} frequency is commonly 32.768 kHz, because it is a power of 2 ($2^15$) value. To get a precise 1-second period (1 Hz frequency) would only be needed a 15 stage binary counter. With a \acrshort{rtc} the \acrshort{clint} unit had to detect the rising edge of the \enquote{rt\_clk} signal. The hardware detected the rising edge by taking samples of the \enquote{rt\_clk} signal at the system clock frequency. Taking those samples is possible because the \acrshort{rtc} is slower than the system clock. Suppose in the future, the \acrshort{clint} unit developed is implemented in a system with a \acrshort{rtc}. In that case, developers can easily adapt the hardware design to support the \acrshort{rtc} since the author developed the logic.
 
-The development boards used in this thesis do not have an \acrshort{rtc}, so the author had to find an alternative. The method implemented was more straightforward than the logic if a \acrshort{rtc} existed. The system clock operates at 100 MHz, so the author added a counter to the design that increases the timer register when it reaches a specific number. The hardware simulates a \acrshort{rtc} working at 100 kHz by incrementing the timer when the counter reaches 999.
-
-In conclusion, the author implemented the needed registers to develop a \acrshort{clint} unit per the \textit{RISC-V} specifications. Moreover, he described the hardware logic needed to trigger the timer and software interrupts.
+The development boards used in this thesis do not have an \acrshort{rtc}, so the author had to find an alternative. The method implemented was more straightforward than the logic if a \acrshort{rtc} existed. The system clock operates at 100 MHz, so the author added a counter to the design that increases the timer register when the counter reaches a defined threshold. The \acrshort{clint} timer frequency the author defined is 100KHz and the Verilog code calculates the counter threshold with $\frac{SystemFrequency}{100000}-1$. Therefore, if the system frequency is 100MHz, the hardware simulates a \acrshort{rtc} working at 100 kHz by incrementing the timer when the counter reaches 999.
 
 \section{PLIC Unit}
 \label{section:plic}
