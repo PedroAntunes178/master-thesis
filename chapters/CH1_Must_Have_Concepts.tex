@@ -159,7 +159,7 @@ The \textit{RISC-V} was initially designed at the University of California, Berk
 
 There are two main parts of the \textit{RISC-V} ISA. There are the \textit{unprivileged} instructions that correspond to the base ISA~\cite{riscv_unpriviledge}, which is composed of only 32-bit instructions and some unprivileged extensions. {Unprivileged instructions} are the instructions that can be used on all privilege modes in all privilege architecture. Moreover, there exists the privilege instructions~\cite{riscv_priviledge} that implements support for the three different privilege levels. Machine mode is the most trusted privilege level, and typically what runs in this mode has low-level access to the machine implementation. The other two modes are the User mode, where most common applications run, and the OS's Supervisor mode. Each privileged mode has its extensions to the ISA.
 
-What a hart is???
+What a Hart is???
 
 Developers need the \textit{RISC-V} toolchain to cross-compile software for \textit{RISC-V} platforms. The \textit{RISC-V} foundation makes the toolchain available for download in their github page. The \textit{RISC-V} toolchain has two main types of the cross-compilers the Newlib and the Linux version. Furthermore developers can install the toolchain to work with 32-bit, 64-bit or both system architectures. The author installed the Newlib and the Linux \textit{RISC-V} toolchain with multilib (i.e. support for both 32-bit and 64-bit architecture). The \textit{IOb-SoC} uses the Newlib cross-compiler to compile firmware to run in bare-metal. Developers need to compile the linux kernel and software related to the \acrshort{os} with the Linux cross-compiler.
 
@@ -184,28 +184,72 @@ Table \ref{tab:clint_spec_regs} shows the \acrshort{clint} registers compatible 
     \centering
     \begin{tabular}{|l|l|l|l|l|}
     \hline
-    \textbf{Name} & \textbf{Address} & \textbf{Width (bit)} & \textbf{Access}        & \textbf{Description}                                                                  \\ \hline
-    MSIP0         & 0x0              & 32                   & RW                     & HART index 0 machine-level IPI register                                               \\ \hline
-    MSIP1         & 0x4              & 32                   & RW                     & HART index 1 machine-level IPI register                                               \\ \hline
-    ...           & ...              & ...                  & ...                    & ...                                                                                   \\ \hline
-    RESERVED      & 0x3FFC           & 32                   & \multicolumn{1}{c|}{-} & Reserved for future use.                                                              \\ \hline
-    MTIMECMP0     & 0x4000           & 64                   & RW                     & HART index 0 machine-level time compare                                               \\ \hline
-    MTIMECMP1     & 0x4000           & 64                   & RW                     & HART index 1 machine-level time compare                                               \\ \hline
-    ...           & ...              & ...                  & ...                    & ...                                                                                   \\ \hline
-    MTIMECMP4094  & 0x7FF0           & 64                   & RW                     & \begin{tabular}[c]{@{}l@{}}HART index 4094 machine-level time\\  compare\end{tabular} \\ \hline
-    MTIME         & 0xbff8           & 64                   & RW                     & Machine-level time counter                                                            \\ \hline
+    \textbf{Name} & \textbf{Address} & \textbf{Width (bit)} & \textbf{Access} & \textbf{Description}                                                                  \\ \hline
+    MSIP0         & 0x0              & 32                   & RW              & HART index 0 machine-level IPI register                                               \\ \hline
+    MSIP1         & 0x4              & 32                   & RW              & HART index 1 machine-level IPI register                                               \\ \hline
+    ...           & ...              & ...                  & ...             & ...                                                                                   \\ \hline
+    RESERVED      & 0x3FFC           & 32                   & -               & Reserved for future use.                                                              \\ \hline
+    MTIMECMP0     & 0x4000           & 64                   & RW              & HART index 0 machine-level time compare                                               \\ \hline
+    MTIMECMP1     & 0x4000           & 64                   & RW              & HART index 1 machine-level time compare                                               \\ \hline
+    ...           & ...              & ...                  & ...             & ...                                                                                   \\ \hline
+    MTIMECMP4094  & 0x7FF0           & 64                   & RW              & \begin{tabular}[c]{@{}l@{}}HART index 4094 machine-level time\\  compare\end{tabular} \\ \hline
+    MTIME         & 0xbff8           & 64                   & RW              & Machine-level time counter                                                            \\ \hline
     \end{tabular}
     \caption{\acrshort{clint} registers compatible with \textit{SiFive} and the \textit{RISC-V} specification.}
     \label{tab:clint_spec_regs}
 \end{table}
 
-Each \textit{RISC-V} hart should be connected to an \enquote{msip} and \enquote{mtip} pin in the \acrshort{clint} hardware unit. Through those pins, the \acrshort{clint} will notify the \acrshort{cpu} when software or timer interrupt occurs. Each \enquote{msip} pin is hardwired to the \acrshort{lsb} of the corresponding \enquote{MSIP} register. The value stored in the \enquote{MSIP} register must be '0' after the hardware resets the \acrshort{clint}. The only way the \enquote{MSIP} register value changes is if the \acrshort{cpu} writes to it. The \acrshort{cpu} is only able to write either '0' or '1' to the \enquote{MSIP} register. The 31 \acrshort{msb} of the \enquote{MSIP} can be hardwired to '0' and only the \acrshort{lsb} changes value.
+Each \textit{RISC-V} Hart should be connected to an \enquote{msip} and \enquote{mtip} pin in the \acrshort{clint} hardware unit. Through those pins, the \acrshort{clint} will notify the \acrshort{cpu} when software or timer interrupt occurs. Each \enquote{msip} pin is hardwired to the \acrshort{lsb} of the corresponding \enquote{MSIP} register. The value stored in the \enquote{MSIP} register must be '0' after the hardware resets the \acrshort{clint}. The only way the \enquote{MSIP} register value changes is if the \acrshort{cpu} writes to it. The \acrshort{cpu} is only able to write either '0' or '1' to the \enquote{MSIP} register. The 31 \acrshort{msb} of the \enquote{MSIP} can be hardwired to '0' and only the \acrshort{lsb} changes value.
 
 The \enquote{mtip} pins are connected to the output of a digital comparator with the respective \enquote{MTIMECMP} register and the \enquote{MTIME} register as input. A digital comparator is a hardware component that takes two numbers as input in binary form and determines whether one number is greater than, less than or equal to the other. The \enquote{mtip} triggers when the \enquote{MTIMECMP} register value is lower then the \enquote{MTIME} register. On \acrshort{clint} reset, the hardware has to set the \enquote{MTIME} register value to '0', and the \enquote{MTIMECMP} register to a value that does not trigger the timer interrupt, for example, all bits set to '1'. Moreover, the \acrshort{clint} timer counter resolution must be 100ns or less (corresponding to a clock tick frequency of at least 10 MHz).
 
 \subsection{Compatible PLIC}
 \label{subsection:plic_riscv}
-The \textit{RISC-V} \textbf{PLIC} was first described in the privilege instructions documentation, but since version 1.10 it was moved to its own document.
+The \textit{RISC-V} systems use the \acrfull{plic} hardware to multiplex various device interrupts onto the external interrupt lines of Hart contexts. A \acrshort{plic} that claims to be a PLIC-Compliant standard \acrshort{plic} has to follow the \textit{RISC-V} \acrshort{plic} specification~\cite{plic_riscv_spec}. The \textit{RISC-V} \acrshort{plic} was first described in the privilege instructions documentation. Since version 1.10 it was moved to its own document. However, nothing major has changed and \acrshort{plic} cores compatible with the \acrshort{plic} described in the privilege documentation are still compatible with the current standard.
+
+The \acrshort{plic} hardware has many features that the author will not discuss here. In this thesis project the author adapted a already developed \acrshort{plic} core to his work. To integrate an existing \acrshort{plic} core what is essential to understand is how the the interrupt notifications are handled by the \acrshort{cpu}, how the author can customize the \acrshort{plic} through the hardware module parameters and the memory mapped registers. 
+
+Figure \ref{fig:plic_int_flow} was obtained from the \textit{RISC-V} \acrshort{plic} specification and shows a sketch of the interrupt flow between the \acrshort{plic} hardware and the \acrshort{cpu}. To receive an interrupt notification from the \acrshort{plic} unit the \acrshort{cpu} needs a external interrupt pin. ..
+
+\begin{figure}[!ht]
+    \centering
+    \includegraphics[width=0.7\textwidth]{plic_int_flow.png}
+    \caption{\acrshort{plic} Interrupt Flow.}
+    \label{fig:plic_int_flow}
+\end{figure}
+
+Developers set the hardware module parameters in their hardware description file when instantiating the \acrshort{plic} hardware. The \acrshort{plic} parameters defined can influence the number of resources the hardware utilises.
+
+Table .. shows the memory mapped registers that the \textit{RISC-V} \acrshort{plic} specification defines. Most of the registers are grouped 
+
+\begin{table}[!ht]
+    \centering
+    \begin{tabular}{|l|l|l|l|}
+    \hline
+    \textbf{Address} & \textbf{Width (bit)} & \textbf{Access} & \textbf{Description}                              \\ \hline
+    0x0              & 32                   & -               & Reserved (interrupt source 0 does not exist)      \\ \hline
+    0x4              & 32                   & RW              & Interrupt source 1 priority                       \\ \hline
+    ...              & ...                  & ...             & ...                                               \\ \hline
+    0xFFC            & 32                   & RW              & Interrupt source 1023 priority                    \\ \hline
+    0x1000           & 32                   & RW              & Interrupt Pending bit 0-31                        \\ \hline
+    ...              & ...                  & ...             & ...                                               \\ \hline
+    0x4000           & 32                   & RW              & Interrupt Pending bit 992-1023                    \\ \hline
+    0x2000           & 32                   & RW              & Enable bits for sources 0-31 on context 0         \\ \hline
+    ...              & ...                  & ...             & ...                                               \\ \hline
+    0x207C           & 32                   & RW              & Enable bits for sources 992-1023 on context 0     \\ \hline
+    ...              & ...                  & ...             & ...                                               \\ \hline
+    0x1F1FFC         & 32                   & RW              & Enable bits for sources 992-1023 on context 15871 \\ \hline
+    0x200000         & 32                   & RW              & Priority threshold for context 0                  \\ \hline
+    0x200004         & 32                   & RW              & Claim/complete for context 0                      \\ \hline
+    ...              & ...                  & ...             & ...                                               \\ \hline
+    0x3FFF000        & 32                   & RW              & Priority threshold for context 15871              \\ \hline
+    0x3FFF004        & 32                   & RW              & Claim/complete for context 15871                  \\ \hline
+    \end{tabular}
+    \caption{\acrshort{plic} registers compatible \textit{RISC-V} specification.}
+    \label{tab:plic_spec_regs}
+\end{table}
+
+Lastly, it is essential to note that the \acrshort{plic} hardware only needs to generate the needed registers, depending on the passed parameters. Consequently, if the number of sources is 32, the \acrshort{plic} hardware should only create 32 Interrupt Source Priority registers, not 1023.
 
 \subsection{Compatible UART/Serial Console}
 \label{section:serial_console}
