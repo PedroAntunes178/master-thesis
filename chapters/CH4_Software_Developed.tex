@@ -356,7 +356,7 @@ build-linux-kernel: clean-linux-kernel os_dir
         cp $(Linux_DIR)/Linux/arch/riscv/boot/Image $(VEX_OS_DIR)
 \end{lstlisting}
 
-An alternative way to build the Linux kernel would be using \textit{Buildroot}. \textit{Buildroot}~\cite{buildroot} is a tool that simplifies and automates building a complete Linux system for an embedded system. Since it allows cross-compilation, anyone can build a root filesystem, a Linux kernel image and a bootloader for any existing CPU architecture using only their personal computer.
+An alternative way to build the Linux kernel would be using \textit{Buildroot}. \textit{Buildroot}~\cite{petazzoni2012buildroot} is a tool that simplifies and automates building a complete Linux system for an embedded system. Since it allows cross-compilation, anyone can build a root filesystem, a Linux kernel image and a bootloader for any existing CPU architecture using only their personal computer.
 
 The author tested the build process using \textit{Buildroot} and successfully created an executable Linux kernel. However, the process of creating the Linux kernel with \textit{Buildroot} is slower than the previous method. For the development of the \acrshort{os}, \textit{Buildroot} could be helpful in the future when creating a more complex system. A more complex system would be a \acrshort{soc} with more peripherals, for example, an Ethernet peripheral.
 
