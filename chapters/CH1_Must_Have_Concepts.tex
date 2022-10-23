@@ -75,7 +75,7 @@ iob_timer timer
 \label{subsection:iob_bus}
 The \textit{IObundle} developers designed the \textit{IOb-SoC} in a way that one master hardware component and multiple slave hardware components exist. To Interconnect the hardware components \textit{IOb-SoC} defines two types of bus, the request bus and the response bus. In \textit{IOb-SoC} the master component is the \acrshort{cpu}. The \acrshort{cpu} sends requests to the internal or external memory and the peripherals through the request buses. After making a request, the \acrshort{cpu} will receive the response through the respective response bus. The \acrshort{cpu} instantiated in the \textit{IOb-SoC} core has the \enquote{cpu\_i\_req}, \enquote{cpu\_d\_req}, \enquote{cpu\_i\_resp} and \enquote{cpu\_d\_resp} signals. The \enquote{cpu\_i\_req} signal serves to fetch instructions from memory, and the \enquote{cpu\_i\_resp} will contain the instruction fetched after a few clock cycles. The \acrshort{cpu} uses the \enquote{cpu\_d\_req} to make data requests to either the memory or a \acrshort{soc} peripheral.
 
-The request bus comprises a valid bit, an address signal, a data signal and a strobe signal. The hardware sets the valid bit to ‘1’ when it wants to execute a request and has already defined the other signals. The address signal indicates the register that the request is targeting. Figure \ref{fig:req_bus} shows how the \textit{IOb-SoC} distributes the signals in the request bus. Furthermore, figure \ref{fig:req_bus} also represents the bits equivalent to each signal when the address width and data width are 32 bits. The address and data width in \textit{IOb-SoC} are 32-bit by default.
+The request bus comprises a valid bit, an address signal, a data signal and a strobe signal. The hardware sets the valid bit to '1' when it wants to execute a request and has already defined the other signals. The address signal indicates the register that the request is targeting. Figure \ref{fig:req_bus} shows how the \textit{IOb-SoC} distributes the signals in the request bus. Furthermore, figure \ref{fig:req_bus} also represents the bits equivalent to each signal when the address width and data width are 32 bits. The address and data width in \textit{IOb-SoC} are 32-bit by default.
 
 \begin{figure}[!h]
     \centering
@@ -303,7 +303,9 @@ Finally when using 32-bit data bus interface, there are two additional registers
 
 \subsection{Supervisor Binary Interface}
 \label{subsection:sbi}
-Talk OpenSBI!
+The \acrfull{sbi} interface 
+
+\textit{OpenSBI}, also known as the \textit{RISC-V} Open Source Supervisor Binary Interface, is the recommended interface between a platform-specific firmware running in \acrshort{machine}-mode and a general-purpose \acrshort{os} executing in \acrshort{supervisor}-mode. The main component of \textit{OpenSBI} is provided in the form of a platform-independent static library \enquote{libsbi.a} implementing the \acrshort{sbi} interface. \textit{OpenSBI} can be used as a bootloader that is platform-dependent and uses the \enquote{libsbi.a} to ensure conformance with the \acrshort{sbi} interface specifications. The \textit{OpenSBI} platform-dependent firmware can be configured to suit a specific \acrlong{soc} hardware. The \acrshort{sbi} specification version supported by the \textit{OpenSBI} firmware is v0.2.
 
 \subsection{The Linux Boot Flow}
 \label{subsection:linux_boot_flow}
