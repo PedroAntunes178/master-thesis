@@ -303,12 +303,12 @@ Finally when using 32-bit data bus interface, there are two additional registers
 
 \subsection{Supervisor Binary Interface}
 \label{subsection:sbi}
-The \acrfull{sbi} interface 
+The \acrfull{sbi} interface permits supervisor-mode (S-mode or VS-mode) software to be portable across all RISC-V implementations. The \acrfull{sbi} specification~\cite{sbi_riscv_spec} defines an abstraction for platform-specific functionalities. A software application that implements the \acrfull{sbi} specification is known as an \acrshort{sbi} implementation or \acrfull{see}. The \acrshort{sbi} creates an interface between the Kernel running in \acrshort{supervisor}-Mode and the platform-specific firmware running in \acrshort{machine}-Mode. The platform-specific firmware can be an \acrlong{see}. Figure \ref{fig:riscv_sbi} illustrates the purpose of the \acrshort{sbi} in a system executing an \acrshort{os} like the one the author is going to develop in this thesis.
 
 \begin{figure}[!h]
     \centering
     \includegraphics{riscv_sbi.pdf}
-    \caption{Multiple stages of the Linux boot on \textit{RISC-V}.}
+    \caption{\textit{RISC-V} system running an \acrlong{os}.}
     \label{fig:riscv_sbi}
 \end{figure}
 
