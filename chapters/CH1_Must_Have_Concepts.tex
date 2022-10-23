@@ -207,9 +207,10 @@ The \enquote{mtip} pins are connected to the output of a digital comparator with
 \label{subsection:plic_riscv}
 The \textit{RISC-V} systems use the \acrfull{plic} hardware to multiplex various device interrupts onto the external interrupt lines of Hart contexts. A \acrshort{plic} that claims to be a PLIC-Compliant standard \acrshort{plic} has to follow the \textit{RISC-V} \acrshort{plic} specification~\cite{plic_riscv_spec}. The \textit{RISC-V} \acrshort{plic} was first described in the privilege instructions documentation. Since version 1.10 it was moved to its own document. However, nothing major has changed and \acrshort{plic} cores compatible with the \acrshort{plic} described in the privilege documentation are still compatible with the current standard.
 
-The \acrshort{plic} hardware has many features that the author will not discuss here. In this thesis project the author adapted a already developed \acrshort{plic} core to his work. To integrate an existing \acrshort{plic} core what is essential to understand is how the the interrupt notifications are handled by the \acrshort{cpu}, how the author can customize the \acrshort{plic} through the hardware module parameters and the memory mapped registers. 
+The \acrshort{plic} hardware has many features that the author will not discuss here. In this thesis project the author adapted a already developed \acrshort{plic} core to his work. To integrate an existing \acrshort{plic} core what is essential to understand is how the the interrupt notifications are handled by the \acrshort{cpu} and the \acrshort{plic} memory mapped registers. Furthermore, each interrupt pin of a hardware peripheral that is connected to the \acrshort{plic} unit corresponds to a source. Additionally, a \textit{RISC-V} Hart connected to the \acrshort{plic} has to have at least one external interrupt pin. The \acrshort{plic} considers each external interrupt pin as a target. The \acrshort{plic} notifies the \acrshort{cpu} of an existing interrupt through the target signal connected to the \acrshort{cpu} external interrupt pin. A \textit{RISC-V} Hart can have one external interrupt input for \acrlong{machine} level interrupts and another for \acrlong{supervisor} level interrupts.
 
-Figure \ref{fig:plic_int_flow} was obtained from the \textit{RISC-V} \acrshort{plic} specification and shows a sketch of the interrupt flow between the \acrshort{plic} hardware and the \acrshort{cpu}. To receive an interrupt notification from the \acrshort{plic} unit the \acrshort{cpu} needs a external interrupt pin. ..
+Figure \ref{fig:plic_int_flow} was obtained from the \textit{RISC-V} \acrshort{plic} specification and shows a sketch of the interrupt flow between the \acrshort{plic} hardware and the \acrshort{cpu}. When a peripheral generates an interrupt the corresponding source input in the \acrshort{plic} is enabled and the \acrshort{plic} forwards it to interrupt gateway that processes the interrupt signal from each source. Then the interrupt gateway sends a single interrupt request to the \acrshort{plic} core, which latches these in the core interrupt pending bits (IP). Afterwards, the \acrshort{plic} core will send a notification to the targets to whom the interrupt interests. When a target receives an interrupt notification it sends a claim request to the \acrshort{plic} core and waits for the response which contains the interrupt id. After sending the identifier of the highest priority global interrupt source pending for that target, the \acrshort{plic} core clears the corresponding interrupt source pending bit.The target will handle the interrupt through firmware and when the firmware disables the interrupt the target sends a interrupt completion message to the associated interrupt gateway. Finally, the interrupt gateway can forward another interrupt request for the same source to the
+\acrshort{plic} core.
 
 \begin{figure}[!ht]
     \centering
@@ -218,9 +219,7 @@ Figure \ref{fig:plic_int_flow} was obtained from the \textit{RISC-V} \acrshort{p
     \label{fig:plic_int_flow}
 \end{figure}
 
-Developers set the hardware module parameters in their hardware description file when instantiating the \acrshort{plic} hardware. The \acrshort{plic} parameters defined can influence the number of resources the hardware utilises.
-
-Table .. shows the memory mapped registers that the \textit{RISC-V} \acrshort{plic} specification defines. Most of the registers are grouped 
+Table \ref{tab:plic_spec_regs} shows the memory mapped registers that the \textit{RISC-V} \acrshort{plic} specification defines. Most of the registers are grouped 
 
 \begin{table}[!ht]
     \centering
@@ -249,7 +248,7 @@ Table .. shows the memory mapped registers that the \textit{RISC-V} \acrshort{pl
     \label{tab:plic_spec_regs}
 \end{table}
 
-Lastly, it is essential to note that the \acrshort{plic} hardware only needs to generate the needed registers, depending on the passed parameters. Consequently, if the number of sources is 32, the \acrshort{plic} hardware should only create 32 Interrupt Source Priority registers, not 1023.
+Lastly, it is essential to note that the \acrshort{plic} hardware only needs to generate the needed registers, depending on the passed parameters. Consequently, if the number of sources is 32, the \acrshort{plic} hardware should only create 32 Interrupt Source Priority registers, not 1023. The \acrshort{plic} parameters defined can influence the number of resources the hardware utilises. Developers set the hardware module parameters in their hardware description file when instantiating the \acrshort{plic} hardware.
 
 \subsection{Compatible UART/Serial Console}
 \label{section:serial_console}
