@@ -305,11 +305,27 @@ Finally when using 32-bit data bus interface, there are two additional registers
 \label{subsection:sbi}
 The \acrfull{sbi} interface 
 
+\begin{figure}[!h]
+    \centering
+    \includegraphics{riscv_sbi.pdf}
+    \caption{Multiple stages of the Linux boot on \textit{RISC-V}.}
+    \label{fig:riscv_sbi}
+\end{figure}
+
 \textit{OpenSBI}, also known as the \textit{RISC-V} Open Source Supervisor Binary Interface, is the recommended interface between a platform-specific firmware running in \acrshort{machine}-mode and a general-purpose \acrshort{os} executing in \acrshort{supervisor}-mode. The main component of \textit{OpenSBI} is provided in the form of a platform-independent static library \enquote{libsbi.a} implementing the \acrshort{sbi} interface. \textit{OpenSBI} can be used as a bootloader that is platform-dependent and uses the \enquote{libsbi.a} to ensure conformance with the \acrshort{sbi} interface specifications. The \textit{OpenSBI} platform-dependent firmware can be configured to suit a specific \acrlong{soc} hardware. The \acrshort{sbi} specification version supported by the \textit{OpenSBI} firmware is v0.2.
 
 \subsection{The Linux Boot Flow}
 \label{subsection:linux_boot_flow}
-What is a device tree?
+Figure .. 
+
+\begin{figure}[!h]
+    \centering
+    \includegraphics[width=\linewidth]{linux_boot_flow.pdf}
+    \caption{Multiple stages of the Linux boot on \textit{RISC-V}.}
+    \label{fig:linux_boot_flow}
+\end{figure}
+
+The \textit{OpenSBI} software has little knowledge of the \acrshort{soc} specific hardware. Furthermore, the Linux kernel software is compiled so that it is platform-independent. Consequently, there needs to exist a way of passing the \acrshort{soc} hardware configuration to the software. For that purpose, developers have to create a \acrfull{dts} file and compile the \textit{OpenSBI} software so that it knows where the \acrshort{dts} is located in memory. The \acrlong{dts} is a file that describes the hardware in a \acrshort{soc} through nodes. \textbf{What is a device tree?}
 
 \section{Open Source Verification tools}
 \label{section:verification_tools}
