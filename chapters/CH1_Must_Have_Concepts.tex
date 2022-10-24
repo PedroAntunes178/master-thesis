@@ -165,17 +165,14 @@ There are two main parts of the \textit{RISC-V} ISA. There are the \textit{unpri
 
 What a Hart is???
 
-Developers need the \textit{RISC-V} toolchain to cross-compile software for \textit{RISC-V} platforms. The \textit{RISC-V} foundation makes the toolchain available for download in their github page. The \textit{RISC-V} toolchain has two main types of the cross-compilers the Newlib and the Linux version. Furthermore developers can install the toolchain to work with 32-bit, 64-bit or both system architectures. The author installed the Newlib and the Linux \textit{RISC-V} toolchain with multilib (i.e. support for both 32-bit and 64-bit architecture). The \textit{IOb-SoC} uses the Newlib cross-compiler to compile firmware to run in bare-metal. Developers need to compile the linux kernel and software related to the \acrshort{os} with the Linux cross-compiler.
-
 The \textit{RISC-V} specification defines that a \acrshort{cpu} compatible with \textit{RISC-V} has to have thirty two internal registers. Those registers width is equal to the architecture bit width, it could be 32-bit, 64-bit or 128-bit. The table \ref{tab:riscv_cpu_registers} in annex \ref{appendix:riscv_cpu_regs} presents the 32 registers a \textit{RISC-V} \acrshort{cpu} has.
 
+Developers need the \textit{RISC-V} toolchain to cross-compile software for \textit{RISC-V} platforms. The \textit{RISC-V} foundation makes the toolchain available for download in their github page. The \textit{RISC-V} toolchain has two main types of the cross-compilers the Newlib and the Linux version. Furthermore developers can install the toolchain to work with 32-bit, 64-bit or both system architectures. The author installed the Newlib and the Linux \textit{RISC-V} toolchain with multilib (i.e. support for both 32-bit and 64-bit architecture). The \textit{IOb-SoC} uses the Newlib cross-compiler to compile firmware to run in bare-metal. Developers need to compile the Linux kernel and software related to the \acrshort{os} with the Linux cross-compiler.
 
-\subsection{ISA extensions}
-\label{subsection:isa_extensions}
+Talk ISA extensions
 The instruction each ISA extension contains...
 
-\subsection{Control Status Registers}
-\label{subsection:csr}
+Talk Control Status Registers
 \acrfull{csr} needed to run a full feature OS... (core\_id, misa, mcause, ...)
 
 \subsection{Compatible CLINT}
@@ -316,16 +313,16 @@ The \acrfull{sbi} interface permits supervisor-mode (S-mode or VS-mode) software
 
 \subsection{The Linux Boot Flow}
 \label{subsection:linux_boot_flow}
-Figure .. 
+Figure \ref{fig:linux_boot_flow} shows the various stages a \textit{RISC-V} system has to pass through to fully boot a Linux \acrlong{os}. The \acrshort{soc} executes the stage 0 bootloader write after the system resets. The stage 0 bootloader will load the runtime firmware and the kernel software to the \acrfull{ddr} memory. The runtime firmware in a \textit{RISC-V} system implements the \acrshort{sbi} interface. Therefore, developers can use the \textit{OpenSBI} firmware in this stage. In a minimal operating system, the Linux kernel can be loaded right after \textit{OpenSBI}. Otherwise, when building a more complex system where the \acrshort{soc} can load the Linux kernel from flash memory or a network device, developers should use a bootloader like \textit{U-Boot} between the \textit{OpenSBI} firmware and the Linux kernel.
 
 \begin{figure}[!h]
     \centering
-    \includegraphics[width=\linewidth]{linux_boot_flow.pdf}
-    \caption{Multiple stages of the Linux boot on \textit{RISC-V}.}
+    \includegraphics{linux_boot_flow.pdf}
+    \caption{Stages of the Linux boot on \textit{RISC-V} on a minimal system.}
     \label{fig:linux_boot_flow}
 \end{figure}
 
-The \textit{OpenSBI} software has little knowledge of the \acrshort{soc} specific hardware. Furthermore, the Linux kernel software is compiled so that it is platform-independent. Consequently, there needs to exist a way of passing the \acrshort{soc} hardware configuration to the software. For that purpose, developers have to create a \acrfull{dts} file and compile the \textit{OpenSBI} software so that it knows where the \acrshort{dts} is located in memory. The \acrlong{dts} is a file that describes the hardware in a \acrshort{soc} through nodes. \textbf{What is a device tree?}
+The \textit{OpenSBI} firmware has limited knowledge of the \acrshort{soc} specific hardware. Furthermore, researchers developed the Linux kernel software so that it is platform-independent. Consequently, there needs to exist a way of passing the \acrshort{soc} hardware configuration to the software. For that purpose, developers have to create a \acrfull{dts} file and compile the \textit{OpenSBI} software so that it knows the \acrshort{dts} memory location. The \acrlong{dts} is a file that describes the hardware in a \acrshort{soc} through a device tree. A device tree is a tree data structure with nodes describing a system's hardware. Each node has property/value pairs that describe the hardware's characteristics. Each node has exactly one parent except for the root node, which has no parent. There are various nodes available to describe the hardware in the device tree. Developers can find all information about the device tree on its specification documentation~\cite{devicetree_spec}. The device tree describes information about the components in a \acrshort{soc} that the system can not dynamically discover. For example, the device tree should not describe the devices attached to a \acrfull{pci} since the \acrshort{pci} architecture allows the \acrshort{os} to detect and identify the devices. Nevertheless, the device tree should include a device node describing the \acrshort{pci} interface controller in the \acrshort{soc}.
 
 \section{Open Source Verification tools}
 \label{section:verification_tools}
