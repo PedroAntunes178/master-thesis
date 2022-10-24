@@ -6,7 +6,7 @@ This Latex template was originally a fork but has suffered many alterations to b
 
 ### TeX Live
 Download the latest version of TeX Live from [here](https://www.tug.org/texlive/).
-Or if you use a Debian-based distro, you can do `sudo apt install tex-live-full`, which is more accessible and less prone to errors.
+Or if you use a Debian-based distro, you can do `sudo apt install texlive-full`, which is more accessible and less prone to errors.
 The software takes up a little bit of space in the disk. Make sure you have 10 GB available.
 
 ### Text Editor
