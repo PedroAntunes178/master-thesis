@@ -1,11 +1,32 @@
 \chapter{Introduction}
 \label{chapter:introduction}
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Motivation}
 \label{section:motivation}
+Having an Operating System (OS) on an embedded system can facilitate software development and add functionalities not available to bare metal applications. 
 
+There are many available Real-Time Operating Systems (RTOS) like freeRTOS~\cite{barry2009freertos}, Zephyr~\cite{zephyr}, and others. These OSes already provide the basic functionalities such as a scheduler, events, threads, semaphores and message-boxes. The Linux OS provides many more functionalities, but it is not in nature a real-time OS. That is, it does not guarantee that tasks can be executed within a deadline,
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\section{Objectives}
+The fundamental difference between an RTOS and Linux is memory management and protection. As the application base grows, one needs to add multitasking and network connectivity, and Linux already has these and many other functions built-in.
+
+In Linux, if a user tries to run a buggy application, the kernel will kill it and maintain the other applications running. Linux manages the memory usage of applications behind what the user sees. The embedded system memory is managed by Linux, which leads to fewer memory problems. Besides that, with Linux, the user can run applications that take advantage of things like WebSockets. In general, using connections and communications protocols is more accessible when the Linux kernel is running behind. Linux limits the user applications access to the machine resources in terms of security, preventing misuse or damage. Implementing concurrent applications on bare-metal or even using an RTOS can be pretty challenging. Running multiple applications is just as easy as on personal computers with an OS like Linux.
+
+In conclusion, what most motivates the development of a RISC-V SoC capable of running Linux is its advantages for future development.
+
+\section{Objectives and Deliverables}
 \label{section:objectives}
+The goal of this dissertation work is to implement Linux on IOb-SoC. IOb-SoC is a modular SoC that allows developers to easily create and implement their hardware. IOb-SoC uses Verilog to describe its peripherals and connect them. Some peripherals that are in use at the current IOb-SoC are the iob-uart, the iob-cache, the iob-mem and iob-picorv32.
+
+The hardware capable of running a UNIX OS, like Linux, will be developed. The hardware will not be developed from zero but will integrate multiple already developed open-source hardware. IOb-SoC will be used as the base hardware. Furthermore, a 32-bit RISC-V CPU capable of running Linux will be implemented into IOb-SoC.
+
+An OS is a software, but more software besides the kernel needs to be compiled to have a functional Linux OS. Much software needs to run on the upgraded IOb-SoC platform. A Linux image should be flashed onto the board where IOb-SoC will be running at the end of this work. On power-on, the kernel should boot, and from there, the user should be able to run custom applications. 
+
+The process of generating and deploying the Linux image to IOb-SoC should be thoroughly documented and automated so that, after this work, the generation of new images with different characteristics will be straightforward.
+
+Finally, the system must be fully verified both on simulation and running on an FPGA board. For that, a fast Verilog simulator is needed, and the plan is t use the free of charge and open-source Verilator simulator and obtain high line and branch coverage of the whole hardware design.
+
+\section{Author's Work}
+\label{section:authors_work}
+
+\section{Thesis Outline}
+\label{section:thesis_outline}

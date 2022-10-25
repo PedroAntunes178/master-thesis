@@ -171,13 +171,28 @@ In \textit{RISC-V} a Hart is a \acrshort{cpu} hardware thread. In simple languag
 \label{subsection:isa}
 The \textit{RISC-V} \acrshort{isa} was initially designed at the University of California, Berkeley~\cite{asanovic2014instruction} and it defines instructions for 32, 64, and 128-bit systems architecture. In this thesis the author focuses on 32-bit architecture since the hardware the author used as a starting point follows a 32-bit architecture. One advantage of the \textit{RISC-V} \acrshort{isa} is that it is flexible and engineers designed it to be modular. Therefore, developers can use only certain parts of the \textit{RISC-V} \acrshort{isa} in their applications. When a developer needs to use an instruction that is not on the standard \textit{RISC-V} \acrshort{isa}, the instruction can be added through an \acrshort{isa} extension. Additionally, developers can create their custom instructions and add them to their system.
 
-The \textit{RISC-V} \acrshort{isa} is divided in two main volumes. The \enquote{RISC-V Instruction Set Manual Volume I}~\cite{riscv_unpriviledge} contains the specification for the \textbf{unprivileged} instructions. The unprivileged instructions are instructions that do not need any special permission to be executed. The \enquote{RISC-V Instruction Set Manual Volume II}~\cite{riscv_priviledge} defines the \textit{RISC-V} \textbf{privilege} levels and the instructions that take advantage of them.
+The \textit{RISC-V} \acrshort{isa} is divided in two main volumes. The \enquote{RISC-V Instruction Set Manual Volume I}~\cite{riscv_unprivilege} contains the specification for the \textbf{unprivileged} instructions. The unprivileged instructions are instructions that do not need any special permission to be executed. The \enquote{RISC-V Instruction Set Manual Volume II}~\cite{riscv_privilege} defines the \textit{RISC-V} \textbf{privilege} levels and the instructions that take advantage of them.
 
-Talk ISA extensions
-The instruction each ISA extension contains...
+Talk ISA extensions (IMAC+Zicsr)
+The instruction each ISA extension contains... 
 
-Talk Control Status Registers
-\acrfull{csr} needed to run a full feature OS... (core\_id, misa, mcause, ...)
+The \textbf{privileged} instructions manual covers all aspects of \textit{RISC-V} systems beyond the unprivileged \acrshort{isa}, including privileged instructions as well as additional functionality required for running \acrlong{os}s and attaching external devices. Table \ref{tab:riscv_privilege_levels} shows the privilege levels currently defined in the \textit{RISC-V} specification. Privilege levels are used to provide protection between different components of the software stack, and attempts to perform operations not permitted by the current privilege mode will cause an exception to be raised. These exceptions will normally cause traps into an underlying execution environment. The \acrfull{machine} privilege level is the only mandatory level for all \textit{RISC-V} system. Software that runs in \acrshort{machine}-mode has access to the all system and has to be trusted by the developer. The \acrfull{supervisor} privilege level (\acrshort{supervisor}-mode) is intended to run \acrlong{os}s. Developers should use the \acrfull{user} privilege level to execute common user applications. 
+
+\begin{table}[!ht]
+    \centering
+    \begin{tabular}{|l|l|l|l|}
+    \hline
+    \textbf{Level} & \textbf{Encoding} & \textbf{Name}    & \textbf{Abbreviation} \\ \hline
+    0              & 00                & User/Application & U                     \\ \hline
+    1              & 01                & Supervisor       & S                     \\ \hline
+    2              & 10                & Reserved         &                       \\ \hline
+    3              & 11                & Machine          & M                     \\ \hline
+    \end{tabular}
+    \caption{\textit{RISC-V} privilege levels.}
+    \label{tab:riscv_privilege_levels}
+\end{table}
+
+Developers have to implement all three privilege levels to run a Unix-like \acrlong{os}. Each privilege level brings aditional instructions and \acrlong{csr}s to the system. Most of the \acrshort{csr}s used by the system are not relevant for this thesis project. Table \ref{tab:supervisor_csr} and \ref{tab:machine_csr} in annex \ref{appendix:riscv_essencial_csr} show the \acrshort{csr}s the author thinks are essential to know of. From those registers it is crucial to understand how the \enquote{mstatus}, \enquote{misa}, \enquote{mie}, \enquote{mtvec} and \enquote{mcause} work to debug the \acrshort{soc} the author developed in this thesis. \textbf{Explicar Registos!!!}
 
 \subsection{Compatible CLINT}
 \label{subsection:clint_riscv}

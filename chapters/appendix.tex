@@ -6,6 +6,7 @@
 \label{appendix:riscv_cpu_regs}
 \begin{table}[!ht]
   \centering
+  \resizebox{\textwidth}{!}{%
   \begin{tabular}{|l|l|l|l|l|l|}
   \hline
   \textbf{\begin{tabular}[c]{@{}l@{}}5-bit\\  Encoding (rx)\end{tabular}} & \textbf{\begin{tabular}[c]{@{}l@{}}3-bit Compressed\\  Encoding (rx')\end{tabular}} & \textbf{Register} & \textbf{ABI Name} & \textbf{Description}                                                            & \textbf{Saved by Calle-} \\ \hline
@@ -41,10 +42,76 @@
   29                                                                      & -                                                                                   & x29               & t4                & temporary register 4                                                            & -R                       \\ \hline
   30                                                                      & -                                                                                   & x30               & t5                & temporary register 5                                                            & -R                       \\ \hline
   31                                                                      & -                                                                                   & x31               & t6                & temporary register 6                                                            & -R                       \\ \hline
-  \end{tabular}
+  \end{tabular}}
   \caption{\textit{RISC-V} \acrshort{cpu} registers.}
   \label{tab:riscv_cpu_registers}
 \end{table}
+
+\newpage
+
+\section{Some of the \textit{RISC-V} Control and Status Registers}
+\label{appendix:riscv_essencial_csr}
+
+\begin{table}[!ht]
+  \centering
+  \begin{tabular}{|llll|}
+  \hline
+  \multicolumn{1}{|l|}{\textbf{Number}} & \multicolumn{1}{l|}{\textbf{Privilege}} & \multicolumn{1}{l|}{\textbf{Name}} & \textbf{Description}                           \\ \hline
+  \multicolumn{4}{|l|}{Supervisor Trap Setup}                                                                                                                           \\ \hline
+  \multicolumn{1}{|l|}{0x100}           & \multicolumn{1}{l|}{\acrshort{srw}}                & \multicolumn{1}{l|}{sstatus}       & Supervisor status register.                    \\ \hline
+  \multicolumn{1}{|l|}{0x104}           & \multicolumn{1}{l|}{\acrshort{srw}}                & \multicolumn{1}{l|}{sie}           & Supervisor interrupt-enable register.          \\ \hline
+  \multicolumn{1}{|l|}{0x105}           & \multicolumn{1}{l|}{\acrshort{srw}}                & \multicolumn{1}{l|}{stvec}         & Supervisor trap handler base address.          \\ \hline
+  \multicolumn{1}{|l|}{0x106}           & \multicolumn{1}{l|}{\acrshort{srw}}                & \multicolumn{1}{l|}{scounteren}    & Supervisor counter enable.                     \\ \hline
+  \multicolumn{4}{|l|}{Supervisor Configuration}                                                                                                                        \\ \hline
+  \multicolumn{1}{|l|}{0x10A}           & \multicolumn{1}{l|}{\acrshort{srw}}                & \multicolumn{1}{l|}{senvcfg}       & Supervisor environment configuration register. \\ \hline
+  \multicolumn{4}{|l|}{Supervisor Trap Handling}                                                                                                                        \\ \hline
+  \multicolumn{1}{|l|}{0x140}           & \multicolumn{1}{l|}{\acrshort{srw}}                & \multicolumn{1}{l|}{sscratch}      & Scratch register for supervisor trap handlers. \\ \hline
+  \multicolumn{1}{|l|}{0x141}           & \multicolumn{1}{l|}{\acrshort{srw}}                & \multicolumn{1}{l|}{sepc}          & Supervisor exception program counter.          \\ \hline
+  \multicolumn{1}{|l|}{0x142}           & \multicolumn{1}{l|}{\acrshort{srw}}                & \multicolumn{1}{l|}{scause}        & Supervisor trap cause.                         \\ \hline
+  \multicolumn{1}{|l|}{0x143}           & \multicolumn{1}{l|}{\acrshort{srw}}                & \multicolumn{1}{l|}{stval}         & Supervisor bad address or instruction.         \\ \hline
+  \multicolumn{1}{|l|}{0x144}           & \multicolumn{1}{l|}{\acrshort{srw}}                & \multicolumn{1}{l|}{sip}           & Supervisor interrupt pending.                  \\ \hline
+  \multicolumn{4}{|l|}{Supervisor Protection and Translation}                                                                                                           \\ \hline
+  \multicolumn{1}{|l|}{0x180}           & \multicolumn{1}{l|}{\acrshort{srw}}                & \multicolumn{1}{l|}{satp}          & Supervisor address translation and protection. \\ \hline
+  \multicolumn{4}{|l|}{Debug/Trace Registers}                                                                                                                           \\ \hline
+  \multicolumn{1}{|l|}{0x5A8}           & \multicolumn{1}{l|}{\acrshort{srw}}                & \multicolumn{1}{l|}{scontext}      & Supervisor-mode context register.              \\ \hline
+  \end{tabular}
+  \caption{\textit{RISC-V} supervisor-level \acrshort{csr}.}
+  \label{tab:supervisor_csr}
+\end{table}
+
+\begin{table}[!ht]
+  \centering
+  \begin{tabular}{|llll|}
+  \hline
+  \multicolumn{1}{|l|}{\textbf{Number}} & \multicolumn{1}{l|}{\textbf{Privilege}} & \multicolumn{1}{l|}{\textbf{Name}} & \textbf{Description}                           \\ \hline
+  \multicolumn{4}{|l|}{Machine Information Registers}                                                                                                                   \\ \hline
+  \multicolumn{1}{|l|}{0xF11}           & \multicolumn{1}{l|}{\acrshort{mro}}                & \multicolumn{1}{l|}{mvendorid}     & Vendor ID.                                     \\ \hline
+  \multicolumn{1}{|l|}{0xF12}           & \multicolumn{1}{l|}{\acrshort{mro}}                & \multicolumn{1}{l|}{marchid}       & Architecture ID.                               \\ \hline
+  \multicolumn{1}{|l|}{0xF13}           & \multicolumn{1}{l|}{\acrshort{mro}}                & \multicolumn{1}{l|}{mimpid}        & Implementation ID.                             \\ \hline
+  \multicolumn{1}{|l|}{0xF14}           & \multicolumn{1}{l|}{\acrshort{mro}}                & \multicolumn{1}{l|}{mhartid}       & Hardware thread ID.                            \\ \hline
+  \multicolumn{4}{|l|}{Machine Trap Setup}                                                                                                                              \\ \hline
+  \multicolumn{1}{|l|}{0x300}           & \multicolumn{1}{l|}{\acrshort{mrw}}                & \multicolumn{1}{l|}{mstatus}       & Machine status register.                       \\ \hline
+  \multicolumn{1}{|l|}{0x301}           & \multicolumn{1}{l|}{\acrshort{mrw}}                & \multicolumn{1}{l|}{misa}          & ISA and extensions                             \\ \hline
+  \multicolumn{1}{|l|}{0x302}           & \multicolumn{1}{l|}{\acrshort{mrw}}                & \multicolumn{1}{l|}{medeleg}       & Machine exception delegation register.         \\ \hline
+  \multicolumn{1}{|l|}{0x303}           & \multicolumn{1}{l|}{\acrshort{mrw}}                & \multicolumn{1}{l|}{mideleg}       & Machine interrupt delegation register.         \\ \hline
+  \multicolumn{1}{|l|}{0x304}           & \multicolumn{1}{l|}{\acrshort{mrw}}                & \multicolumn{1}{l|}{mie}           & Machine interrupt-enable register.             \\ \hline
+  \multicolumn{1}{|l|}{0x305}           & \multicolumn{1}{l|}{\acrshort{mrw}}                & \multicolumn{1}{l|}{mtvec}         & Machine trap-handler base address.             \\ \hline
+  \multicolumn{1}{|l|}{0x306}           & \multicolumn{1}{l|}{\acrshort{mrw}}                & \multicolumn{1}{l|}{mcounteren}    & Machine counter enable.                        \\ \hline
+  \multicolumn{1}{|l|}{0x310}           & \multicolumn{1}{l|}{\acrshort{mrw}}                & \multicolumn{1}{l|}{mstatush}      & Additional machine status register, RV32 only. \\ \hline
+  \multicolumn{4}{|l|}{Machine Trap Handling}                                                                                                                           \\ \hline
+  \multicolumn{1}{|l|}{0x340}           & \multicolumn{1}{l|}{\acrshort{mrw}}                & \multicolumn{1}{l|}{mscratch}      & Scratch register for machine trap handlers.    \\ \hline
+  \multicolumn{1}{|l|}{0x341}           & \multicolumn{1}{l|}{\acrshort{mrw}}                & \multicolumn{1}{l|}{mepc}          & Machine exception program counter.             \\ \hline
+  \multicolumn{1}{|l|}{0x342}           & \multicolumn{1}{l|}{\acrshort{mrw}}                & \multicolumn{1}{l|}{mcause}        & Machine trap cause.                            \\ \hline
+  \multicolumn{1}{|l|}{0x343}           & \multicolumn{1}{l|}{\acrshort{mrw}}                & \multicolumn{1}{l|}{mtval}         & Machine bad address or instruction.            \\ \hline
+  \multicolumn{1}{|l|}{0x344}           & \multicolumn{1}{l|}{\acrshort{mrw}}                & \multicolumn{1}{l|}{mip}           & Machine interrupt pending.                     \\ \hline
+  \multicolumn{1}{|l|}{0x34A}           & \multicolumn{1}{l|}{\acrshort{mrw}}                & \multicolumn{1}{l|}{mtinst}        & Machine trap instruction (transformed).        \\ \hline
+  \multicolumn{1}{|l|}{0x34B}           & \multicolumn{1}{l|}{\acrshort{mrw}}                & \multicolumn{1}{l|}{mtval2}        & Machine bad guest physical address.            \\ \hline
+  \end{tabular}
+  \caption{Some of the \textit{RISC-V} machine-level \acrshort{csr}.}
+  \label{tab:machine_csr}
+\end{table}
+
+\newpage
 
 \section{Device Tree Source}
 \label{appendix:dts}
@@ -133,3 +200,5 @@
   };
 };
 \end{lstlisting}
+
+\newpage
