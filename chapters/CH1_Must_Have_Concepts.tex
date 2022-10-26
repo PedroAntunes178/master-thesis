@@ -10,7 +10,7 @@ The \textit{IOb-SoC}~\cite{iob_soc} is a \acrfull{soc} template that eases the c
 
 In figure \ref{fig:bd_original} it is represented a sketch of the \acrshort{soc} design. This design is valid at the start of this project. During the hardware developed chapter \ref{chapter:hardware_developed} some alterations were made to the \textit{IOb-SoC} original template.
 
-\begin{figure}[!h]
+\begin{figure}[!ht]
     \centering
     \includegraphics[width=0.7\linewidth]{bd_original.pdf}
     \caption{\textit{IOb-SoC} sketch.}
@@ -77,7 +77,7 @@ The \textit{IObundle} developers designed the \textit{IOb-SoC} in a way that one
 
 The request bus comprises a valid bit, an address signal, a data signal and a strobe signal. The hardware sets the valid bit to '1' when it wants to execute a request and has already defined the other signals. The address signal indicates the register that the request is targeting. Figure \ref{fig:req_bus} shows how the \textit{IOb-SoC} distributes the signals in the request bus. Furthermore, figure \ref{fig:req_bus} also represents the bits equivalent to each signal when the address width and data width are 32 bits. The address and data width in \textit{IOb-SoC} are 32-bit by default.
 
-\begin{figure}[!h]
+\begin{figure}[!ht]
     \centering
     \includegraphics[width=\linewidth]{req_bus.pdf}
     \caption{Request bus with address and data width equal to 32 bits.}
@@ -86,7 +86,7 @@ The request bus comprises a valid bit, an address signal, a data signal and a st
 
 The response bus contains a ready bit and a data signal. The hardware sets the ready signal to high when the component that made the request can receive the response. The data signal is the response data to the request made. For example, if the \acrshort{cpu} wants to read the value in a register at address \enquote{x}, the data in the response bus will be the data on register \enquote{x}. Figure \ref{fig:resp_bus} shows how the request signal is composed when the address and data width are 32 bits.
 
-\begin{figure}[!h]
+\begin{figure}[!ht]
     \centering
     \includegraphics[width=\linewidth]{resp_bus.pdf}
     \caption{Response bus with address and data width equal to 32 bits.}
