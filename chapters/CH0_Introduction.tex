@@ -1,13 +1,12 @@
 \chapter{Introduction}
 \label{chapter:introduction}
+In this chapter, the author will first talk about what motivates the development of this thesis project. Then he will refer to the project's objectives and results the project delivers. The author will also indicate which hardware and software components he had to develop to achieve the thesis goal. Furthermore lastly, the author will explain the overall composition of this thesis report.
 
 \section{Motivation}
 \label{section:motivation}
 Having an Operating System (OS) on an embedded system can facilitate software development and add functionalities not available to bare metal applications. 
 
-There are many available Real-Time Operating Systems (RTOS) like freeRTOS~\cite{barry2009freertos}, Zephyr~\cite{zephyr}, and others. These OSes already provide the basic functionalities such as a scheduler, events, threads, semaphores and message-boxes. The Linux OS provides many more functionalities, but it is not in nature a real-time OS. That is, it does not guarantee that tasks can be executed within a deadline,
-
-The fundamental difference between an RTOS and Linux is memory management and protection. As the application base grows, one needs to add multitasking and network connectivity, and Linux already has these and many other functions built-in.
+There are many available Real-Time Operating Systems (RTOS), for example freeRTOS~\cite{barry2009freertos}. These OSs provide the basic functionalities such as a scheduler, events, threads, semaphores and message-boxes. The Linux OS provides many more functionalities, but it is not in nature a real-time OS. That is, it does not guarantee that tasks can be executed within a deadline. The fundamental difference between an RTOS and Linux is memory management and protection. As the application base grows, one needs to add multitasking and network connectivity, and Linux already has these and many other functions built-in.
 
 In Linux, if a user tries to run a buggy application, the kernel will kill it and maintain the other applications running. Linux manages the memory usage of applications behind what the user sees. The embedded system memory is managed by Linux, which leads to fewer memory problems. Besides that, with Linux, the user can run applications that take advantage of things like WebSockets. In general, using connections and communications protocols is more accessible when the Linux kernel is running behind. Linux limits the user applications access to the machine resources in terms of security, preventing misuse or damage. Implementing concurrent applications on bare-metal or even using an RTOS can be pretty challenging. Running multiple applications is just as easy as on personal computers with an OS like Linux.
 
@@ -30,3 +29,8 @@ Finally, the system must be fully verified both on simulation and running on an 
 
 \section{Thesis Outline}
 \label{section:thesis_outline}
+This thesis has five major chapters, which the author can divide into three segments. The state of the art is aborded in chapter \ref{chapter:must_have_concepts} and \ref{chapter:existing_embedded_technologies}. Chapter \ref{chapter:hardware_developed} and \ref{chapter:software_developed} discuss the components the author developed to achieve the thesis goal, and chapter \ref{chapter:project_results} shows the results of this thesis project. The thesis's first chapter (i.e. this chapter) is an introduction to the thesis, and the last chapter (\ref{chapter:conclusions}) is the conclusions the author makes after completing the project. The introduction and conclusion chapters do not count as major chapters.
+
+In chapter \ref{chapter:must_have_concepts}, the author discusses the tools, concepts and standards the reader must understand to comprehend the following chapters and the decisions the author made while developing the thesis project. Chapter \ref{chapter:existing_embedded_technologies} presents the existing technologies capable of executing a full feature \acrlong{os} and discusses the possibility of integrating them in \textit{IOb-SoC}. The author described the hardware he had to develop in order to successfully create a \acrshort{soc} capable of executing a Linux \acrshort{os} in chapter \ref{chapter:hardware_developed}. Chapter \ref{chapter:software_developed} presents the software components the author had to develop. The software presented in chapter \ref{chapter:software_developed} is not only software needed to execute the Linux \acrshort{os} in the developed \acrshort{soc}, but also software that improves the \textit{IOb-SoC} platform and tests the hardware the author developed.
+
+Finally, chapter \ref{chapter:project_results} shows the products of this expedition. In each step of this thesis development, the author achieved breakthroughs. For every breakthrough, the author obtained results that allowed analysing and discussing the hardware and software developed up until then.
