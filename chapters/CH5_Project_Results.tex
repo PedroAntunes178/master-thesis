@@ -100,11 +100,11 @@ The tables in \ref{tab:fpga_hello} are the FPGA implementation results for two F
         \centering
         \begin{tabular}{l|l|l|}
             \cline{2-3}
-                                            & \textit{IOb-SoC-Linux} & \textit{IOb-SoC} \\ \hline
-            \multicolumn{1}{|l|}{LUTs}      & 21226                  & 23003            \\ \hline
-            \multicolumn{1}{|l|}{Registers} & 23373                  & 22588            \\ \hline
-            \multicolumn{1}{|l|}{DSPs}      & 10                     & 7                \\ \hline
-            \multicolumn{1}{|l|}{BRAM}      & 39.5                   & 34.5             \\ \hline
+                                                     & \textit{IOb-SoC-Linux} & \textit{IOb-SoC} \\ \hline
+            \multicolumn{1}{|l|}{LUTs}               & 21226                  & 23003            \\ \hline
+            \multicolumn{1}{|l|}{Registers}          & 23373                  & 22588            \\ \hline
+            \multicolumn{1}{|l|}{DSPs}               & 10                     & 7                \\ \hline
+            \multicolumn{1}{|l|}{BRAM \footnotemark} & 39.5                   & 34.5             \\ \hline
         \end{tabular}
         \caption{Kintex Ultrascale}
         \label{tab:kintex_hello}
@@ -112,6 +112,8 @@ The tables in \ref{tab:fpga_hello} are the FPGA implementation results for two F
      \caption{FPGA results for \enquote{Hello World!} program using external memory.}
      \label{tab:fpga_hello}
 \end{table}
+
+\footnotetext{The exact number of BRAM bits used in the Kintex Ultrascale is unknown. However, each BRAM in it has 36K bits.}
 
 The author obtained the values in table \ref{tab:fpga_hello} while using the \acrshort{soc} with the external memory. When synthesising the \acrshort{soc}, the user can define whether he wants to use external memory with the \enquote{RUN\_EXTMEM} flag. If \enquote{RUN\_EXTMEM=1} then a memory controller will be synthesised alongside the developed \acrshort{soc} and loaded onto the \acrshort{fpga}. The memory controller is hardware logic written in Verilog and specific to the \acrshort{fpga} where the \acrshort{soc} is running. In order to better understand resource utilisation, the author decided to compare the resources used when running the \enquote{Hello World!} firmware from the internal memory. The resources without the memory controller are in tables \ref{tab:fpga_hello_int_mem}.
 
@@ -342,7 +344,6 @@ Table \ref{tab:fpga_linux} show the resources used by the \textit{IOb-SoC-Linux}
             \multicolumn{1}{|l|}{Registers} & 24505     & 5.05                     \\ \hline
             \multicolumn{1}{|l|}{DSPs}      & 10        & 0.52                     \\ \hline
             \multicolumn{1}{|l|}{BRAM}      & 39.5      & 6.58                     \\ \hline
-            \multicolumn{1}{|l|}{BRAM bits} & 711000    & 6.58                     \\ \hline
         \end{tabular}
         \caption{Kintex Ultrascale}
         \label{tab:kintex_linux}
