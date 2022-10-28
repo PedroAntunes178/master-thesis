@@ -16,16 +16,16 @@ Finally, the \textit{Makefiles} written in this thesis allows researchers to use
 % ----------------------------------------------------------------------
 \section{Contributed Repositories}
 \label{section:contributions}
-The following list shows the repositories name and the authors contribution for each repository.
+The author contributed to various existing and new open-source repositories during the thesis development. The engineers working with \textit{IObundle} manage those repositories and make them available on the companies \textit{GitHub} page. The \textit{IObundle} \textit{GitHub} URL is \url{https://github.com/IObundle}. The following list shows each repository's respective names and the authors' contributions.
 
 \begin{itemize}
-    \item \textbf{iob-soc}: 
-    \item \textbf{iob-soc-OpenCryptoLinux}: 
-    \item \textbf{iob-lib}: 
-    \item \textbf{iob-vexriscv}: 
-    \item \textbf{iob-uart16550}: 
-    \item \textbf{iob-clint}: 
-    \item \textbf{iob-plic}: 
+    \item \href{https://github.com/IObundle/iob-soc}{\textbf{iob-soc}}: The verification software developed in this thesis is currently in use in the \textit{IOb-SoC} platform.
+    \item \href{https://github.com/IObundle/iob-soc-opencryptolinux}{\textbf{iob-soc-OpenCryptoLinux}}: This repository holds the \textit{IOb-SoC-Linux} capable of executing the minimal Linux \acrshort{os} developed. Furthermore, the author will continue to work in this repository as he is currently working on the \textit{OpenCryptoLinux} project.
+    \item \href{https://github.com/IObundle/iob-lib}{\textbf{iob-lib}}: The \acrshort{soc} uses this repository as the \textit{LIB} submodule. The \textit{Python} \textit{Console} program is part of the python scripts of the \textit{LIB} submodule. The author also contributed other small optimisations to this repository that he did not present in this thesis.
+    \item \href{https://github.com/IObundle/iob-vexriscv}{\textbf{iob-vexriscv}}: This repository holds the \textit{IOb-SoC-Linux} \textit{VexRiscv} \acrshort{cpu} and the software needed to build the minimal Linux \acrshort{os}.
+    \item \href{https://github.com/IObundle/iob-uart16550}{\textbf{iob-uart16550}}: The \textit{UART16550} adapted for the \textit{IOb-SoC-Linux} is here.
+    \item \href{https://github.com/IObundle/iob-clint}{\textbf{iob-clint}}: This repository contains the \acrshort{clint} hardware design, the \acrshort{clint} simulation testbench and the \acrshort{clint} bare-metal firmware functions. The interrupt routine firmware example, which developers can use in \textit{IOb-SoC-Linux}, is also in this repository.
+    \item \href{https://github.com/IObundle/iob-plic}{\textbf{iob-plic}}: The \acrshort{plic} hardware unit adapted for the \textit{IOb-SoC-Linux} is here.
 \end{itemize}
 
 % ----------------------------------------------------------------------
@@ -33,4 +33,4 @@ The following list shows the repositories name and the authors contribution for 
 \label{section:future}
 After completing the thesis objectives, there is still room for optimisation. The author or other developer/researcher can submit new features to optimise the \textit{IOb-SoC-Linux}. The author is working on four optimisations. First, the performance of the \acrshort{soc} could be optimized if the \textit{VexRiscv} \acrshort{cpu} integrated in \textit{IOb-SoC-Linux} supported 32 bytes per cache line, currently the \acrshort{cpu} has an L1 data and instructions cache with 4 bytes per line. Secondly, the current \textit{IOb-SoC-Linux} does not have support for internet connections. Therefore, the author will adapt an existing Ethernet controller to the \textit{IOb-SoC-Linux} by creating a hardware wrapper. Thirdly, currently, the \textit{IOb-SoC-Linux} has to transfer the Linux \acrshort{os} every time it starts working and transferring data through the \acrshort{uart} is slow. Integrating an \acrfull{spi} controller would allow the \textit{IOb-SoC-Linux} to load the software from flash memory. An alternative solution would be to implement a \acrshort{pci} interface and transfer the data through it. Lastly, the author will optimise the \textit{Console} program. With the existing program, the user input is not fluid since the \textit{Console} does the input processing sequentially after the program waits a short period for data to be read from the serial connection. The optimised \textit{Console} program should receive the user input and read from the serial interface concurrently in two different threads.
 
-One of the best advantages of this thesis project is the opportunities it creates. Many possible projects could use the \textit{IOb-SoC-Linux}. The author is currently involved in a project that aims to integrate the \textit{openCryptoHW}~\cite{open_crypto_hw} hardware accelerator, developed by a colleague working in \textit{IObundle}, in \textit{IOb-SoC-Linux} and working with the Linux \acrshort{os}. For this project, the author will have to develop Linux drivers that work with the \textit{open-Crypto} hardware and possibly integrate a \acrshort{dma} controller to the \textit{IOb-SoC-Linux}. It would also be interesting to implement the \textit{IOb-SoC-Linux} as an \acrshort{asic} and create a development with it as its core.
+One of the best advantages of this thesis project is the opportunities it creates. Many possible projects could use the \textit{IOb-SoC-Linux}. The author is currently involved in a project, called \textit{OpenCryptoLinux}, that aims to integrate the \textit{openCryptoHW}~\cite{open_crypto_hw} hardware accelerator, developed by a colleague working in \textit{IObundle}, in \textit{IOb-SoC-Linux} and working with the Linux \acrshort{os}. For this project, the author will have to develop Linux drivers that work with the \textit{openCryptoHW} hardware and possibly integrate a \acrshort{dma} controller in the \textit{IOb-SoC-Linux}. It would also be interesting to implement the \textit{IOb-SoC-Linux} as an \acrshort{asic} and create a development with it as its core.
