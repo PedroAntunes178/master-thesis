@@ -252,9 +252,9 @@ Table \ref{tab:time_os} presents how much time it takes to build the complete \a
 \begin{table}[!ht]
     \centering
     \begin{tabular}{ll}
-    real & 4m29,570s \\
-    user & 8m12,039s \\
-    sys  & 0m56,887s
+    real & 4m30s \\
+    user & 8m12s \\
+    sys  & 0m57s
     \end{tabular}
     \caption{Time it takes to build the \acrshort{os}.}
     \label{tab:time_os}
@@ -352,4 +352,4 @@ Table \ref{tab:fpga_linux} show the resources used by the \textit{IOb-SoC-Linux}
      \label{tab:fpga_linux}
 \end{table}
 
-The tables in \ref{tab:fpga_linux} show that the resources utilization from the \textit{IOb-SoC-Linux} is not much bigger than the \textit{IOb-SoC}. The \acrshort{fpga} still has enough resources to implement hardware accelerators.
+The tables in \ref{tab:fpga_linux} show that the resources utilization from the \textit{IOb-SoC-Linux} is less than 10\% in the supported \acrshort{fpga} boards. Comparing the tables in \ref{tab:fpga_linux} with the tables in \ref{tab:fpga_hello} it is clear the \textit{IOb-SoC-Linux} does not use many more resources than the \textit{IOb-SoC}. The \acrshort{fpga} still has enough resources to implement hardware accelerators.

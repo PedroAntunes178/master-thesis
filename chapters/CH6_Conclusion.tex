@@ -1,10 +1,17 @@
 \chapter{Conclusions}
 \label{chapter:conclusions}
+This chapter goes through the thesis achievements, the contributions to open-source repositories during this project, future optimisations to work developed, and projects using the \textit{IOb-SoC-Linux} as its core.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Achievements}
 \label{section:achievements}
-The development of the \textit{Verilator} testbench was worth it taking into account the time saved in hardware verification.
+The work developed in this thesis project successfully achieves the project's goals. The \textit{Verilator} simulation testbench created is much faster than the previous verification process. This saves time when verifying a \acrshort{soc} based on the \textit{IOb-SoC}. Furthermore, the \textit{Python} \textit{Console} program developed works correctly with the simulation testbench and the \acrshort{fpga} boards.
+
+The author successfully integrated a \acrshort{cpu} that meets the requirements to run an \acrshort{os} and verified that what worked with the previous \acrshort{cpu} still worked in the new \acrshort{soc}. The \acrshort{cpu} integrated is the \textit{VexRiscv} \acrshort{cpu} generated using the \textit{SpinalHDL} \textit{VexRiscv} platform. Additionally, the author successfully created the \acrshort{clint} component for timer and software interrupts, and the simulation testbench developed for the \acrshort{clint} shows it works as expected. Moreover, the interrupt routine firmware developed, which takes advantage of the \acrshort{clint}, shows how interrupts work in bare-metal with the \textit{IOb-SoC-Linux}. The \acrshort{plic} integrated in \textit{IOb-SoC-Linux} allows the \acrshort{soc} to support interrupts from its peripheral hardware components. Furthermore, since the Linux \acrshort{os} does not support the \textit{IOb-SoC} current \acrshort{uart}, in this thesis the author adapts an industry-standard \textit{UART16550} to the \textit{IOb-SoC-Linux}. The number of resources the complete \textit{IOb-SoC-Linux} uses is less than 10\% of the supported \acrshort{fpga} boards. Comparing the \textit{IOb-SoC} resources consumption with the resources used by the \textit{IOb-SoC-Linux}, which can execute a Linux \acrshort{os}, the author can conclude the developed \acrshort{soc} does not use many more resources than the original. There is still plenty of space in the \acrshort{fpga} o implement new hardware accelerators.
+
+The minimal Linux \acrshort{os} developed successfully executes on simulation with the \textit{Verilator} testbench and on both supported \acrshort{fpga} boards. The Linux \acrshort{os} contains four major software components. The first is the \textit{OpenSBI} bootloader which implements the \textit{RISC-V} \acrshort{sbi}. The second is the \acrlong{dtb} which describes the \textit{IOb-SoC-Linux} hardware to the Linux Kernel. The third is the Linux kernel compiled to work with the \textit{VexRiscv} \acrshort{cpu}. Lastly, the fourth is the \acrlong{rootfs}, which uses the \textit{Busybox} software package and allows the user to interact with the Linux \acrshort{os}. The minimal Linux \acrshort{os} developed takes five seconds to boot in the Kintex Ultrascale board and seven seconds in the Cyclone V.
+
+Finally, the \textit{Makefiles} written in this thesis allows researchers to use the developed components easily. Building a complete Linux \acrshort{os} with the created \textit{Makefiles} takes the user four minutes thirty seconds.
 
 % ----------------------------------------------------------------------
 \section{Contributed Repositories}
