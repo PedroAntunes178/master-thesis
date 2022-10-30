@@ -105,6 +105,7 @@ The tables in \ref{tab:fpga_hello} are the FPGA implementation results for two F
             \multicolumn{1}{|l|}{Registers}          & 23373                  & 22588            \\ \hline
             \multicolumn{1}{|l|}{DSPs}               & 10                     & 7                \\ \hline
             \multicolumn{1}{|l|}{BRAM \footnotemark} & 39.5                   & 34.5             \\ \hline
+            \multicolumn{1}{|l|}{BRAM bits}          & 1422000                & 1242000          \\ \hline
         \end{tabular}
         \caption{Kintex Ultrascale}
         \label{tab:kintex_hello}
@@ -113,7 +114,7 @@ The tables in \ref{tab:fpga_hello} are the FPGA implementation results for two F
      \label{tab:fpga_hello}
 \end{table}
 
-\footnotetext{The exact number of BRAM bits used in the Kintex Ultrascale is unknown. However, each BRAM in it has 36K bits.}
+\footnotetext{Each BRAM in the Kintex Ultrascale has 36K bits.}
 
 The author obtained the values in table \ref{tab:fpga_hello} while using the \acrshort{soc} with the external memory. When synthesising the \acrshort{soc}, the user can define whether he wants to use external memory with the \enquote{RUN\_EXTMEM} flag. If \enquote{RUN\_EXTMEM=1} then a memory controller will be synthesised alongside the developed \acrshort{soc} and loaded onto the \acrshort{fpga}. The memory controller is hardware logic written in Verilog and specific to the \acrshort{fpga} where the \acrshort{soc} is running. In order to better understand resource utilisation, the author decided to compare the resources used when running the \enquote{Hello World!} firmware from the internal memory. The resources without the memory controller are in tables \ref{tab:fpga_hello_int_mem}.
 
@@ -142,6 +143,7 @@ The author obtained the values in table \ref{tab:fpga_hello} while using the \ac
             \multicolumn{1}{|l|}{Registers} & 4405                   & 1074             \\ \hline
             \multicolumn{1}{|l|}{DSPs}      & 7                      & 4                \\ \hline
             \multicolumn{1}{|l|}{BRAM}      & 14                     & 9                \\ \hline
+            \multicolumn{1}{|l|}{BRAM bits} & 504000                 & 324000           \\ \hline
         \end{tabular}
         \caption{Kintex Ultrascale}
         \label{tab:kintex_hello_int_mem}
@@ -228,11 +230,12 @@ Tables \ref{tab:cyclone_int} and \ref{tab:kintex_int} represent how much \acrsho
         \centering
         \begin{tabular}{l|l|l|}
             \cline{2-3}
-                                            & w/o DDR & w/ DDR \\ \hline
-            \multicolumn{1}{|l|}{LUTs}      & 5729    & 21478  \\ \hline
-            \multicolumn{1}{|l|}{Registers} & 4580    & 23545  \\ \hline
-            \multicolumn{1}{|l|}{DSPs}      & 7       & 10     \\ \hline
-            \multicolumn{1}{|l|}{BRAM}      & 14      & 39.5   \\ \hline
+                                            & w/o DDR & w/ DDR  \\ \hline
+            \multicolumn{1}{|l|}{LUTs}      & 5729    & 21478   \\ \hline
+            \multicolumn{1}{|l|}{Registers} & 4580    & 23545   \\ \hline
+            \multicolumn{1}{|l|}{DSPs}      & 7       & 10      \\ \hline
+            \multicolumn{1}{|l|}{BRAM}      & 14      & 39.5    \\ \hline
+            \multicolumn{1}{|l|}{BRAM bits} & 504000  & 1422000 \\ \hline
         \end{tabular}
         \caption{Kintex Ultrascale}
         \label{tab:kintex_int}
@@ -290,7 +293,7 @@ Figure \ref{fig:start_linux_sim} shows the end of the \textit{OpenSBI} bootloade
 \begin{figure}[!ht]
     \centering
     \centering
-    \includegraphics[width=0.9\textwidth]{start_Linux_sim.png}
+    \includegraphics[width=\linewidth]{start_Linux_sim.png}
     \caption{Start of the Linux kernel boot with \textit{Verilator}.}
     \label{fig:start_linux_sim}
 \end{figure}
@@ -299,7 +302,7 @@ While figure \ref{fig:start_linux_sim} shows the start of the Linux kernel, figu
 
 \begin{figure}[!ht]
     \centering
-    \includegraphics[width=0.9\textwidth]{end_Linux_sim.png}
+    \includegraphics[width=\linewidth]{end_Linux_sim.png}
     \caption{End of Linux kernel boot with \textit{Verilator}.}
     \label{fig:end_linux_verilator}
 \end{figure}
@@ -310,14 +313,38 @@ Figure \ref{fig:linux_fpga} shows the developed minimal \acrshort{os} running on
 
 \begin{figure}[!ht]
     \centering
-    \includegraphics[width=0.9\textwidth]{linux_fpga.png}
+    \includegraphics[width=\linewidth]{linux_fpga.png}
     \caption{Linux kernel boot in the \acrshort{fpga}.}
     \label{fig:linux_fpga}
 \end{figure}
 
-The time the Linux kernel takes to boot in real hardware, figure \ref{fig:linux_fpga}, is almost double what it takes to boot in simulation, figure \ref{fig:linux_fpga}. The time to boot is almost double because the memory module used in the simulation does not have any latency. When the L2 cache fetches data from memory in real hardware, it must wait before receiving the data burst. Using the \textit{CYCLONE V} \acrshort{fpga} board the Linux kernel takes 7.01 seconds to boot. The author expected the boot to take longer since the system clock frequency used with the \textit{CYCLONE V} is 50 MHz. The Kintex Ultrascale was able to run with a frequency of 100 MHz. The \textit{OpenSBI} bootloader and the \acrlong{dtb} had to be recompiled with the system frequency defined to 50 MHz to run in the \textit{CYCLONE V}.
+The time the Linux kernel takes to boot in real hardware, figure \ref{fig:linux_fpga}, is almost double what it takes to boot in simulation, figure \ref{fig:end_linux_verilator}. The time to boot is practically double because the memory module used in the simulation does not have any latency. When the L2 cache fetches data from memory in real hardware, it must wait before receiving the data burst. The Linux kernel takes 7.01 seconds to boot using the \textit{CYCLONE V} \acrshort{fpga} board. The author expected the boot to take longer since the system clock frequency used with the \textit{CYCLONE V} is 50 MHz. The \textit{Kintex Ultrascale} runs with a frequency of 100 MHz. The boot process does not take double the time because the \textit{CYCLONE V} memory controller is more efficient than the \textit{Kintex Ultrascale} memory controller.  The \textit{OpenSBI} bootloader and the \acrlong{dtb} had to be recompiled with the system frequency of 50 MHz to run in the \textit{CYCLONE V}.
 
-Table \ref{tab:fpga_linux} show the resources used by the \textit{IOb-SoC-Linux} in the different \acrshort{fpga}s.
+A more complex \acrshort{rootfs} generated with \textit{Buildroot} provides more features than the minimal \acrshort{rootfs} developed. The \textit{Buildroot} \acrshort{rootfs} allows using \textit{MicroPython}~\cite{tollervey2017programming} in \textit{IOb-SoC-Linux} and executing the \textit{Dhrystones}~\cite{weicker1984dhrystone} benchmarking software. The \acrshort{rootfs} size is a little over 2MB. Figure \ref{fig:linux_buildroot_fpga} shows the final output of the \textit{Dhrystones} benchmark and the execution of simple commands in \textit{MicroPython}. With the \textit{Buildroot} \acrshort{rootfs} the Linux kernel takes 6.40 seconds to boot in the \textit{Kintex Ultrascale} and 8.14 seconds in the \textit{CYCLONE V}.
+
+\begin{figure}[!ht]
+    \centering
+    \includegraphics[width=0.8\linewidth]{linux_buildroot_fpga.png}
+    \caption{Linux \acrshort{os} with \textit{boot} \acrshort{rootfs} in the \acrshort{fpga}.}
+    \label{fig:linux_buildroot_fpga}
+\end{figure}
+
+\textit{MicroPython} is a software project that aims to implement a \textit{Python} version, highly compatible with \textit{Python3}, in microcontrollers and small embedded systems. \textit{Dhrystones} is a general-performance benchmarking software used in multiple embedded systems. With the \textit{Dhrystones} benchmark, developers can compare the efficiency of different computers or compilers. A common representation of the \textit{Dhrystones} benchmark is \textit{DMIPS}. \textit{DMIPS} is the number of \textit{Dhrystones} per Second divided by 1757, the number of \textit{Dhrystones} per second obtained on the \textit{VAX 11/780}~\cite{emer1984characterization}. Table \ref{tab:dhrystones} represents a comparison between the \textit{Dhrystones} benchmarking scores of both \acrshort{fpga} boards.
+
+\begin{table}[!ht]
+    \centering
+    \begin{tabular}{l|l|l|}
+    \cline{2-3}
+                                                         & \textbf{Kintex Ultrascale} & \textbf{CYCLONE V} \\ \hline
+    \multicolumn{1}{|l|}{One run through Dhrystone (ms)} & 24.4                       & 33.4               \\ \hline
+    \multicolumn{1}{|l|}{Dhrystones per Second}          & 40983.2                    & 29939.8            \\ \hline
+    \multicolumn{1}{|l|}{DMIPS}                          & 23.33                      & 17.04            \\ \hline
+    \end{tabular}
+    \caption{\textit{Dhrystones} benchmarking.}
+    \label{tab:dhrystones}
+\end{table}
+
+Table \ref{tab:cyclone_linux} and \ref{tab:kintex_linux} show the resources used by the \textit{IOb-SoC-Linux} in the different \acrshort{fpga}s. 
 
 \begin{table}[!ht]
     \begin{subtable}[h]{0.45\textwidth}
@@ -344,6 +371,7 @@ Table \ref{tab:fpga_linux} show the resources used by the \textit{IOb-SoC-Linux}
             \multicolumn{1}{|l|}{Registers} & 24505     & 5.05                     \\ \hline
             \multicolumn{1}{|l|}{DSPs}      & 10        & 0.52                     \\ \hline
             \multicolumn{1}{|l|}{BRAM}      & 39.5      & 6.58                     \\ \hline
+            \multicolumn{1}{|l|}{BRAM bits} & 1422000   & -                        \\ \hline
         \end{tabular}
         \caption{Kintex Ultrascale}
         \label{tab:kintex_linux}
