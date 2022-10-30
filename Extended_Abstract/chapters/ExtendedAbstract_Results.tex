@@ -21,13 +21,13 @@ In figures \ref{fig:start_bootloader_sim} and \ref{fig:end_bootloader_sim} the r
 
 \begin{figure}[!ht]
     \centering
-    \includegraphics[width=0.5\textwidth]{images/start_Linux_sim.png}
+    \includegraphics[width=0.5\textwidth]{../images/start_Linux_sim.png}
     \caption{\textit{iob-UART16550} and \textit{iob-PLIC} properties.}
     \label{fig:start_bootloader_sim}
 \end{figure}
 \begin{figure}[!ht]
     \centering
-    \includegraphics[width=0.5\textwidth]{images/end_bootloader_sim.png}
+    \includegraphics[width=0.5\textwidth]{../images/end_bootloader_sim.png}
     \caption{\textit{IOb-SoC} bootloader and \textit{OpenSBI} firmware.}
     \label{fig:end_bootloader_sim}
 \end{figure}
@@ -38,7 +38,7 @@ Figure \ref{fig:start_linux_sim} shows the end of the \textit{OpenSBI} bootloade
 
 \begin{figure}[!ht]
     \centering
-    \includegraphics[width=0.5\textwidth]{images/start_Linux_sim.png}
+    \includegraphics[width=0.5\textwidth]{../images/start_Linux_sim.png}
     \caption{Start of the Linux kernel boot with \textit{Verilator}.}
     \label{fig:start_linux_sim}
 \end{figure}
@@ -47,7 +47,7 @@ While figure \ref{fig:start_linux_sim} shows the start of the Linux kernel, figu
 
 \begin{figure}[!ht]
     \centering
-    \includegraphics[width=0.5\textwidth]{images/end_Linux_sim.png}
+    \includegraphics[width=0.5\textwidth]{../images/end_Linux_sim.png}
     \caption{End of Linux kernel boot with \textit{Verilator}.}
     \label{fig:end_linux_verilator}
 \end{figure}
@@ -56,12 +56,36 @@ Figure \ref{fig:linux_fpga} shows the developed minimal OS running on an FPGA. T
 
 \begin{figure}[!ht]
     \centering
-    \includegraphics[width=0.5\textwidth]{images/linux_fpga.png}
+    \includegraphics[width=0.5\textwidth]{../images/linux_fpga.png}
     \caption{Linux kernel boot in the FPGA.}
     \label{fig:linux_fpga}
 \end{figure}
 
 The time the Linux kernel takes to boot in real hardware, figure \ref{fig:linux_fpga}, is almost double what it takes to boot in simulation, figure \ref{fig:linux_fpga}. The time to boot is almost double because the memory module used in the simulation does not have any latency. When the L2 cache fetches data from memory in real hardware, it must wait before receiving the data burst. Using the \textit{CYCLONE V} FPGA board the Linux kernel takes 7.01 seconds to boot. The author expected the boot to take longer since the system clock frequency used with the \textit{CYCLONE V} is 50 MHz. The Kintex Ultrascale was able to run with a frequency of 100 MHz. The \textit{OpenSBI} bootloader and the device tree blob had to be recompiled with the system frequency defined to 50 MHz to run in the \textit{CYCLONE V}.
+
+A more complex rootfs generated with \textit{Buildroot} provides more features than the minimal rootfs developed. The \textit{Buildroot} rootfs allows using \textit{MicroPython}~\cite{tollervey2017programming} in \textit{IOb-SoC-Linux} and executing the \textit{Dhrystones}~\cite{weicker1984dhrystone} benchmarking software. The rootfs size is a little over 2MB. Figure \ref{fig:linux_buildroot_fpga} shows the final output of the \textit{Dhrystones} benchmark and the execution of simple commands in \textit{MicroPython}. With the \textit{Buildroot} rootfs the Linux kernel takes 6.40 seconds to boot in the \textit{Kintex Ultrascale} and 8.14 seconds in the \textit{CYCLONE V}.
+
+\begin{figure}[!ht]
+    \centering
+    \includegraphics[width=\linewidth]{../images/linux_buildroot_fpga.png}
+    \caption{Linux OS with \textit{Buildroot} rootfs.}
+    \label{fig:linux_buildroot_fpga}
+\end{figure}
+
+\textit{MicroPython} is a software project that aims to implement a \textit{Python} version, highly compatible with \textit{Python3}, in microcontrollers and small embedded systems. \textit{Dhrystones} is a general-performance benchmarking software used in multiple embedded systems. With the \textit{Dhrystones} benchmark, developers can compare the efficiency of different computers or compilers. A common representation of the \textit{Dhrystones} benchmark is \textit{DMIPS}. \textit{DMIPS} is the number of \textit{Dhrystones} per Second divided by 1757, the number of \textit{Dhrystones} per second obtained on the \textit{VAX 11/780}~\cite{emer1984characterization}. Table \ref{tab:dhrystones} represents a comparison between the \textit{Dhrystones} benchmarking scores of both FPGA boards.
+
+\begin{table}[!ht]
+    \centering
+    \begin{tabular}{l|l|l|}
+    \cline{2-3}
+                                                         & \textbf{Kintex Ultrascale} & \textbf{CYCLONE V} \\ \hline
+    \multicolumn{1}{|l|}{One run through Dhrystone (ms)} & 24.4                       & 33.4               \\ \hline
+    \multicolumn{1}{|l|}{Dhrystones per Second}          & 40983.2                    & 29939.8            \\ \hline
+    \multicolumn{1}{|l|}{DMIPS}                          & 23.33                      & 17.04            \\ \hline
+    \end{tabular}
+    \caption{\textit{Dhrystones} benchmarking.}
+    \label{tab:dhrystones}
+\end{table}
 
 Tables \ref{tab:kintex_linux} and \ref{tab:cyclone_linux} show the resources used by the \textit{IOb-SoC-Linux} in the different FPGAs.
 
