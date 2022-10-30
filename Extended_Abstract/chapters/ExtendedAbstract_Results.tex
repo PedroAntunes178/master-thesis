@@ -72,16 +72,14 @@ A more complex rootfs generated with \textit{Buildroot} provides more features t
     \label{fig:linux_buildroot_fpga}
 \end{figure}
 
-\textit{MicroPython} is a software project that aims to implement a \textit{Python} version, highly compatible with \textit{Python3}, in microcontrollers and small embedded systems. \textit{Dhrystones} is a general-performance benchmarking software used in multiple embedded systems. With the \textit{Dhrystones} benchmark, developers can compare the efficiency of different computers or compilers. A common representation of the \textit{Dhrystones} benchmark is \textit{DMIPS}. \textit{DMIPS} is the number of \textit{Dhrystones} per Second divided by 1757, the number of \textit{Dhrystones} per second obtained on the \textit{VAX 11/780}~\cite{emer1984characterization}. Table \ref{tab:dhrystones} represents a comparison between the \textit{Dhrystones} benchmarking scores of both FPGA boards.
+\textit{MicroPython} is a software project that aims to implement a \textit{Python} version, highly compatible with \textit{Python3}, in microcontrollers and small embedded systems. \textit{Dhrystones} is a general-performance benchmarking software used in multiple embedded systems. A common representation of the \textit{Dhrystones} benchmark is \textit{DMIPS}. Table \ref{tab:dhrystones} represents a comparison between the \textit{Dhrystones} benchmarking scores of both FPGA boards.
 
 \begin{table}[!ht]
     \centering
     \begin{tabular}{l|l|l|}
     \cline{2-3}
-                                                         & \textbf{Kintex Ultrascale} & \textbf{CYCLONE V} \\ \hline
-    \multicolumn{1}{|l|}{One run through Dhrystone (ms)} & 24.4                       & 33.4               \\ \hline
-    \multicolumn{1}{|l|}{Dhrystones per Second}          & 40983.2                    & 29939.8            \\ \hline
-    \multicolumn{1}{|l|}{DMIPS}                          & 23.33                      & 17.04            \\ \hline
+                                & \textbf{Kintex Ultrascale} & \textbf{CYCLONE V} \\ \hline
+    \multicolumn{1}{|l|}{DMIPS} & 23.33                      & 17.04              \\ \hline
     \end{tabular}
     \caption{\textit{Dhrystones} benchmarking.}
     \label{tab:dhrystones}
