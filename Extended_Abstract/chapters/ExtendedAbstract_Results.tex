@@ -1,6 +1,6 @@
 \section{Project Results}
 \label{sec:project_results}
-In the following chapter, the author analyses the results obtained from the hardware and software developed in this thesis project. The candidate successfully executes the minimal Linux OS in real hardware using the developed System on a chip. All the results obtained in this thesis which communicate with the FPGA board or the SoC testbench, are executing the developed \textit{Console} program. The hardware components comprising the SoC differ depending on the software needs.
+The following section analyses the results obtained from the hardware and software developed in this project. The candidate successfully executes the minimal Linux OS in real hardware using the developed System on a chip. All the results obtained in this thesis which communicate with the FPGA board or the SoC testbench, are executing the developed \textit{Console} program. The hardware components comprising the SoC differ depending on the software needs.
 
 The objective of this thesis project was to run an Operating System in the \textit{IOb-SoC-Linux}. Table \ref{tab:time_os} presents how much time it takes to build the complete OS with the command "make build-OS". The "real" time is the time that passes since the user executes the command until it finishes. The "user" time is the time the CPU takes while executing operations in the user space. The "user" time is bigger than the "real" time because it counts the time passed in each CPU core. Part of the compilation of the RootFS and the kernel is done in parallel using two cores.
 
@@ -15,9 +15,7 @@ The objective of this thesis project was to run an Operating System in the \text
     \label{tab:time_os}
 \end{table}
 
-The OS size is to big to run in the FPGA internal memory. The \textit{OpenSBI} bootloader is 90896 Bytes. The device tree blob is 1669 Bytes. The Linux kernel is 4426152 Bytes. Lastly the root file system is 1142733 Bytes. The memory has to have at least 8 MB ($2^23$) to store all this software. However, the Linux kernel needs a bigger memory where it can store virtual memory pages and execute the different application processes. The device tree source describes the system had 512 MB of available memory. Consequently, the author had to implement the \textit{IOb-SoC-Linux} on the FPGA with access to the external memory. The internal memory could never be as big as 512 MB.
-
-In figures \ref{fig:start_bootloader_sim} and \ref{fig:end_bootloader_sim} the reader can see the start of the OS simulation with \textit{Verilator}.
+The OS size is to big to run in the FPGA internal memory. Consequently, the author had to implement the \textit{IOb-SoC-Linux} on the FPGA with access to the external memory. Figures \ref{fig:start_bootloader_sim} and \ref{fig:end_bootloader_sim} show the start of the OS simulation with \textit{Verilator}.
 
 \begin{figure}[!ht]
     \centering
@@ -52,7 +50,7 @@ While figure \ref{fig:start_linux_sim} shows the start of the Linux kernel, figu
     \label{fig:end_linux_verilator}
 \end{figure}
 
-Figure \ref{fig:linux_fpga} shows the developed minimal OS running on an FPGA. The reader can see that the author has suppressed the shell warning. The initial part of the figure shows the final stage of the Linux kernel booting. After booting, the author tested the \textit{ls /} command that showed the files and directories in the systems' root. Lastly the author executed the \textit{cat init} command for the OS to print the contents of the "init" script to the terminal.
+Figure \ref{fig:linux_fpga} shows the developed minimal OS running on an FPGA. The reader can see that the author has suppressed the shell warning. The initial part of the figure shows the final stage of the Linux kernel booting. After booting, the author tested the \textit{"ls /"} command that showed the files and directories in the systems' root. Lastly the author executed the \textit{"cat init"} command for the OS to print the contents of the "init" script to the terminal.
 
 \begin{figure}[!ht]
     \centering
