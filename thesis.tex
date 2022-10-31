@@ -62,8 +62,18 @@
 \input{chapters/titlepage} % Use latex title page
 
 % ------------------
+% |Acknowledgements|
+% ------------------
+\cleardoubleoddpage
+\input{chapters/Acknowledgements}
+\pdfbookmark[section]{Acknowledgements}{Acknowledgements} % Abstract as bookmark
+
+% ------------------
 % |    Abstract    |
 % ------------------
+\cleardoubleoddpage
+\input{chapters/Resumo}
+\pdfbookmark[section]{Resumo}{Resumo} % Abstract as bookmark
 \cleardoubleoddpage	
 \pdfbookmark[section]{abstrato}{abstract} % Abstract as bookmark
 \input{chapters/abstract}
