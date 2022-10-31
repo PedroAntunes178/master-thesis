@@ -4,10 +4,10 @@
 \thispagestyle{empty} %hide page numbers
 
 Com o aparecimento da arquitetura de computadores \textit{RISC-V} surgiram várias possibilidades interessantes na área de microcontroladores. A tecnologia \textit{RISC-V} possibilitou a criação de sistemas completamente “open-source” e independentes de grandes empresas como por exemplo a Arm Holdings (Arm ®). Desenvolver aplicações para sistemas \textit{RISC-V} em bare-metal é um bom ponto de partida. No entanto é necessário integrar um SO para facilitar o desenvolvimento de novas aplicações. O Linux é um SO completo e adequado para sistemas embebido. No entanto não existem “SoC” de código aberto que consigam correr o Linux e ao mesmo tempo serem modulares. 
-
+%
 Com este trabalho pretende-se criar um “SoC” capaz de correr o Linux. O “SoC” desenvolvido é baseado no \textit{IOb-SoC}. O \textit{IOb-SoC} é um “SoC” modular e configurável que só funciona com aplicações bare-metal. Os objetivos do projeto são atingidos depois de trocar o CPU do \textit{IOb-SoC} e adicionar três componentes de hardware periféricos. Foram também desenvolvidos programas que melhoram a plataforma do \textit{IOb-SoC}, complementam o hardware desenvolvido e permitem a execução do SO no novo “SoC”. O novo “SoC” chama-se \textit{IOb-SoC-Linux}. 
-
-Os recursos utilizados pelo \textit{IOb-SoC-Linux} são só um pouco mais que no \textit{IOb-SoC} de modo que o \textit{IOb-SoC-Linux} consegue correr em praticamente qualquer FPGA de baixo custo. O SO Linux leva quatro minutos e trinta segundos a compilar. O “kernel” Linux leva cinco segundos a dar “boot” na placa \textit{Kintex Ultrascale} e sete na \textit{Cyclone V}. O trabalho desenvolvido alcança e supera os objetivos traçados. 
+%
+Os recursos utilizados pelo \textit{IOb-SoC-Linux} são poucos mais que pelo \textit{IOb-SoC} de modo que o \textit{IOb-SoC-Linux} consegue correr em praticamente qualquer FPGA de baixo custo. O SO Linux leva quatro minutos e trinta segundos a compilar. O “kernel” Linux leva cinco segundos a dar “boot” na placa \textit{Kintex Ultrascale} e sete na \textit{Cyclone V}. O trabalho desenvolvido alcança e supera os objetivos traçados. 
 
 \vfill
 
