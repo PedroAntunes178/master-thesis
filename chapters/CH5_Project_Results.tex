@@ -114,7 +114,7 @@ The tables in \ref{tab:fpga_hello} are the FPGA implementation results for two F
      \label{tab:fpga_hello}
 \end{table}
 
-\footnotetext{Each BRAM in the Kintex Ultrascale has 36K bits.}
+\footnotetext{A BRAM in the Kintex Ultrascale has 36K bits.}
 
 The author obtained the values in table \ref{tab:fpga_hello} while using the \acrshort{soc} with the external memory. When synthesising the \acrshort{soc}, the user can define whether he wants to use external memory with the \enquote{RUN\_EXTMEM} flag. If \enquote{RUN\_EXTMEM=1} then a memory controller will be synthesised alongside the developed \acrshort{soc} and loaded onto the \acrshort{fpga}. The memory controller is hardware logic written in Verilog and specific to the \acrshort{fpga} where the \acrshort{soc} is running. In order to better understand resource utilisation, the author decided to compare the resources used when running the \enquote{Hello World!} firmware from the internal memory. The resources without the memory controller are in tables \ref{tab:fpga_hello_int_mem}.
 
