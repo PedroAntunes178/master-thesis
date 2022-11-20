@@ -59,7 +59,16 @@
 % -------------------
 % |    Titlepage    |
 % -------------------
+\frontmatter
+\pagenumbering{Roman}
 \input{chapters/titlepage} % Use latex title page
+
+% ------------------
+% |  Declaration   |
+% ------------------
+\cleardoubleoddpage
+\input{chapters/Declaration.tex}
+\pdfbookmark[section]{Declaration}{Declaration} % Abstract as bookmark
 
 % ------------------
 % |Acknowledgements|
@@ -72,8 +81,8 @@
 % |    Abstract    |
 % ------------------
 \cleardoubleoddpage
-\input{chapters/Resumo}
 \pdfbookmark[section]{Resumo}{Resumo} % Abstract as bookmark
+\input{chapters/Resumo}
 \cleardoubleoddpage	
 \pdfbookmark[section]{abstrato}{abstract} % Abstract as bookmark
 \input{chapters/abstract}
@@ -94,10 +103,8 @@
 % -----------------
 % |    Indexes    |
 % -----------------
-\frontmatter
-\pagenumbering{Roman}
-\listoffigures
 \listoftables
+\listoffigures
 \lstlistoflistings 
 \printglossary[type=\acronymtype, title=List of Acronyms, nonumberlist]
 
@@ -117,9 +124,6 @@
 % ----------------------
 % |    Bibliography    |
 % ----------------------
-\cleardoubleoddpage
-\pagenumbering{Roman}
-\setcounter{page}{11}
 \printbibliography
 % \printbibheading[title=Literatur]
 % \printbibliography[heading=subbibliography, type=online, title={Online}]
@@ -129,7 +133,10 @@
 % ------------------
 % |    Appendix    |
 % ------------------
-\appendix
+\backmatter
+\cleardoubleoddpage
+\pagenumbering{Roman}
+%\setcounter{page}{11}
 \input{chapters/appendix}
 
 \end{document}
