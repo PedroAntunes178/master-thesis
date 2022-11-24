@@ -60,7 +60,6 @@
 % |    Titlepage    |
 % -------------------
 \frontmatter
-\pagenumbering{Roman}
 \input{chapters/titlepage} % Use latex title page
 
 % ------------------
@@ -82,9 +81,11 @@
 % ------------------
 \cleardoubleoddpage
 \pdfbookmark[section]{Resumo}{Resumo} % Abstract as bookmark
+\addcontentsline{toc}{chapter}{Resumo}
 \input{chapters/Resumo}
 \cleardoubleoddpage	
-\pdfbookmark[section]{abstrato}{abstract} % Abstract as bookmark
+\pdfbookmark[section]{Abstrato}{Abstract} % Abstract as bookmark
+\addcontentsline{toc}{chapter}{Abstract}
 \input{chapters/abstract}
 
 % ---------------------------
@@ -134,7 +135,6 @@
 % |    Appendix    |
 % ------------------
 \backmatter
-\cleardoubleoddpage
 \pagenumbering{Roman}
 %\setcounter{page}{11}
 \input{chapters/appendix}
