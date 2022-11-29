@@ -19,9 +19,9 @@ Table \ref{tab:hello_sim} shows a timing comparison between the different logic 
     \label{tab:hello_sim}
 \end{table}
 
-From table \ref{tab:hello_sim} engineers are able to conclude the advantage of using \textit{Verilator}. For more complexed systems the \textit{C++} testbench is much faster than the \textit{Verilog} counterpart. The disadvantage of using \textit{Verilator} is that signal values can only be either '0' or '1'. However, the speed-up in the simulation is also due to the signal value limitation. In \textit{Icarus}, the simulation can evaluate the signal as unknown ('x') when they are uninitialised. The author noted that \textit{Verilator} is slower to compile the testbench. However, it is much faster to execute the software.
+The table \ref{tab:hello_sim} data presents the advantage of using \textit{Verilator}. For more complexed systems the \textit{C++} testbench is much faster than the \textit{Verilog} counterpart. The disadvantage of using \textit{Verilator} is that signal values can only be either '0' or '1'. However, the speed-up in the simulation is also due to the signal value limitation. In \textit{Icarus}, the simulation can evaluate the signal as unknown ('x') when they are uninitialised. The author noted that \textit{Verilator} is slower to compile the testbench. However, it is much faster to execute the software.
 
-In figure \ref{fig:hello_fpga} the readers can see the output of executing the "Hello World!" firmware in the FPGA. The author synthesised the SoC with the external memory. Furthermore, the firmware is running from external memory.
+Figure \ref{fig:hello_fpga} shows the output of executing the "Hello World!" firmware in the FPGA. The author synthesised the SoC with the external memory. Furthermore, the firmware is running from external memory.
 
 \begin{figure}[!ht]
     \centering
@@ -118,7 +118,7 @@ Tables \ref{tab:cyclone_int} and \ref{tab:kintex_int} represent how much FPGA re
     \label{tab:kintex_int}
 \end{table}
 
-Comparing table \ref{tab:kintex_int} and~\ref{tab:cyclone_int} with the table \ref{tab:kintex_hello} engineers can see that the CLINT hardware does not use much resources.
+Comparing table \ref{tab:kintex_int} and~\ref{tab:cyclone_int} with the table \ref{tab:kintex_hello} data it shows that the CLINT hardware does not use much resources.
 
 \subsection{Boot and use the Linux Operating System}
 
