@@ -1,14 +1,13 @@
 \cleardoubleoddpage
 
 \chapter*{Abstract}
-\thispagestyle{empty} %hide page numbers
 % up to 250 words
 % Summarize the problem
-The recent appearance of the \textit{RISC-V} \acrshort{isa} lead to the development of open-source hardware that does not need to license the base architecture from providers like \textit{Arm Holdings (Arm ®)}. Running applications on bare metal \textit{RISC-V} machines is a good starting point. Nevertheless, the integration of a Linux \acrshort{os} eases the developers' efforts for new applications and use of existing software. The problem is that open-source \acrshort{soc} platform solutions that run Linux and simultaneously are modular and configurable do not exist. 
+The recent appearance of the \textit{RISC-V} \acrshort{isa} led to the development of open-source hardware that does not need to licence the base architecture from providers like \textit{Arm Holdings (Arm ®)}. Running applications on bare metal \textit{RISC-V} machines is a good starting point. Nevertheless, the integration of a Linux \acrshort{os} eases the developers' efforts for new applications and use of existing software. The problem is that open-source \acrshort{soc} platform solutions that run Linux and simultaneously are modular and configurable do not exist. 
 % Results
 This work aims to create an \acrshort{soc} capable of executing a Linux \acrshort{os}, which is called \textit{IOb-SoC-Linux}. The author based the work on \textit{IOb-SoC}, a modular and configurable open-source \acrshort{soc} platform that only runs bare-metal applications. The size of \textit{IOb-SoC-Linux} is only marginally above that of the original \textit{IOb-SoC} and can run in most low-cost \acrshort{fpga}s. The minimal Linux \acrshort{os} takes four minutes and thirty seconds to build. Furthermore, Linux boots in a \textit{Kintex Ultrascale} device in five seconds and in seven seconds in a \textit{Cyclone V} device. The resources used by \textit{IOb-SoC-Linux} in \textit{Kintex Ultrascale} and in \textit{Cyclone V} are less than 10\% of the resources available on those boards FPGAs.
 % Solution found
-This project achieves its goals by changing the \textit{IOb-SoC} \acrshort{cpu} and adding hardware that supports interrupts and the \acrshort{uart} Linux drivers. Additionally, the author develops software solutions that improve the \textit{IOb-SoC} platform, complement the hardware components created and enhance the hardware to allow the execution of a complete \acrshort{os} in \textit{IOb-SoC-Linux}. 
+This project achieved its goals by changing the \textit{IOb-SoC} \acrshort{cpu} and adding hardware that supports interrupts and the \acrshort{uart} Linux drivers. Additionally, the author developed software solutions that improved the \textit{IOb-SoC} platform, complemented the hardware components created, and enhanced the hardware to allow the execution of a complete \acrshort{os} in \textit{IOb-SoC-Linux}. 
 
 \vfill
 

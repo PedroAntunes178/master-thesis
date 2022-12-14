@@ -146,7 +146,7 @@ The \textit{IObundle} engineers developed a bootloader for \textit{IOb-SoC} that
 
 Figure \ref{fig:boot_flow} represents a flow chart of the bootloader firmware behaviour. The bootloader starts by initialising the \acrshort{uart} hardware which the \acrshort{soc} uses to communicate with the user's computer. Then it will send an \acrfull{enq} if it still has not sent one. The \acrshort{enq} byte has the value of 0x05 in \acrshort{ascii} and is sent to the user's computer to indicate that the \textit{IOb-SoC} is waiting for the user's computer. The bootloader will ensure the \acrshort{uart} is sending the \acrshort{enq} byte while the user's computer does not send a response. After receiving a response byte, the bootloader firmware checks if the received byte is an \acrfull{frx}. The \acrshort{frx} Byte has the value 0x07. If the bootloader receives a \acrshort{frx}, it has to transfer the firmware that runs after it.
 
-\begin{figure}[!h]
+\begin{figure}[!ht]
     \centering
     \includegraphics[width=\linewidth]{boot_flow.pdf}
     \caption{Bootloader firmware flow chart.}
@@ -322,7 +322,7 @@ Finally, when using a 32-bit data bus interface, two additional debugging regist
 \label{subsection:sbi}
 The \acrfull{sbi} interface permits supervisor-mode (S-mode or VS-mode) software to be portable across all RISC-V implementations. The \acrfull{sbi} specification~\cite{sbi_riscv_spec} defines an abstraction for platform-specific functionalities. A software application that implements the \acrfull{sbi} specification is known as an \acrshort{sbi} implementation or \acrfull{see}. The \acrshort{sbi} creates an interface between the Kernel running in \acrshort{supervisor}-Mode and the platform-specific firmware running in \acrshort{machine}-Mode. The platform-specific firmware can be an \acrlong{see}. Figure \ref{fig:riscv_sbi} illustrates the purpose of the \acrshort{sbi} in a system executing an \acrshort{os} like the one the author is going to develop in this thesis.
 
-\begin{figure}[!h]
+\begin{figure}[!ht]
     \centering
     \includegraphics{riscv_sbi.pdf}
     \caption{\textit{RISC-V} system running an \acrlong{os}.}
@@ -335,7 +335,7 @@ The \acrfull{sbi} interface permits supervisor-mode (S-mode or VS-mode) software
 \label{subsection:linux_boot_flow}
 Figure \ref{fig:linux_boot_flow} shows the various stages a \textit{RISC-V} system has to pass through to fully boot a Linux \acrlong{os}. The \acrshort{soc} executes the stage 0 bootloader write after the system resets. The stage 0 bootloader will load the runtime firmware and the kernel software to the \acrfull{ddr} memory. The runtime firmware in a \textit{RISC-V} system implements the \acrshort{sbi} interface. Therefore, developers can use the \textit{OpenSBI} firmware in this stage. In a minimal operating system, the Linux kernel can be loaded right after \textit{OpenSBI}. Otherwise, when building a more complex system where the \acrshort{soc} can load the Linux kernel from flash memory or a network device, developers should use a bootloader like \textit{U-Boot} between the \textit{OpenSBI} firmware and the Linux kernel.
 
-\begin{figure}[!h]
+\begin{figure}[!ht]
     \centering
     \includegraphics{linux_boot_flow.pdf}
     \caption{Stages of the Linux boot on \textit{RISC-V} on a minimal system.}

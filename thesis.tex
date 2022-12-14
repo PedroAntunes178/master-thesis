@@ -1,7 +1,7 @@
 \documentclass[
 	10pt, 
 	a4paper, 
-	twoside,
+	oneside,
 	parskip=half*, % Line spacing for paragraphs
 	openright,  % openany -> on which page should new chapters start
 	listof=totoc, % Include listings in the table of contents
@@ -65,25 +65,25 @@
 % ------------------
 % |  Declaration   |
 % ------------------
-\cleardoubleoddpage
+\cleartooddpage
 \input{chapters/Declaration.tex}
 \pdfbookmark[section]{Declaration}{Declaration} % Abstract as bookmark
 
 % ------------------
 % |Acknowledgements|
 % ------------------
-\cleardoubleoddpage
+\cleartooddpage
 \input{chapters/Acknowledgements}
 \pdfbookmark[section]{Acknowledgements}{Acknowledgements} % Abstract as bookmark
 
 % ------------------
 % |    Abstract    |
 % ------------------
-\cleardoubleoddpage
+\cleartooddpage
 \pdfbookmark[section]{Resumo}{Resumo} % Abstract as bookmark
 \addcontentsline{toc}{chapter}{Resumo}
 \input{chapters/Resumo}
-\cleardoubleoddpage	
+\cleartooddpage	
 \pdfbookmark[section]{Abstrato}{Abstract} % Abstract as bookmark
 \addcontentsline{toc}{chapter}{Abstract}
 \input{chapters/abstract}
@@ -91,7 +91,7 @@
 % ---------------------------
 % |    Table of contents    |
 % ---------------------------
-\cleardoubleoddpage	
+\cleartooddpage	
 \pdfbookmark[section]{\contentsname}{toc} % toc is part of the bookmarks but not part the toc itself
 \newpage\thispagestyle{empty}
 {
@@ -114,13 +114,21 @@
 % ------------------
 \mainmatter
 \setcounter{page}{1}
+\cleartooddpage	
 \input{chapters/CH0_Introduction.tex}
+\cleartooddpage	
 \input{chapters/CH1_Must_Have_Concepts.tex}
+\cleartooddpage	
 \input{chapters/CH2_Existing_Embedded_Technologies.tex}
+\cleartooddpage	
 \input{chapters/CH3_Hardware_Developed.tex}
+\cleartooddpage	
 \input{chapters/CH4_Software_Developed.tex}
+\cleartooddpage	
 \input{chapters/CH5_Project_Results.tex}
+\cleartooddpage	
 \input{chapters/CH6_Conclusion.tex}
+\cleartooddpage	
 
 % ----------------------
 % |    Bibliography    |
@@ -135,8 +143,8 @@
 % |    Appendix    |
 % ------------------
 \backmatter
-\pagenumbering{Roman}
-%\setcounter{page}{11}
+\cleartooddpage	
+\setcounter{page}{1}
 \input{chapters/appendix}
 
 \end{document}

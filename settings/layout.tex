@@ -5,10 +5,12 @@
 \usepackage[automark]{scrlayer-scrpage}
 \pagestyle{scrheadings}
 \automark*[section]{}
-\ohead{\headmark} % name of the current section
-\ihead{}
-\ofoot{\thepage} % page number
-%\cfoot{} % center page number
+\ohead{} % outer name of the current section
+\ihead{} % inner name of the current section
+\chead{} % center name of the current section
+\ofoot{} % outer page number
+\ifoot{} % inner page number
+\cfoot{\thepage} % center page number
 
 % footnote gap
 \addtolength{\skip\footins}{1ex}
