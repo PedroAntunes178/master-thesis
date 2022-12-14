@@ -8,6 +8,10 @@
 % The "\todo{this still has to be done}" is a command that highlights todos in the text.
 \newcommand{\todo}[1]{\textcolor{vscodered}{TODO: \texttt{#1}}}
 
+
+\newcommand{\cleartooddpage}{\clearpage
+  \ifodd\value{page}\else\null\clearpage\fi}
+
 % ----------------------------------------------------------------------
 % Define cover fields in both english and portuguese.
 % ----------------------------------------------------------------------
